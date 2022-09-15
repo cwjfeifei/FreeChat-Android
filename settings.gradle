@@ -1,0 +1,25 @@
+pluginManagement {
+    repositories {
+        gradlePluginPortal()
+        google()
+        mavenCentral()
+        maven { url 'https://jitpack.io' }
+    }
+}
+dependencyResolutionManagement {
+    repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
+    repositories {
+        google()
+        mavenCentral()
+        maven {
+            allowInsecureProtocol = true
+            url 'http://121.37.25.71:8081/repository/maven2/' // 新地址
+        }
+        maven { url 'https://jitpack.io' }
+    }
+}
+rootProject.name = "FreeChat"
+include ':app'
+include ':abi'
+include ':utils'
+include ':core'
