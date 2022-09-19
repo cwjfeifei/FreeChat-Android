@@ -8,12 +8,12 @@ plugins {
 
 android {
     namespace 'com.ti4n.freechat'
-    compileSdk 32
+    compileSdk 33
 
     defaultConfig {
         applicationId "com.ti4n.freechat"
         minSdk 24
-        targetSdk 32
+        targetSdk 33
         versionCode 1
         versionName "1.0"
 
@@ -96,12 +96,22 @@ dependencies {
     implementation 'com.squareup.retrofit2:converter-gson:2.9.0'
     implementation("com.squareup.okhttp3:logging-interceptor:4.10.0")
 
-    implementation "cash.z.ecc.android:kotlin-bip39:1.0.2"
-    implementation "org.bouncycastle:bcprov-jdk15on:1.70"
-    implementation("com.google.guava:guava:31.1-android")
-    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation ('org.web3j:core:4.9.4'){
+        exclude group: 'org.bouncycastle', module: 'bcprov-jdk15on'
+    }
+    implementation ('org.web3j:abi:4.9.4'){
+        exclude group: 'org.bouncycastle', module: 'bcprov-jdk15on'
+    }
+    implementation ('org.web3j:contracts:4.9.4'){
+        exclude group: 'org.bouncycastle', module: 'bcprov-jdk15on'
+    }
 
-    implementation 'io.grpc:grpc-okhttp:1.48.0'
-    implementation 'io.grpc:grpc-protobuf:1.48.0'
-    implementation 'io.grpc:grpc-stub:1.48.0'
+    implementation "com.github.komputing.kethereum:bip32:$kethereum_version"
+    implementation "com.github.komputing.kethereum:bip39:$kethereum_version"
+    implementation "com.github.komputing.kethereum:bip39_wordlist_en:$kethereum_version"
+    implementation "com.github.komputing.kethereum:model:$kethereum_version"
+    implementation "com.github.komputing.kethereum:crypto:$kethereum_version"
+    implementation "com.github.komputing.kethereum:crypto_impl_bouncycastle:$kethereum_version"
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.4")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-rx2:1.6.4")
 }

@@ -20,6 +20,3 @@ dependencyResolutionManagement {
 }
 rootProject.name = "FreeChat"
 include ':app'
-include ':abi'
-include ':utils'
-include ':core'

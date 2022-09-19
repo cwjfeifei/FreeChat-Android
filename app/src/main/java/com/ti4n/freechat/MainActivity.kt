@@ -5,6 +5,7 @@ package com.ti4n.freechat
 import android.os.Bundle
 import android.util.Log
 import androidx.activity.compose.setContent
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.layout.fillMaxSize
@@ -17,16 +18,15 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.core.view.WindowCompat
 import androidx.hilt.navigation.compose.hiltViewModel
-import cash.z.ecc.android.bip39.Mnemonics
-import cash.z.ecc.android.bip39.toSeed
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.viewModelScope
 import com.google.accompanist.navigation.animation.AnimatedNavHost
 import com.google.accompanist.navigation.animation.rememberAnimatedNavController
 import com.google.accompanist.navigation.material.ExperimentalMaterialNavigationApi
 import com.google.accompanist.navigation.material.ModalBottomSheetLayout
 import com.google.accompanist.navigation.material.bottomSheet
 import com.google.accompanist.navigation.material.rememberBottomSheetNavigator
-import com.ti4n.freechat.bip44forandroidlibrary.utils.Bip44Utils
-import com.ti4n.freechat.bip44forandroidlibrary.utils.Utils
 import com.ti4n.freechat.bottomsheet.ChooseImageSource
 import com.ti4n.freechat.bottomsheet.VideoVoiceChat
 import com.ti4n.freechat.home.HomeView
@@ -37,19 +37,41 @@ import com.ti4n.freechat.ui.theme.FreeChatTheme
 import com.ti4n.freechat.util.*
 import com.ti4n.freechat.widget.BigImageView
 import dagger.hilt.android.AndroidEntryPoint
-import org.tron.trident.core.key.KeyPair
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.plus
+import kotlinx.coroutines.reactive.asFlow
+import kotlinx.coroutines.reactive.collect
+import org.web3j.contracts.eip20.generated.ERC20
+import org.web3j.crypto.Credentials
+import org.web3j.ens.contracts.generated.ENS
+import org.web3j.ens.contracts.generated.PublicResolver
+import org.web3j.protocol.Web3j
+import org.web3j.protocol.core.DefaultBlockParameter
+import org.web3j.protocol.core.DefaultBlockParameterName
+import org.web3j.protocol.core.methods.response.AbiDefinition
+import org.web3j.protocol.http.HttpService
+import org.web3j.tx.Contract
+import org.web3j.tx.gas.ContractGasProvider
+import org.web3j.tx.gas.DefaultGasProvider
+import java.math.BigInteger
 import javax.inject.Inject
+import kotlin.math.pow
 
 
 @OptIn(ExperimentalAnimationApi::class)
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
 
+    val mainViewModel by viewModels<MainViewModel>()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         WindowCompat.setDecorFitsSystemWindows(window, false)
         IM.init(this)
-        getAddress()
+        mainViewModel.getAddress()
         setContent {
             FreeChatTheme {
                 // A surface container using the 'background' color from the theme
@@ -130,32 +152,49 @@ class MainActivity : AppCompatActivity() {
     @Inject
     lateinit var tronApiService: TronApiService
 
+
+}
+
+class MainViewModel : ViewModel() {
     fun getAddress() {
         val words =
-            TronUtil.getMnemonicCode("where olympic crop zebra boy fruit apart patrol admit world they grab")
+            EthUtil.getMnemonicCode("where olympic crop zebra boy fruit apart patrol admit world they grab")
+        val web3 =
+            Web3j.build(HttpService("https://mainnet.infura.io/v3/a36c7f54cb3244a3b352f922daad690c"))
+        viewModelScope.launch(Dispatchers.IO) {
+            web3.ethGetBalance(
+                "0xFbA5CF9b22f3a0C0cC564483b82D843c1C648eb0",
+                DefaultBlockParameterName.LATEST
+            ).flowable()
+                .asFlow().collect {
+                    Log.e(
+                        "getAddress",
+                        "getAddress: ${
+                            it.balance.toDouble() / 10.0.pow(18)
+                        }"
+                    )
+                }
+        }
+        viewModelScope.launch(Dispatchers.IO) {
+            ERC20.load(
+                "0x171b1daefac13a0a3524fcb6beddc7b31e58e079",
+                web3,
+                Credentials.create(words.privateKey().key.toString()),
+                DefaultGasProvider()
+            ).balanceOf("0xFbA5CF9b22f3a0C0cC564483b82D843c1C648eb0").flowable().collect {
+                Log.e(
+                    "getAddress",
+                    "getAddress FCC: ${
+                        it.toDouble() / 10.0.pow(18)
+                    }"
+                )
+            }
+        }
+
         Log.e(
             "getAddress",
             "getAddress: ${
-                words.joinToString(" ")
-            }"
-        )
-        val key = words.toKeyPair()
-        Log.e(
-            "getAddress",
-            "private: ${
-                key.toPrivateKey()
-            }\npublic: ${key.toPublicKey()}"
-        )
-        Log.e(
-            "getAddress",
-            "address: ${
-                key.toBase58CheckAddress()
-            }"
-        )
-        Log.e(
-            "getAddress",
-            "address: ${
-                key.trc20Contract().transfer("TEPKqUKcJiB4iUaXGBzBsojZKcyomi44Mh", 100, 8, "测试", 100000000)
+                words.address()
             }"
         )
     }
