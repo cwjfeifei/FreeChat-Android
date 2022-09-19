@@ -158,22 +158,21 @@ class MainActivity : AppCompatActivity() {
 class MainViewModel : ViewModel() {
     fun getAddress() {
         val words =
-            EthUtil.getMnemonicCode("where olympic crop zebra boy fruit apart patrol admit world they grab")
+            EthUtil.getMnemonicCode("crumble forest crop trick rescue light patient talk flock balcony labor ball")
         val web3 =
             Web3j.build(HttpService("https://mainnet.infura.io/v3/a36c7f54cb3244a3b352f922daad690c"))
         viewModelScope.launch(Dispatchers.IO) {
             web3.ethGetBalance(
-                "0xFbA5CF9b22f3a0C0cC564483b82D843c1C648eb0",
+                words.address().hex,
                 DefaultBlockParameterName.LATEST
-            ).flowable()
-                .asFlow().collect {
-                    Log.e(
-                        "getAddress",
-                        "getAddress: ${
-                            it.balance.toDouble() / 10.0.pow(18)
-                        }"
-                    )
-                }
+            ).flowable().collect {
+                Log.e(
+                    "getAddress",
+                    "getAddress: ${
+                        it.balance.toDouble() / 10.0.pow(18)
+                    }"
+                )
+            }
         }
         viewModelScope.launch(Dispatchers.IO) {
             ERC20.load(
@@ -181,7 +180,7 @@ class MainViewModel : ViewModel() {
                 web3,
                 Credentials.create(words.privateKey().key.toString()),
                 DefaultGasProvider()
-            ).balanceOf("0xFbA5CF9b22f3a0C0cC564483b82D843c1C648eb0").flowable().collect {
+            ).balanceOf(words.address().hex).flowable().collect {
                 Log.e(
                     "getAddress",
                     "getAddress FCC: ${

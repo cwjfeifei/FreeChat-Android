@@ -1,6 +1,8 @@
 package com.ti4n.freechat.util
 
+import org.kethereum.DEFAULT_ETHEREUM_BIP44_PATH
 import org.kethereum.bip32.toExtendedKey
+import org.kethereum.bip32.toKey
 import org.kethereum.bip39.generateMnemonic
 import org.kethereum.bip39.model.MnemonicWords
 import org.kethereum.bip39.toSeed
@@ -19,7 +21,7 @@ object EthUtil {
     }
 }
 
-fun MnemonicWords.toKeyPair(walletIndex: Int = 0) = toSeed().toExtendedKey().keyPair
+fun MnemonicWords.toKeyPair(walletIndex: Int = 0) = toSeed().toKey(DEFAULT_ETHEREUM_BIP44_PATH).keyPair
 
 fun MnemonicWords.privateKey(walletIndex: Int = 0) = toKeyPair(walletIndex).privateKey
 fun MnemonicWords.address(walletIndex: Int = 0) = toKeyPair().toAddress()
