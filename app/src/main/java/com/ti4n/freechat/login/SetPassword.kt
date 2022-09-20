@@ -22,9 +22,10 @@ import com.ti4n.freechat.R
 import com.ti4n.freechat.Route
 import com.ti4n.freechat.widget.Image
 import com.ti4n.freechat.widget.ImageButton
+import org.web3j.crypto.WalletUtils
 
 @Composable
-fun SetPasswordView(navController: NavController) {
+fun SetPasswordView(navController: NavController, words: String) {
     var password1 by remember {
         mutableStateOf("")
     }
@@ -122,8 +123,10 @@ fun SetPasswordView(navController: NavController) {
                 navController.navigateUp()
             }
             ImageButton(title = "下一步", mipmap = R.mipmap.next_btn) {
-                if (password1 == password2)
+                if (password1 == password2) {
+//                    WalletUtils.generateBip39WalletFromMnemonic(password1, words)
                     navController.navigate(Route.Home.route)
+                }
             }
         }
     }

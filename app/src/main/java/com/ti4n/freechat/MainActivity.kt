@@ -47,6 +47,8 @@ import kotlinx.coroutines.reactive.asFlow
 import kotlinx.coroutines.reactive.collect
 import org.web3j.contracts.eip20.generated.ERC20
 import org.web3j.crypto.Credentials
+import org.web3j.crypto.Wallet
+import org.web3j.crypto.WalletUtils
 import org.web3j.ens.contracts.generated.ENS
 import org.web3j.ens.contracts.generated.PublicResolver
 import org.web3j.protocol.Web3j
@@ -71,7 +73,7 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         WindowCompat.setDecorFitsSystemWindows(window, false)
         IM.init(this)
-        mainViewModel.getAddress()
+//        mainViewModel.getAddress()
         setContent {
             FreeChatTheme {
                 // A surface container using the 'background' color from the theme
@@ -88,13 +90,13 @@ class MainActivity : AppCompatActivity() {
                     ) {
                         AnimatedNavHost(
                             navController = navController,
-                            startDestination = Route.Home.route
+                            startDestination = Route.MainLogin.route
                         ) {
                             composable(route = Route.MainLogin.route) {
                                 MainLoginView(navController)
                             }
                             composable(route = Route.Login.route) {
-                                Register2View(navController, LoginType.Login)
+                                LoginView(navController)
                             }
                             composable(route = Route.SetPassword.route) {
                                 SetPasswordView(navController)
@@ -166,12 +168,16 @@ class MainViewModel : ViewModel() {
                 words.address().hex,
                 DefaultBlockParameterName.LATEST
             ).flowable().collect {
-                Log.e(
-                    "getAddress",
-                    "getAddress: ${
-                        it.balance.toDouble() / 10.0.pow(18)
-                    }"
-                )
+                try {
+                    Log.e(
+                        "getAddress",
+                        "getAddress: ${
+                            it.balance.toDouble() / 10.0.pow(18)
+                        }"
+                    )
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                }
             }
         }
         viewModelScope.launch(Dispatchers.IO) {
