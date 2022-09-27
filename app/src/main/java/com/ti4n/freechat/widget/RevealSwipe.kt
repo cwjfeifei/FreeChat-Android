@@ -92,7 +92,7 @@ fun RevealSwipe(
     closeOnBackgroundClick: Boolean = true,
     animateBackgroundCardColor: Boolean = true,
     alphaEasing: Easing = CubicBezierEasing(0.4f, 0.4f, 0.17f, 0.9f),
-    maxRevealDp: Dp = 78.dp,
+    maxRevealDp: Dp = 156.dp,
     maxAmountOfOverflow: Dp = 250.dp,
     directions: Set<RevealDirection> = setOf(
         RevealDirection.StartToEnd,

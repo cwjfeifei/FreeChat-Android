@@ -1,3 +1,65 @@
 <resources>
     <string name="app_name">FreeChat</string>
+
+    <string name="welcome">欢迎使用FreeChat\n享受自由的世界</string>
+    <string name="login">登录</string>
+    <string name="create_account">创建FreeChat账户</string>
+    <string name="agree_app_terms">我已阅读并同意《FreeChat用户协议》、《隐私政策》、《设备权限使用清单》、《防止滥用政策》和《儿童保护政策》等协议。</string>
+    <string name="agree_app_terms_tip">请阅读并同意相关协议才能进行注册或登录。</string>
+    <string name="input_mnemonic">请输入您的助记词\n登录您的FreeChat</string>
+    <string name="back">返回</string>
+    <string name="login_freechat">登录FreeChat</string>
+    <string name="wrong_mnemonic">助记词不正确</string>
+    <string name="keep_mnemonic_to_find_account">请妥善保管您的助记词\n便于您找回账户</string>
+    <string name="next">下一步</string>
+    <string name="input_mnemonic_by_order">请按顺序验证助记词</string>
+    <string name="set_password">请设置您的临时密码</string>
+    <string name="cancel">取消</string>
+    <string name="set_name">设置名字</string>
+    <string name="done">完成</string>
+    <string name="complete_profile_tip">恭喜您\n已成功创建FreeChat账户 自由的世界还需一步\n下一步将会设置您的社交资料\n预计将耗时1分钟时间</string>
+    <string name="set_avatar">请设置您的头像</string>
+    <string name="name">名字</string>
+    <string name="gender">性别</string>
+    <string name="male">男</string>
+    <string name="female">女</string>
+    <string name="birthday">生日</string>
+    <string name="country">国家</string>
+    <string name="region">地区</string>
+    <string name="complete_setting">完成设置</string>
+
+    <string name="chat">聊天</string>
+    <string name="square">广场</string>
+    <string name="discover">发现</string>
+    <string name="me">我</string>
+
+    <string name="wallet">钱包</string>
+
+    <string name="transfer">转账</string>
+    <string name="receive_account">接受账户</string>
+    <string name="receive_account_hint">请输入接收账户地址</string>
+    <string name="close">关闭</string>
+    <string name="token">通证</string>
+    <string name="amount">数量</string>
+    <string name="input_amount_hint">请输入转账数量</string>
+    <string name="all">全部</string>
+
+    <string name="permission_intro">隐私权限说明</string>
+    <string name="permission_intro_detail">Freechat非常尊重用户隐私及用户安全，当您在使用Freechat的广场、社交、添加好友、存储、摄像/照相、小程序、应用下载、语音、视频相关功能时，Freechat会向您索取以下权限，以保证功能的正常使用。</string>
+    <string name="file_permission">文件存储/读取</string>
+    <string name="file_permission_detail">该权限用于您在使用Freechat社交、发送文件、下载、存储、发布内容等功能时所需要的权限。</string>
+    <string name="camera_permission">照相/摄像/麦克风</string>
+    <string name="camera_permission_detail">该权限用于您在使用Freechat社交功能时，进行摄像/照相/语音的摄制。</string>
+    <string name="contact_permission">通讯录</string>
+    <string name="contact_permission_detail">该权限用于您在使用Freechat社交功能时，查找通讯录好友是否在使用Freechat和邀请好友使用Freechat。</string>
+    <string name="data_permission">数据分析与广告</string>
+    <string name="data_permission_detail">该权限用于您使用Freechat的习惯与爱好，为您推荐相关内容，满足个性化的推荐，这项功能默认为关闭状态，您可以随时通过Freechat设置功能来开启这项功能。</string>
+    <string name="vpn_permission">加密网络</string>
+    <string name="vpn_permission_detail">该权限用于因为网络限制无法使用Freechat时，您将通过加密网络进行Freechat的使用。</string>
+    <string name="i_know">我知道啦</string>
+
+    <string name="no_internet">检测到您的网络存在问题，可能是因为屏蔽、通讯欠费、网络错误等因素造成无法访问。</string>
+    <string name="use_vpn_to_access">您可以使用Freechat加密网络或者其他网络加速工具来保证Freechat的正常使用。</string>
+    <string name="re_test">重新检测</string>
+    <string name="use_vpn">使用加密网络</string>
 </resources>

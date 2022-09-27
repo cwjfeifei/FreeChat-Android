@@ -1,5 +1,6 @@
 package com.ti4n.freechat.widget
 
+import androidx.annotation.StringRes
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.expandHorizontally
 import androidx.compose.animation.shrinkHorizontally
@@ -17,6 +18,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
@@ -25,8 +27,23 @@ import androidx.compose.ui.unit.sp
 import com.ti4n.freechat.R
 
 @Composable
+fun HomeTitle(@StringRes title: Int) {
+    Text(
+        text = stringResource(id = title),
+        color = Color.Black,
+        fontSize = 17.sp,
+        fontWeight = FontWeight.SemiBold
+    )
+}
+
+@Composable
 fun HomeTitle(title: String) {
-    Text(text = title, color = Color.Black, fontSize = 17.sp, fontWeight = FontWeight.SemiBold)
+    Text(
+        text = title,
+        color = Color.Black,
+        fontSize = 17.sp,
+        fontWeight = FontWeight.SemiBold
+    )
 }
 
 @Composable

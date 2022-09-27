@@ -28,7 +28,7 @@ import com.ti4n.freechat.widget.ImageButton
 fun Register1View(navController: NavController, viewModel: RegisterViewModel = hiltViewModel()) {
     val scrollState = rememberScrollState()
     val words by viewModel.words.collectAsState()
-    LoginCommonView("请妥善保管您的助记词\n便于您找回账户") {
+    LoginCommonView(R.string.keep_mnemonic_to_find_account) {
         Spacer(Modifier.height(14.dp))
         Column(Modifier.verticalScroll(scrollState)) {
             LazyVerticalGrid(
@@ -37,7 +37,7 @@ fun Register1View(navController: NavController, viewModel: RegisterViewModel = h
                 horizontalArrangement = Arrangement.spacedBy(20.dp),
                 userScrollEnabled = false,
                 modifier = Modifier
-                    .height(106.dp)
+                    .height(150.dp)
                     .fillMaxWidth()
             ) {
                 items(words) {
@@ -50,7 +50,7 @@ fun Register1View(navController: NavController, viewModel: RegisterViewModel = h
                         Box(contentAlignment = Alignment.Center) {
                             Text(
                                 text = it,
-                                color = Color(0xFF8479FF),
+                                color = Color(0xFF4D4D4D),
                                 fontSize = 12.sp,
                                 fontWeight = FontWeight.Medium
                             )
@@ -66,7 +66,7 @@ fun Register1View(navController: NavController, viewModel: RegisterViewModel = h
                 TextButton(
                     onClick = { },
                     shape = RoundedCornerShape(4.dp),
-                    colors = ButtonDefaults.buttonColors(backgroundColor = Color(0xFF8B82FF))
+                    colors = ButtonDefaults.buttonColors(backgroundColor = Color(0xFF6B8FF8))
                 ) {
                     Text(
                         text = "保存为图片",
@@ -78,7 +78,7 @@ fun Register1View(navController: NavController, viewModel: RegisterViewModel = h
                 TextButton(
                     onClick = { },
                     shape = RoundedCornerShape(4.dp),
-                    colors = ButtonDefaults.buttonColors(backgroundColor = Color(0xFF8B82FF))
+                    colors = ButtonDefaults.buttonColors(backgroundColor = Color(0xFF6B8FF8))
                 ) {
                     Text(
                         text = "发送为短信",
@@ -90,7 +90,7 @@ fun Register1View(navController: NavController, viewModel: RegisterViewModel = h
                 TextButton(
                     onClick = { },
                     shape = RoundedCornerShape(4.dp),
-                    colors = ButtonDefaults.buttonColors(backgroundColor = Color(0xFF8B82FF))
+                    colors = ButtonDefaults.buttonColors(backgroundColor = Color(0xFF6B8FF8))
                 ) {
                     Text(
                         text = "备份为keystore",
@@ -125,11 +125,19 @@ fun Register1View(navController: NavController, viewModel: RegisterViewModel = h
             Spacer(Modifier.height(20.dp))
         }
         Spacer(Modifier.weight(1f))
-        Row(Modifier.fillMaxWidth().padding(bottom = 20.dp), Arrangement.SpaceBetween) {
-            ImageButton(title = "返回", mipmap = R.mipmap.return_btn) {
+        Row(
+            Modifier
+                .fillMaxWidth()
+                .padding(bottom = 20.dp), Arrangement.SpaceBetween
+        ) {
+            ImageButton(title = R.string.back, mipmap = R.mipmap.return_btn) {
                 navController.navigateUp()
             }
-            ImageButton(title = "下一步", mipmap = R.mipmap.next_btn) {
+            ImageButton(
+                title = R.string.next,
+                mipmap = R.mipmap.next_btn,
+                textColor = Color.White
+            ) {
                 navController.navigate(Route.Register2.route)
             }
         }

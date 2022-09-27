@@ -61,7 +61,7 @@ fun ChatListView(modifier: Modifier = Modifier) {
             exit = shrinkVertically()
         ) {
             TopAppBar(backgroundColor = Color(0xFFF0F0F0), title = {
-                HomeTitle("FreeChat")
+                HomeTitle(R.string.app_name)
             }, actions = {
                 Box {
                     Image(mipmap = R.mipmap.add, modifier = Modifier.clickable {
@@ -131,13 +131,21 @@ fun ChatItem(scrollState: LazyListState) {
                 contentAlignment = Alignment.Center,
                 modifier = Modifier
                     .size(78.dp)
-                    .background(Color(0xFFF05957).copy(alpha = 0.1f))
+                    .background(Color(0xFF1E84EF))
+            ) {
+                Image(mipmap = R.mipmap.top)
+            }
+            Box(
+                contentAlignment = Alignment.Center,
+                modifier = Modifier
+                    .size(78.dp)
+                    .background(Color(0xFFFB5251))
             ) {
                 Image(mipmap = R.mipmap.delete)
             }
         },
-        backgroundCardEndColor = Color(0xFFF05957).copy(alpha = 0.1f),
-        backgroundCardContentColor = Color(0xFFF05957).copy(alpha = 0.1f),
+        backgroundCardEndColor = Color.White,
+        backgroundCardContentColor = Color.White,
         animateBackgroundCardColor = false,
         state = revealState
     ) {

@@ -2,6 +2,7 @@ package com.ti4n.freechat.home
 
 import androidx.annotation.DrawableRes
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -20,9 +21,10 @@ import androidx.navigation.NavController
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.ti4n.freechat.widget.Image
 import com.ti4n.freechat.R
+import com.ti4n.freechat.Route
 
 @Composable
-fun DiscoverView(modifier: Modifier, navController: NavController) {
+fun DiscoverView(modifier: Modifier = Modifier, navController: NavController) {
     val systemUiController = rememberSystemUiController()
     SideEffect {
         systemUiController.setSystemBarsColor(
@@ -40,12 +42,20 @@ fun DiscoverView(modifier: Modifier, navController: NavController) {
             modifier = Modifier.statusBarsPadding()
         ) {
             Spacer(modifier = Modifier.weight(1f))
-            Text(text = "发现", color = Color.Black, fontSize = 17.sp, fontWeight = FontWeight.Medium)
+            Text(
+                text = "发现",
+                color = Color.Black,
+                fontSize = 17.sp,
+                fontWeight = FontWeight.Medium
+            )
             Spacer(modifier = Modifier.weight(1f))
         }
         LazyColumn(Modifier.background(Color.White)) {
             items(discoverItems) {
-                DiscoverItem(icon = it.icon, title = it.title)
+                DiscoverItem(icon = it.icon, title = it.title) {
+                    if (it.route != "")
+                        navController.navigate(it.route)
+                }
                 if (it.needSection) {
                     DiscoverSectionItem()
                 } else if (it.needDivider) {
@@ -60,12 +70,13 @@ fun DiscoverView(modifier: Modifier, navController: NavController) {
 }
 
 @Composable
-fun DiscoverItem(@DrawableRes icon: Int, title: String) {
+fun DiscoverItem(@DrawableRes icon: Int, title: String, click: () -> Unit = {}) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
             .height(50.dp)
             .background(Color.White)
+            .clickable { click() }
             .padding(horizontal = 16.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
@@ -110,11 +121,21 @@ val discoverItems = listOf(
     DiscoverType.DiscoverItem(R.mipmap.routine, "小程序", needDivider = false, needSection = true),
     DiscoverType.DiscoverItem(R.mipmap.exchange, "闪兑"),
     DiscoverType.DiscoverItem(R.mipmap.loan, "借贷"),
-    DiscoverType.DiscoverItem(R.mipmap.transaction, "交易", needDivider = false, needSection = true),
+    DiscoverType.DiscoverItem(
+        R.mipmap.transaction,
+        "交易",
+        needDivider = false,
+        needSection = true
+    ),
     DiscoverType.DiscoverItem(R.mipmap.see, "看一看"),
     DiscoverType.DiscoverItem(R.mipmap.listen, "听一听"),
     DiscoverType.DiscoverItem(R.mipmap.scan, "扫一扫"),
     DiscoverType.DiscoverItem(R.mipmap.slither, "划一划", needDivider = false, needSection = true),
     DiscoverType.DiscoverItem(R.mipmap.browser, "区块浏览器"),
-    DiscoverType.DiscoverItem(R.mipmap.net, "分布式加密网络", needDivider = false, needSection = true),
+    DiscoverType.DiscoverItem(
+        R.mipmap.net,
+        "分布式加密网络",
+        needDivider = false,
+        needSection = true
+    ),
 )

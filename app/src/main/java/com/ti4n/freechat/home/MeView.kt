@@ -23,10 +23,11 @@ import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.ti4n.freechat.R
+import com.ti4n.freechat.Route
 import com.ti4n.freechat.widget.Image
 
 @Composable
-fun MeView(modifier: Modifier, navController: NavController) {
+fun MeView(modifier: Modifier = Modifier, navController: NavController) {
     val systemUiController = rememberSystemUiController()
     SideEffect {
         systemUiController.setStatusBarColor(
@@ -54,7 +55,12 @@ fun MeView(modifier: Modifier, navController: NavController) {
                         nickname = it.nickname,
                         id = it.id
                     )
-                    is MeType.MeItem -> MeItem(icon = it.icon, title = it.title)
+
+                    is MeType.MeItem -> MeItem(icon = it.icon, title = it.title) {
+                        if (it.route != "") {
+                            navController.navigate(it.route)
+                        }
+                    }
                 }
                 MeDividerItem()
             }
@@ -63,12 +69,13 @@ fun MeView(modifier: Modifier, navController: NavController) {
 }
 
 @Composable
-fun MeItem(@DrawableRes icon: Int, title: String, route: String = "") {
+fun MeItem(@DrawableRes icon: Int, title: String, click: () -> Unit = {}) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
             .height(50.dp)
             .background(Color.White)
+            .clickable { click() }
             .padding(horizontal = 16.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
@@ -145,7 +152,7 @@ val meItems = listOf(
         "想要的爱情",
         "FCID:12231XSXSA12312"
     ),
-    MeType.MeItem(R.mipmap.me_money, "钱包"),
+    MeType.MeItem(R.mipmap.me_money, "钱包", Route.Wallet.route),
     MeType.MeItem(R.mipmap.me_service, "服务"),
     MeType.MeItem(R.mipmap.me_square, "我的广场"),
     MeType.MeItem(R.mipmap.me_grade, "我的评分"),

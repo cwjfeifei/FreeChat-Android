@@ -1,5 +1,6 @@
 package com.ti4n.freechat
 
+import com.tencent.mmkv.MMKV
 import com.ti4n.freechat.util.EthUtil
 import dagger.hilt.android.HiltAndroidApp
 //import org.bouncycastle.jce.provider.BouncyCastleProvider
@@ -7,11 +8,12 @@ import java.security.Security
 
 
 @HiltAndroidApp
-class Application:android.app.Application() {
+class Application : android.app.Application() {
 
     override fun onCreate() {
         super.onCreate()
         EthUtil.initWeb3j()
+        MMKV.initialize(this)
 //        setupBouncyCastle()
     }
 //    private fun setupBouncyCastle() {

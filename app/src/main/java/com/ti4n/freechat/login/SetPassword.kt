@@ -12,17 +12,26 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.datastore.preferences.core.edit
+import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.navigation.NavController
 import com.ti4n.freechat.R
 import com.ti4n.freechat.Route
+import com.ti4n.freechat.di.dataStore
+import com.ti4n.freechat.util.address
 import com.ti4n.freechat.widget.Image
 import com.ti4n.freechat.widget.ImageButton
+import kotlinx.coroutines.launch
+import org.kethereum.bip39.model.MnemonicWords
+import org.web3j.crypto.MnemonicUtils
 import org.web3j.crypto.WalletUtils
+import java.io.File
 
 @Composable
 fun SetPasswordView(navController: NavController, words: String) {
@@ -32,7 +41,9 @@ fun SetPasswordView(navController: NavController, words: String) {
     var password2 by remember {
         mutableStateOf("")
     }
-    LoginCommonView("请设置您的临时密码") {
+    val context = LocalContext.current
+    val scope = rememberCoroutineScope()
+    LoginCommonView(R.string.set_password) {
         Spacer(Modifier.height(60.dp))
         TextField(
             value = password1,
@@ -90,7 +101,11 @@ fun SetPasswordView(navController: NavController, words: String) {
             }
         )
         Spacer(Modifier.height(12.dp))
-        Text(text = "确保您的密码有大写字母、小写字母等，位数大于8位。", color = Color(0xFF808080), fontSize = 12.sp)
+        Text(
+            text = "确保您的密码有大写字母、小写字母等，位数大于8位。",
+            color = Color(0xFF808080),
+            fontSize = 12.sp
+        )
         Spacer(Modifier.height(20.dp))
         Card(
             shape = RoundedCornerShape(8.dp),
@@ -119,12 +134,23 @@ fun SetPasswordView(navController: NavController, words: String) {
                 .fillMaxWidth()
                 .padding(bottom = 20.dp), Arrangement.SpaceBetween
         ) {
-            ImageButton(title = "返回", mipmap = R.mipmap.return_btn) {
+            ImageButton(title = R.string.back, mipmap = R.mipmap.return_btn) {
                 navController.navigateUp()
             }
-            ImageButton(title = "下一步", mipmap = R.mipmap.next_btn) {
+            ImageButton(
+                title = R.string.next,
+                mipmap = R.mipmap.next_btn,
+                textColor = Color.White
+            ) {
                 if (password1 == password2) {
-//                    WalletUtils.generateBip39WalletFromMnemonic(password1, words)
+                    val file = File(context.cacheDir, "${MnemonicWords(words).address()}")
+                    scope.launch {
+                        context.dataStore.edit {
+                            it[stringPreferencesKey("account")] = words
+                        }
+                    }
+                    file.mkdir()
+                    WalletUtils.generateBip39WalletFromMnemonic(password1, words, file)
                     navController.navigate(Route.Home.route)
                 }
             }

@@ -8,6 +8,7 @@ import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -36,7 +37,7 @@ fun SetNameView(navController: NavController, viewModel: ProfileViewModel) {
             elevation = 0.dp
         ) {
             Text(
-                text = "取消",
+                text = stringResource(id = R.string.cancel),
                 color = Color(0xFF181818),
                 fontSize = 14.sp,
                 modifier = Modifier
@@ -48,14 +49,14 @@ fun SetNameView(navController: NavController, viewModel: ProfileViewModel) {
             )
             Spacer(modifier = Modifier.weight(1f))
             Text(
-                text = "设置名字",
+                text = stringResource(id = R.string.set_name),
                 color = Color.Black,
                 fontSize = 17.sp,
                 fontWeight = FontWeight.Medium
             )
             Spacer(modifier = Modifier.weight(1f))
             Text(
-                text = "完成",
+                text = stringResource(id = R.string.done),
                 fontSize = 14.sp,
                 color = if (temName.isNotEmpty()) Color(0xFF1A1A1A) else Color(0xFFB1B1B1),
                 fontWeight = FontWeight.Medium,

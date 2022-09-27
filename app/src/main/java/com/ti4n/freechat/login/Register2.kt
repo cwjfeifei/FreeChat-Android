@@ -20,11 +20,15 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.datastore.preferences.core.edit
+import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.ti4n.freechat.R
 import com.ti4n.freechat.Route
+import com.ti4n.freechat.di.dataStore
 import com.ti4n.freechat.widget.ImageButton
+import kotlinx.coroutines.launch
 
 @Composable
 fun Register2View(
@@ -36,13 +40,14 @@ fun Register2View(
     val randomWords by viewModel.shuffledWord.collectAsState()
     val selectedWords by viewModel.clickedWords.collectAsState()
     val context = LocalContext.current
+    val scope = rememberCoroutineScope()
     LaunchedEffect(Unit) {
         viewModel.shuffleWord()
     }
     LoginCommonView(
         when (type) {
-            LoginType.Login -> "请输入您的助记词\n登录您的FreeChat"
-            LoginType.Register -> "请按顺序验证助记词"
+            LoginType.Login -> R.string.input_mnemonic
+            LoginType.Register -> R.string.input_mnemonic_by_order
         }
     ) {
         Column(Modifier.verticalScroll(scrollState)) {
@@ -59,7 +64,7 @@ fun Register2View(
                     horizontalArrangement = Arrangement.spacedBy(20.dp),
                     userScrollEnabled = false,
                     modifier = Modifier
-                        .height(138.dp)
+                        .height(176.dp)
                         .fillMaxWidth(),
                     contentPadding = PaddingValues(horizontal = 20.dp, vertical = 16.dp)
                 ) {
@@ -68,7 +73,7 @@ fun Register2View(
                             backgroundColor = Color.White,
                             shape = RoundedCornerShape(8.dp),
                             elevation = 0.dp,
-                            border = BorderStroke(1.dp, Color(0xFFA29AFF))
+                            border = BorderStroke(1.dp, Color(0xFFE6E6E6))
                         ) {
                             Box(
                                 contentAlignment = Alignment.Center,
@@ -78,7 +83,7 @@ fun Register2View(
                             ) {
                                 Text(
                                     text = it,
-                                    color = Color(0xFFA29AFF),
+                                    color = Color(0xFF4B6AF7),
                                     fontSize = 12.sp,
                                     fontWeight = FontWeight.Medium
                                 )
@@ -94,7 +99,7 @@ fun Register2View(
                 horizontalArrangement = Arrangement.spacedBy(20.dp),
                 userScrollEnabled = false,
                 modifier = Modifier
-                    .height(106.dp)
+                    .height(150.dp)
                     .fillMaxWidth()
             ) {
                 items(randomWords) {
@@ -111,7 +116,7 @@ fun Register2View(
                         ) {
                             Text(
                                 text = it,
-                                color = Color(0xFF8479FF),
+                                color = Color(0xFF4D4D4D),
                                 fontSize = 12.sp,
                                 fontWeight = FontWeight.Medium
                             )
@@ -127,20 +132,24 @@ fun Register2View(
                 .fillMaxWidth()
                 .padding(bottom = 20.dp), Arrangement.SpaceBetween
         ) {
-            ImageButton(title = "返回", mipmap = R.mipmap.return_btn) {
+            ImageButton(title = R.string.back, mipmap = R.mipmap.return_btn) {
                 navController.navigateUp()
             }
             ImageButton(
                 title = when (type) {
-                    LoginType.Login -> "登录FreeChat"
-                    LoginType.Register -> "下一步"
-                }, mipmap = R.mipmap.next_btn
+                    LoginType.Login -> R.string.login_freechat
+                    LoginType.Register -> R.string.next
+                }, mipmap = R.mipmap.next_btn, textColor = Color.White
             ) {
                 if (viewModel.canRegister()) {
                     navController.navigate(
                         when (type) {
                             LoginType.Login -> Route.SetPassword.route
-                            LoginType.Register -> Route.CompleteProfile.route
+                            LoginType.Register -> Route.SetPassword.jump(
+                                viewModel.words.value.joinToString(
+                                    " "
+                                )
+                            )
                         }
                     )
                 } else {

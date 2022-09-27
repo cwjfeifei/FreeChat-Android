@@ -1,5 +1,6 @@
 package com.ti4n.freechat.login
 
+import androidx.annotation.StringRes
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -13,6 +14,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -55,14 +57,14 @@ fun CompleteProfileView(controller: NavController, viewModel: ProfileViewModel =
     ) {
         Spacer(modifier = Modifier.height(40.dp))
         Text(
-            text = "恭喜您\n已成功创建FreeChat账户 自由的世界还需一步\n下一步将会设置您的社交资料\n预计将耗时1分钟时间",
+            text = stringResource(id = R.string.complete_profile_tip),
             fontSize = 14.sp,
             color = Color(0xFF333333),
             textAlign = TextAlign.Center
         )
         Spacer(modifier = Modifier.height(20.dp))
         Text(
-            text = "请设置您的头像",
+            text = stringResource(id = R.string.set_avatar),
             fontSize = 20.sp,
             color = Color(0xFF333333),
             fontWeight = FontWeight.Medium
@@ -75,23 +77,29 @@ fun CompleteProfileView(controller: NavController, viewModel: ProfileViewModel =
                 .clickable { controller.navigate(Route.ChooseImageSourceBottom.route) })
         Spacer(modifier = Modifier.height(24.dp))
         Divider(color = Color(0xFFE5E5E5))
-        CompleteProfileItem("名字", click = { controller.navigate(Route.SetName.route) }) {
+        CompleteProfileItem(R.string.name, click = { controller.navigate(Route.SetName.route) }) {
             ProfileValueText(name)
         }
         Divider(color = Color(0xFFE5E5E5))
-        CompleteProfileItem("性别", false) {
+        CompleteProfileItem(R.string.gender, false) {
             Row {
-                GenderItem(title = "男", isSelected = gender == "男") {
-                    viewModel.setGender(it)
+                GenderItem(
+                    title = stringResource(id = R.string.male),
+                    isSelected = gender == 0
+                ) {
+                    viewModel.setGender(0)
                 }
                 Spacer(modifier = Modifier.width(2.dp))
-                GenderItem(title = "女", isSelected = gender == "女") {
-                    viewModel.setGender(it)
+                GenderItem(
+                    title = stringResource(id = R.string.female),
+                    isSelected = gender == 1
+                ) {
+                    viewModel.setGender(1)
                 }
             }
         }
         Divider(color = Color(0xFFE5E5E5))
-        CompleteProfileItem("生日", click = {
+        CompleteProfileItem(R.string.birthday, click = {
             context.getActivity()?.supportFragmentManager?.let {
                 datePicker.show(it, datePicker.toString())
                 datePicker.addOnPositiveButtonClickListener {
@@ -102,16 +110,20 @@ fun CompleteProfileView(controller: NavController, viewModel: ProfileViewModel =
             ProfileValueText(SimpleDateFormat("yyyy.MM.dd").format(birthday))
         }
         Divider(color = Color(0xFFE5E5E5))
-        CompleteProfileItem("国家") {
+        CompleteProfileItem(R.string.country) {
             ProfileValueText("中国")
         }
         Divider(color = Color(0xFFE5E5E5))
-        CompleteProfileItem("地区") {
+        CompleteProfileItem(R.string.region) {
             ProfileValueText("四川成都高新区")
         }
         Divider(color = Color(0xFFE5E5E5))
         Spacer(modifier = Modifier.weight(1f))
-        ImageButton(title = "完成设置", mipmap = R.mipmap.complete_btn) {
+        ImageButton(
+            title = R.string.complete_setting,
+            mipmap = R.mipmap.login_btn,
+            textColor = Color.White
+        ) {
             controller.navigate(Route.Home.route)
         }
         Spacer(modifier = Modifier.height(20.dp))
@@ -120,7 +132,7 @@ fun CompleteProfileView(controller: NavController, viewModel: ProfileViewModel =
 
 @Composable
 fun CompleteProfileItem(
-    title: String,
+    @StringRes title: Int,
     showArrow: Boolean = true,
     click: () -> Unit = {},
     content: @Composable () -> Unit
@@ -131,7 +143,7 @@ fun CompleteProfileItem(
             .height(50.dp)
             .clickable { click() }, verticalAlignment = Alignment.CenterVertically
     ) {
-        Text(text = title, color = Color(0xFF333333), fontSize = 16.sp)
+        Text(text = stringResource(id = title), color = Color(0xFF333333), fontSize = 16.sp)
         Spacer(modifier = Modifier.weight(1f))
         content()
         if (showArrow) {
@@ -151,7 +163,7 @@ fun GenderItem(title: String, isSelected: Boolean, click: (String) -> Unit) {
     Box(contentAlignment = Alignment.Center, modifier = Modifier
         .fillMaxHeight()
         .width(140.dp)
-        .background(if (isSelected) Color(0xFF968EFF).copy(0.8f) else Color(0xFFF5F5F5))
+        .background(if (isSelected) Color(0xFF799AF9) else Color(0xFFF5F5F5))
         .clickable { click(title) }) {
         Text(
             text = title,

@@ -18,6 +18,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -55,10 +56,10 @@ fun LoginView(
     var word by remember {
         mutableStateOf("")
     }
-    LaunchedEffect(key1 = word) {
-        preWords = if (word.isNotEmpty()) WORDLIST_ENGLISH.filter { it.startsWith(word) } else emptyList()
-    }
-    LoginCommonView("请输入您的助记词\n登录您的FreeChat") {
+//    LaunchedEffect(key1 = word) {
+//        preWords = if (word.isNotEmpty()) WORDLIST_ENGLISH.filter { it.startsWith(word) } else emptyList()
+//    }
+    LoginCommonView(R.string.input_mnemonic) {
         Spacer(Modifier.height(20.dp))
         LazyVerticalGrid(
             columns = GridCells.Fixed(3),
@@ -85,14 +86,24 @@ fun LoginView(
                 .fillMaxWidth()
                 .padding(bottom = 20.dp), Arrangement.SpaceBetween
         ) {
-            ImageButton(title = "返回", mipmap = R.mipmap.return_btn) {
+            ImageButton(title = R.string.back, mipmap = R.mipmap.return_btn) {
                 navController.navigateUp()
             }
-            ImageButton(title = "登录FreeChat", mipmap = R.mipmap.next_btn) {
+            val tip = stringResource(id = R.string.wrong_mnemonic)
+            ImageButton(
+                title = R.string.login_freechat,
+                mipmap = R.mipmap.next_btn,
+                textColor = Color.White
+            ) {
                 if (viewModel.wordsIsCorrect()) {
-                    navController.navigate(Route.SetPassword.route)
+                    navController.navigate(Route.SetPassword.jump(words.joinToString(" ") { it.value }))
                 } else {
-                    Toast.makeText(context, "助记词不正确", Toast.LENGTH_SHORT).show()
+
+                    Toast.makeText(
+                        context,
+                        tip,
+                        Toast.LENGTH_SHORT
+                    ).show()
                 }
             }
         }
@@ -107,29 +118,13 @@ fun ItemInputWord(index: Int, word: String, preWords: List<String>, wordChange: 
         Text(text = "0$index".takeLast(2), color = Color(0xFF1A1A1A), fontSize = 14.sp)
         Spacer(modifier = Modifier.width(4.dp))
 
-        ExposedDropdownMenuBox(expanded = exp, onExpandedChange = { exp = !exp }) {
-            OutlinedTextField(
-                value = word,
-                onValueChange = wordChange,
-                singleLine = true,
-                modifier = Modifier.onFocusChanged {
-                    exp = it.hasFocus
-                }
-            )
-            if (preWords.isNotEmpty()) {
-                ExposedDropdownMenu(expanded = exp, onDismissRequest = { }) {
-                    preWords.forEach { option ->
-                        DropdownMenuItem(
-                            onClick = {
-                                wordChange(option)
-                                exp = false
-                            }
-                        ) {
-                            Text(text = option)
-                        }
-                    }
-                }
+        OutlinedTextField(
+            value = word,
+            onValueChange = wordChange,
+            singleLine = true,
+            modifier = Modifier.onFocusChanged {
+                exp = it.hasFocus
             }
-        }
+        )
     }
 }
