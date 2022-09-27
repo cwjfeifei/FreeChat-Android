@@ -6,12 +6,13 @@ import com.ti4n.freechat.model.response.Transaction
 import com.ti4n.freechat.network.EthScanApiService
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
+import dagger.assisted.AssistedInject
 import javax.inject.Inject
 
-class EthTransactionPagingSource @Inject constructor(
+class EthTransactionPagingSource @AssistedInject constructor(
     val ethScanApiService: EthScanApiService,
-    @Assisted val address: String,
-    @Assisted val tokenAddress: String? = null,
+    @Assisted("address") val address: String,
+    @Assisted("tokenAddress") val tokenAddress: String? = null,
 ) :
     PagingSource<Int, Transaction>() {
     override fun getRefreshKey(state: PagingState<Int, Transaction>) = null
@@ -33,5 +34,8 @@ class EthTransactionPagingSource @Inject constructor(
 
 @AssistedFactory
 interface EthTransactionPagingSourceFactory {
-    fun create(address: String, tokenAddress: String? = null): EthTransactionPagingSource
+    fun create(
+        @Assisted("address") address: String,
+        @Assisted("tokenAddress") tokenAddress: String? = null
+    ): EthTransactionPagingSource
 }

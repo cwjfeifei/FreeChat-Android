@@ -116,4 +116,5 @@ dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-rx2:1.6.4")
 
     implementation 'com.tencent:mmkv:1.2.14'
+    implementation 'com.journeyapps:zxing-android-embedded:4.3.0'
 }

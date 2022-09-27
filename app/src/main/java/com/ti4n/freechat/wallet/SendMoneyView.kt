@@ -1,6 +1,10 @@
 package com.ti4n.freechat.wallet
 
+import android.widget.Toast
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.ActivityResultLauncher
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -25,7 +29,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
@@ -38,16 +41,28 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
+import com.google.zxing.BarcodeFormat
+import com.journeyapps.barcodescanner.ScanContract
+import com.journeyapps.barcodescanner.ScanOptions
 import com.ti4n.freechat.R
 import com.ti4n.freechat.Route
 import com.ti4n.freechat.widget.HomeTitle
 import com.ti4n.freechat.widget.Image
 import com.ti4n.freechat.widget.ImageButton
 
+
 @Composable
 fun SendMoneyView(navController: NavController, viewModel: SendMoneyViewModel = hiltViewModel()) {
     val address by viewModel.toAddress.collectAsState()
     val systemUiController = rememberSystemUiController()
+    val barcodeLauncher = rememberLauncherForActivityResult(ScanContract()) { result ->
+        if (result.contents == null) {
+
+        } else {
+            viewModel.setAddress(result.contents)
+        }
+    }
+
     SideEffect {
         systemUiController.setSystemBarsColor(
             color = Color(0xFFF0F0F0)
@@ -87,10 +102,23 @@ fun SendMoneyView(navController: NavController, viewModel: SendMoneyViewModel = 
                         .fillMaxWidth()
                         .padding(horizontal = 16.dp, vertical = 20.dp)
                 ) {
-                    Text(
-                        text = stringResource(id = R.string.receive_account),
-                        color = Color.White, fontWeight = FontWeight.Medium, fontSize = 16.sp
-                    )
+                    Row(Modifier.fillMaxWidth()) {
+                        Text(
+                            text = stringResource(id = R.string.receive_account),
+                            color = Color.White, fontWeight = FontWeight.Medium, fontSize = 16.sp
+                        )
+                        Spacer(modifier = Modifier.weight(1f))
+                        Image(
+                            mipmap = R.mipmap.scan_black,
+                            modifier = Modifier.clickable {
+                                barcodeLauncher.launch(
+                                    ScanOptions().setDesiredBarcodeFormats(
+                                        ScanOptions.QR_CODE
+                                    ).setOrientationLocked(false)
+                                )
+                            })
+                    }
+
                     Spacer(modifier = Modifier.height(16.dp))
                     TextField(
                         value = address, onValueChange = {
