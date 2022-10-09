@@ -1,5 +1,9 @@
 package com.ti4n.freechat.erc20
 
+import android.os.Parcelable
+import kotlinx.parcelize.Parcelize
+
+@Parcelize
 data class ERC20Token(
     val Abi: String,
     val Address: String,
@@ -30,6 +34,38 @@ data class ERC20Token(
     val website: String,
     val wechat: String,
     val whitepaper: String
-)
+) : Parcelable
 
 data class ERC20Tokens(val result: List<ERC20Token>)
+
+val ethereum = ERC20Token(
+    Abi = "",
+    Address = "ethereum",
+    ChainID = 0,
+    Decimals = 18,
+    LogoURI = "",
+    Name = "",
+    bitcointalk = "",
+    blog = "",
+    blueCheckmark = "",
+    contractAddress = "",
+    description = "",
+    discord = "",
+    divisor = "",
+    email = "",
+    facebook = "",
+    github = "",
+    linkedin = "",
+    reddit = "",
+    slack = "",
+    symbol = "ETH",
+    telegram = "",
+    tokenName = "",
+    tokenPriceUSD = "",
+    tokenType = "",
+    totalSupply = "",
+    twitter = "",
+    website = "",
+    wechat = "",
+    whitepaper = ""
+)

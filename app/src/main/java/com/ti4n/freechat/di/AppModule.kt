@@ -8,8 +8,10 @@ import com.google.gson.Gson
 import com.ti4n.freechat.erc20.ERC20Tokens
 import com.ti4n.freechat.network.EthScanApiService
 import com.ti4n.freechat.network.FreeChatApiService
+import com.ti4n.freechat.network.SwapApiService
 import com.ti4n.freechat.network.ethScanUrl
 import com.ti4n.freechat.network.freeChatUrl
+import com.ti4n.freechat.network.swapBaseUrl
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -46,6 +48,12 @@ object AppModule {
     @Provides
     fun provideEthScanApi(okHttpClient: OkHttpClient): EthScanApiService {
         return Retrofit.Builder().baseUrl(ethScanUrl)
+            .addConverterFactory(GsonConverterFactory.create()).build().create()
+    }
+
+    @Provides
+    fun provideSwapApi(okHttpClient: OkHttpClient): SwapApiService {
+        return Retrofit.Builder().baseUrl(swapBaseUrl)
             .addConverterFactory(GsonConverterFactory.create()).build().create()
     }
 

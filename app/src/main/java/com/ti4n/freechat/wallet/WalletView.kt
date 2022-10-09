@@ -19,6 +19,7 @@ import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
@@ -45,6 +46,8 @@ import com.ti4n.freechat.widget.HomeTitle
 import com.ti4n.freechat.widget.Image
 import androidx.compose.runtime.*
 import com.ti4n.freechat.Route
+import com.ti4n.freechat.util.address
+import org.kethereum.bip39.model.MnemonicWords
 
 @Composable
 fun WalletView(navController: NavController, viewModel: WalletViewModel = hiltViewModel()) {
@@ -71,8 +74,9 @@ fun WalletView(navController: NavController, viewModel: WalletViewModel = hiltVi
         Spacer(modifier = Modifier.height(20.dp))
         WalletFunction(
             address,
-            list.map { it.first.tokenPriceUSD.toDouble() * it.second }.sum(),
-            sendClick = { navController.navigate(Route.SendMoney.route) })
+            list.map { (it.first.tokenPriceUSD.toDoubleOrNull() ?: 0.0) * it.second }.sum(),
+            sendClick = { navController.navigate(Route.SendMoney.route) },
+            swapClick = { navController.navigate(Route.Swap.route) })
         Spacer(modifier = Modifier.height(24.dp))
         Text(
             text = "资产",
@@ -83,7 +87,14 @@ fun WalletView(navController: NavController, viewModel: WalletViewModel = hiltVi
         Spacer(modifier = Modifier.height(8.dp))
         LazyColumn(modifier = Modifier.padding(horizontal = 16.dp)) {
             items(list) {
-                ItemCoin(token = it.first, count = it.second)
+                ItemCoin(token = it.first, count = it.second) {
+                    navController.navigate(
+                        Route.TokenDetailSimply.jump(
+                            it.first.symbol,
+                            viewModel.address.value
+                        )
+                    )
+                }
             }
         }
     }
@@ -94,7 +105,8 @@ fun WalletFunction(
     address: String,
     allMoney: Double,
     sendClick: () -> Unit = {},
-    receiveClick: () -> Unit = {}
+    receiveClick: () -> Unit = {},
+    swapClick: () -> Unit = {}
 ) {
     Box(
         contentAlignment = Alignment.Center,
@@ -145,9 +157,9 @@ fun WalletFunction(
                     .padding(20.dp),
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
-                ItemFunction(image = R.mipmap.send, text = "转账", sendClick)
+                ItemFunction(image = R.mipmap.send, text = "转账", click = sendClick)
                 ItemFunction(image = R.mipmap.receive, text = "收款")
-                ItemFunction(image = R.mipmap.swap, text = "闪兑")
+                ItemFunction(image = R.mipmap.swap, text = "闪兑", click = swapClick)
                 ItemFunction(image = R.mipmap.history, text = "交易记录")
             }
         }
@@ -155,10 +167,11 @@ fun WalletFunction(
 }
 
 @Composable
-fun ItemCoin(token: ERC20Token, count: Double) {
+fun ItemCoin(token: ERC20Token, count: Double, click: () -> Unit) {
     Row(
         Modifier
             .fillMaxWidth()
+            .clickable { click() }
             .padding(vertical = 12.dp), verticalAlignment = Alignment.CenterVertically
     ) {
 //        AsyncImage(model = "https://www.google.com/images/branding/googlelogo/2x/googlelogo_color_272x92dp.png", contentDescription = "", modifier = Modifier.size(40.dp))
@@ -187,7 +200,7 @@ fun ItemCoin(token: ERC20Token, count: Double) {
             )
             Spacer(modifier = Modifier.height(6.dp))
             Text(
-                text = "=$${count * token.tokenPriceUSD.toDouble()}",
+                text = "=$${count * (token.tokenPriceUSD.toDoubleOrNull() ?: 0.0)}",
                 color = Color(0xFF1A1A1A),
                 fontSize = 12.sp,
                 fontWeight = FontWeight.Medium
@@ -197,15 +210,27 @@ fun ItemCoin(token: ERC20Token, count: Double) {
 }
 
 @Composable
-fun ItemFunction(@DrawableRes image: Int, text: String, click: () -> Unit = {}) {
+fun ItemFunction(
+    @DrawableRes image: Int,
+    text: String,
+    backgroundColor: Color = Color(0x1AFFFFFF),
+    textColor: Color = Color.White,
+    click: () -> Unit = {}
+) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier.clickable { click() }) {
-        Image(mipmap = image)
-        Spacer(modifier = Modifier.height(6.dp))
+        Box(
+            modifier = Modifier
+                .background(backgroundColor, CircleShape)
+                .padding(10.dp)
+        ) {
+            Image(mipmap = image)
+        }
+        Spacer(modifier = Modifier.height(8.dp))
         Text(
             text = text,
-            color = Color.White,
+            color = textColor,
             fontSize = 12.sp
         )
     }

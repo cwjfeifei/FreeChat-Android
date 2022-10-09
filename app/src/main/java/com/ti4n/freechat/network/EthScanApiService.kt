@@ -9,14 +9,14 @@ const val ethScanUrl = "https://api.etherscan.io/"
 
 interface EthScanApiService {
 
-    @GET("/api?module=account&action=txlist&startblock=0&endblock=99999999&offset=20&sort=asc&apikey=FZTI57USSADTZ2IZI6TSFY1T98S1IU492M")
-    fun ethTractionHistory(
+    @GET("api?module=account&action=txlist&startblock=0&endblock=99999999&offset=20&sort=asc&apikey=FZTI57USSADTZ2IZI6TSFY1T98S1IU492M")
+    suspend fun ethTractionHistory(
         @Query("address") address: String,
         @Query("page") page: Int
     ): EthScanBaseResponse<List<Transaction>>
 
-    @GET("/api?module=account&action=tokentx&startblock=0&endblock=99999999&offset=20&sort=asc&apikey=FZTI57USSADTZ2IZI6TSFY1T98S1IU492M")
-    fun tokenTractionHistory(
+    @GET("api?module=account&action=tokentx&startblock=0&endblock=99999999&offset=20&sort=asc&apikey=FZTI57USSADTZ2IZI6TSFY1T98S1IU492M")
+    suspend fun tokenTractionHistory(
         @Query("address") address: String,
         @Query("page") page: Int,
         @Query("contractAddress") contractAddress: String

@@ -21,12 +21,16 @@ import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.ti4n.freechat.widget.Image
 import com.ti4n.freechat.R
 import com.ti4n.freechat.Route
+import com.ti4n.freechat.erc20.ERC20Tokens
+import com.ti4n.freechat.swap.SwapView
 import com.ti4n.freechat.util.aniComposable
 import com.ti4n.freechat.util.noAniComposable
 import com.ti4n.freechat.wallet.SendMoneyInputDetailView
 import com.ti4n.freechat.wallet.SendMoneyView
+import com.ti4n.freechat.wallet.TokenDetailSimplyView
 import com.ti4n.freechat.wallet.TokenDetailView
 import com.ti4n.freechat.wallet.WalletView
+import javax.inject.Inject
 
 @OptIn(ExperimentalAnimationApi::class)
 @Composable
@@ -130,8 +134,20 @@ fun HomeView() {
                 SendMoneyInputDetailView(navController, hiltViewModel(backStackEntry))
             }
             aniComposable(Route.TokenDetail.route) { navBackEntry ->
-
-//                TokenDetailView(navController, )
+                TokenDetailView(
+                    navController
+                )
+            }
+            aniComposable(Route.TokenDetailSimply.route) { navBackEntry ->
+                TokenDetailSimplyView(
+                    navController,
+                    hiltViewModel()
+                )
+            }
+            aniComposable(Route.Swap.route) { navBackEntry ->
+                SwapView(
+                    navController
+                )
             }
         }
     }

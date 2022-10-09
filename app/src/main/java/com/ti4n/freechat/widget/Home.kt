@@ -37,10 +37,10 @@ fun HomeTitle(@StringRes title: Int) {
 }
 
 @Composable
-fun HomeTitle(title: String) {
+fun HomeTitle(title: String, titleColor: Color = Color.Black) {
     Text(
         text = title,
-        color = Color.Black,
+        color = titleColor,
         fontSize = 17.sp,
         fontWeight = FontWeight.SemiBold
     )

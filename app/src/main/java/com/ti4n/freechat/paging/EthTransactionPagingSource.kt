@@ -15,19 +15,20 @@ class EthTransactionPagingSource @AssistedInject constructor(
     @Assisted("tokenAddress") val tokenAddress: String? = null,
 ) :
     PagingSource<Int, Transaction>() {
-    override fun getRefreshKey(state: PagingState<Int, Transaction>) = null
+    override fun getRefreshKey(state: PagingState<Int, Transaction>) = state.anchorPosition
 
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, Transaction> {
         val page = params.key ?: 1
-        try {
+        return try {
             val transactions = if (tokenAddress == null) {
                 ethScanApiService.ethTractionHistory(address, page)
             } else {
                 ethScanApiService.tokenTractionHistory(address, page, tokenAddress)
             }
-            return LoadResult.Page(transactions.result, null, page + 1)
+            LoadResult.Page(transactions.result, null, page + 1)
         } catch (e: Exception) {
-            return LoadResult.Error(e)
+            e.printStackTrace()
+            LoadResult.Error(e)
         }
     }
 }

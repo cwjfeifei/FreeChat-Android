@@ -25,6 +25,7 @@ import androidx.compose.material.TextFieldDefaults
 import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.swipeable
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.collectAsState
@@ -32,6 +33,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -64,100 +66,101 @@ fun SendMoneyView(navController: NavController, viewModel: SendMoneyViewModel = 
     }
 
     SideEffect {
-        systemUiController.setSystemBarsColor(
+        systemUiController.setStatusBarColor(color = Color.Transparent)
+        systemUiController.setNavigationBarColor(
             color = Color(0xFFF0F0F0)
         )
     }
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .systemBarsPadding()
-    ) {
-        TopAppBar(backgroundColor = Color(0xFFF0F0F0), title = {
-            HomeTitle(R.string.transfer)
-        }, navigationIcon = {
-            IconButton(onClick = { navController.navigateUp() }) {
-                Icon(imageVector = Icons.Default.ArrowBack, contentDescription = null)
-            }
-        })
-        Spacer(modifier = Modifier.height(20.dp))
-        Card(
+    Box(modifier = Modifier.fillMaxSize()) {
+        Image(
+            mipmap = R.mipmap.transfer_bg,
+            modifier = Modifier.fillMaxWidth(),
+            contentScale = ContentScale.FillWidth
+        )
+        Column(
             modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 20.dp),
-            shape = RoundedCornerShape(16.dp),
+                .fillMaxSize()
+                .systemBarsPadding()
         ) {
-            Box(
-                Modifier.background(
-                    Brush.horizontalGradient(
-                        colors = listOf(
-                            Color(0xFF799EF9),
-                            Color(0xFF425FF7),
-                        )
-                    )
-                )
+            TopAppBar(backgroundColor = Color.Transparent, title = {
+                HomeTitle(R.string.transfer)
+            }, navigationIcon = {
+                IconButton(onClick = { navController.navigateUp() }) {
+                    Icon(imageVector = Icons.Default.ArrowBack, contentDescription = null)
+                }
+            }, elevation = 0.dp)
+            Spacer(modifier = Modifier.height(20.dp))
+            Card(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 20.dp),
+                shape = RoundedCornerShape(16.dp),
             ) {
-                Column(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 16.dp, vertical = 20.dp)
-                ) {
-                    Row(Modifier.fillMaxWidth()) {
-                        Text(
-                            text = stringResource(id = R.string.receive_account),
-                            color = Color.White, fontWeight = FontWeight.Medium, fontSize = 16.sp
-                        )
-                        Spacer(modifier = Modifier.weight(1f))
-                        Image(
-                            mipmap = R.mipmap.scan_black,
-                            modifier = Modifier.clickable {
-                                barcodeLauncher.launch(
-                                    ScanOptions().setDesiredBarcodeFormats(
-                                        ScanOptions.QR_CODE
-                                    ).setOrientationLocked(false)
-                                )
-                            })
-                    }
-
-                    Spacer(modifier = Modifier.height(16.dp))
-                    TextField(
-                        value = address, onValueChange = {
-                            viewModel.setAddress(it)
-                        }, modifier = Modifier
-                            .fillMaxWidth(), colors = TextFieldDefaults.textFieldColors(
-                            focusedIndicatorColor = Color.Transparent,
-                            unfocusedIndicatorColor = Color.Transparent,
-                            backgroundColor = Color(0x2BF5F5F5)
-                        ), shape = RoundedCornerShape(4.dp),
-                        placeholder = {
+                Box(Modifier.background(Color.White)) {
+                    Column(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 16.dp, vertical = 20.dp)
+                    ) {
+                        Row(Modifier.fillMaxWidth()) {
                             Text(
-                                text = stringResource(id = R.string.receive_account_hint),
-                                color = Color.White.copy(0.7f),
-                                style = TextStyle(textAlign = TextAlign.Center),
-                                modifier = Modifier.fillMaxWidth()
+                                text = stringResource(id = R.string.receive_account),
+                                color = Color(0xFF333333),
+                                fontWeight = FontWeight.Medium,
+                                fontSize = 16.sp
                             )
-                        },
-                        textStyle = TextStyle(textAlign = TextAlign.Center, color = Color.White)
-                    )
+                            Spacer(modifier = Modifier.weight(1f))
+                            Image(
+                                mipmap = R.mipmap.scan_black,
+                                modifier = Modifier.clickable {
+                                    barcodeLauncher.launch(
+                                        ScanOptions().setDesiredBarcodeFormats(
+                                            ScanOptions.QR_CODE
+                                        ).setOrientationLocked(false)
+                                    )
+                                })
+                        }
+
+                        Spacer(modifier = Modifier.height(16.dp))
+                        TextField(
+                            value = address, onValueChange = {
+                                viewModel.setAddress(it)
+                            }, modifier = Modifier
+                                .fillMaxWidth(), colors = TextFieldDefaults.textFieldColors(
+                                focusedIndicatorColor = Color.Transparent,
+                                unfocusedIndicatorColor = Color.Transparent,
+                                backgroundColor = Color(0xFFF5F5F5)
+                            ), shape = RoundedCornerShape(4.dp),
+                            placeholder = {
+                                Text(
+                                    text = stringResource(id = R.string.receive_account_hint),
+                                    color = Color(0xFFB3B3B3),
+                                    style = TextStyle(textAlign = TextAlign.Center),
+                                    modifier = Modifier.fillMaxWidth()
+                                )
+                            },
+                            textStyle = TextStyle(textAlign = TextAlign.Center, color = Color.White)
+                        )
+                    }
                 }
             }
-        }
-        Spacer(modifier = Modifier.weight(1f))
-        Row(
-            Modifier
-                .fillMaxWidth()
-                .padding(bottom = 20.dp)
-                .padding(horizontal = 20.dp), Arrangement.SpaceBetween
-        ) {
-            ImageButton(title = R.string.close, mipmap = R.mipmap.return_btn) {
-                navController.navigateUp()
-            }
-            ImageButton(
-                title = R.string.next,
-                mipmap = R.mipmap.next_btn,
-                textColor = Color.White
+            Spacer(modifier = Modifier.weight(1f))
+            Row(
+                Modifier
+                    .fillMaxWidth()
+                    .padding(bottom = 20.dp)
+                    .padding(horizontal = 20.dp), Arrangement.SpaceBetween
             ) {
-                navController.navigate(Route.SendMoneyInputDetail.route)
+                ImageButton(title = R.string.close, mipmap = R.mipmap.return_btn) {
+                    navController.navigateUp()
+                }
+                ImageButton(
+                    title = R.string.next,
+                    mipmap = R.mipmap.next_btn,
+                    textColor = Color.White
+                ) {
+                    navController.navigate(Route.SendMoneyInputDetail.route)
+                }
             }
         }
     }

@@ -22,10 +22,16 @@ sealed class Route(val route: String) {
     object Wallet : Route("Wallet")
     object SendMoney : Route("sendMoney")
     object SendMoneyInputDetail : Route("sendMoneyInputDetail")
-    object TokenDetail : Route("token/{words}") {
-        fun jump(tokenSymbol: String) = "token/$tokenSymbol"
+    object TokenDetailSimply : Route("tokenSimply/{tokenSymbol}/{address}") {
+        fun jump(tokenSymbol: String, address: String) = "tokenSimply/$tokenSymbol/$address"
+    }
+
+    object TokenDetail : Route("token/{tokenSymbol}/{address}") {
+        fun jump(tokenSymbol: String, address: String) = "token/$tokenSymbol/$address"
     }
 
     object PermissionIntro : Route("permissionIntro")
     object NoInternet : Route("noInternet")
+
+    object Swap : Route("swap")
 }

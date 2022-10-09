@@ -1,6 +1,7 @@
 package com.ti4n.freechat.wallet
 
 import android.content.Context
+import android.util.Log
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -8,6 +9,7 @@ import com.ti4n.freechat.di.dataStore
 import com.ti4n.freechat.erc20.ERC20Token
 import com.ti4n.freechat.erc20.ERC20Tokens
 import com.ti4n.freechat.util.EthUtil
+import com.ti4n.freechat.util.address
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
@@ -29,9 +31,16 @@ class SendMoneyViewModel @Inject constructor(
     val toAddress = MutableStateFlow("")
     val amount = MutableStateFlow("")
     val selectedToken = MutableStateFlow(tokens.result.first())
+    val gas = MutableStateFlow("")
 
     fun setAddress(address: String) {
         toAddress.value = address
+        viewModelScope.launch(Dispatchers.IO) {
+            EthUtil.gasPrice("0x43b083475fd9bc41df86263af2e2badd688697e1", "0x43b083475fd9bc41df86263af2e2badd688697e1")
+                .collectLatest {
+                    Log.e("GAS", "setAddress: $it", )
+                }
+        }
     }
 
     fun setAmount(_amount: String) {
@@ -51,6 +60,7 @@ class SendMoneyViewModel @Inject constructor(
                 MnemonicWords(context.dataStore.data.map { it[stringPreferencesKey("account")] }
                     .filter { !it.isNullOrEmpty() }.first() ?: "")
             ).collectLatest {
+
             }
         }
     }

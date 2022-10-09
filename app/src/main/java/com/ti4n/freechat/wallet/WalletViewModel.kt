@@ -11,6 +11,7 @@ import com.ti4n.freechat.di.PreferencesDataStore
 import com.ti4n.freechat.di.dataStore
 import com.ti4n.freechat.erc20.ERC20Token
 import com.ti4n.freechat.erc20.ERC20Tokens
+import com.ti4n.freechat.erc20.ethereum
 import com.ti4n.freechat.util.EthUtil
 import com.ti4n.freechat.util.address
 import com.ti4n.freechat.util.toWei
@@ -41,10 +42,7 @@ class WalletViewModel @Inject constructor(
 
     val list = MutableStateFlow(erC20Token.result.map { it to 0.0 })
     val address = MutableStateFlow("")
-    val account: Flow<String> =
-        context.dataStore.data.map {
-            it[stringPreferencesKey("account")] ?: ""
-        }
+    val account = context.dataStore.data.map { it[stringPreferencesKey("account")] ?: "" }
 
     init {
         viewModelScope.launch {
@@ -52,6 +50,7 @@ class WalletViewModel @Inject constructor(
                 Log.e("account", ": $it")
                 address.value = MnemonicWords(it).address().hex
                 getBalance(MnemonicWords(it))
+                getEthBalance(address.value)
             }
         }
     }
@@ -69,6 +68,19 @@ class WalletViewModel @Inject constructor(
                 } catch (e: Exception) {
                     e.printStackTrace()
                 }
+            }
+        }
+    }
+
+    suspend fun getEthBalance(address: String) {
+        withContext(Dispatchers.IO) {
+            try {
+                EthUtil.balanceOf(address).collectLatest {
+                    val wei = it.balance.toWei(18)
+                    list.value = list.value + (ethereum to wei)
+                }
+            } catch (e: Exception) {
+                e.printStackTrace()
             }
         }
     }

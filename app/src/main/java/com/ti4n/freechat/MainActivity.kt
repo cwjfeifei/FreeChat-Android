@@ -18,6 +18,7 @@ import androidx.compose.ui.unit.dp
 import androidx.core.view.WindowCompat
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.viewModelScope
 import com.google.accompanist.navigation.animation.AnimatedNavHost
 import com.google.accompanist.navigation.animation.rememberAnimatedNavController
@@ -27,6 +28,7 @@ import com.google.accompanist.navigation.material.bottomSheet
 import com.google.accompanist.navigation.material.rememberBottomSheetNavigator
 import com.ti4n.freechat.bottomsheet.ChooseImageSource
 import com.ti4n.freechat.bottomsheet.VideoVoiceChat
+import com.ti4n.freechat.erc20.ERC20Tokens
 import com.ti4n.freechat.home.HomeView
 import com.ti4n.freechat.login.*
 import com.ti4n.freechat.network.FreeChatApiService
@@ -39,6 +41,7 @@ import com.ti4n.freechat.util.*
 import com.ti4n.freechat.widget.BigImageView
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.reactive.collect
 import org.web3j.contracts.eip20.generated.ERC20
@@ -51,7 +54,7 @@ import javax.inject.Inject
 import kotlin.math.pow
 
 
-@OptIn(ExperimentalAnimationApi::class)
+@OptIn(ExperimentalAnimationApi::class, ExperimentalMaterialNavigationApi::class)
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
