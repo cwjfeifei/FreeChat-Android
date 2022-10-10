@@ -4,7 +4,14 @@
     <string name="welcome">欢迎使用FreeChat\n享受自由的世界</string>
     <string name="login">登录</string>
     <string name="create_account">创建FreeChat账户</string>
-    <string name="agree_app_terms">我已阅读并同意《FreeChat用户协议》、《隐私政策》、《设备权限使用清单》、《防止滥用政策》和《儿童保护政策》等协议。</string>
+    <string name="agree_app_terms">我已阅读并同意</string>
+    <string name="user_term">《FreeChat用户协议》</string>
+    <string name="privacy">《隐私政策》</string>
+    <string name="permission_list">《设备权限使用清单》</string>
+    <string name="avoid_abuse">《防止滥用政策》</string>
+    <string name="child_protect">《儿童保护政策》</string>
+    <string name="etc_term">等协议。</string>
+    <string name="and">和</string>
     <string name="agree_app_terms_tip">请阅读并同意相关协议才能进行注册或登录。</string>
     <string name="input_mnemonic">请输入您的助记词\n登录您的FreeChat</string>
     <string name="back">返回</string>
@@ -29,6 +36,7 @@
     <string name="complete_setting">完成设置</string>
 
     <string name="chat">聊天</string>
+    <string name="contact">通讯录</string>
     <string name="square">广场</string>
     <string name="discover">发现</string>
     <string name="me">我</string>
@@ -43,6 +51,11 @@
     <string name="amount">数量</string>
     <string name="input_amount_hint">请输入转账数量</string>
     <string name="all">全部</string>
+    <string name="receive_money">收款</string>
+    <string name="swap">闪兑</string>
+    <string name="transaction_history">交易记录</string>
+    <string name="all_money">资产</string>
+    <string name="detail">详情</string>
 
     <string name="permission_intro">隐私权限说明</string>
     <string name="permission_intro_detail">Freechat非常尊重用户隐私及用户安全，当您在使用Freechat的广场、社交、添加好友、存储、摄像/照相、小程序、应用下载、语音、视频相关功能时，Freechat会向您索取以下权限，以保证功能的正常使用。</string>

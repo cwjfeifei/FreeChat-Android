@@ -2,13 +2,13 @@ package com.ti4n.freechat.model.response.swap
 
 data class Quote(
     val estimatedGas: Int,
-    val fromToken: FromToken,
+    val fromToken: Token,
     val fromTokenAmount: String,
     val protocols: List<Protocol>,
-    val toToken: ToToken,
+    val toToken: Token,
     val toTokenAmount: String
 ) {
-    data class FromToken(
+    data class Token(
         val address: String,
         val decimals: Int,
         val logoURI: String,
@@ -21,13 +21,5 @@ data class Quote(
         val name: String,
         val part: Int,
         val toTokenAddress: String
-    )
-
-    data class ToToken(
-        val address: String,
-        val decimals: Int,
-        val logoURI: String,
-        val name: String,
-        val symbol: String
     )
 }

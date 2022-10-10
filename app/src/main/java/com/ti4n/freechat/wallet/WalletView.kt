@@ -1,6 +1,7 @@
 package com.ti4n.freechat.wallet
 
 import androidx.annotation.DrawableRes
+import androidx.annotation.StringRes
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -45,6 +46,10 @@ import com.ti4n.freechat.erc20.ERC20Token
 import com.ti4n.freechat.widget.HomeTitle
 import com.ti4n.freechat.widget.Image
 import androidx.compose.runtime.*
+import androidx.compose.ui.platform.ClipboardManager
+import androidx.compose.ui.platform.LocalClipboardManager
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.AnnotatedString
 import com.ti4n.freechat.Route
 import com.ti4n.freechat.util.address
 import org.kethereum.bip39.model.MnemonicWords
@@ -79,7 +84,7 @@ fun WalletView(navController: NavController, viewModel: WalletViewModel = hiltVi
             swapClick = { navController.navigate(Route.Swap.route) })
         Spacer(modifier = Modifier.height(24.dp))
         Text(
-            text = "资产",
+            text = stringResource(id = R.string.all_money),
             color = Color(0xFF1A1A1A),
             fontSize = 14.sp,
             modifier = Modifier.padding(start = 16.dp)
@@ -108,6 +113,7 @@ fun WalletFunction(
     receiveClick: () -> Unit = {},
     swapClick: () -> Unit = {}
 ) {
+    val clipboardManager = LocalClipboardManager.current
     Box(
         contentAlignment = Alignment.Center,
         modifier = Modifier
@@ -127,7 +133,9 @@ fun WalletFunction(
                     fontSize = 12.sp
                 )
                 Spacer(modifier = Modifier.width(4.dp))
-                Image(mipmap = R.mipmap.copy)
+                Image(mipmap = R.mipmap.copy, Modifier.clickable {
+                    clipboardManager.setText(AnnotatedString(address))
+                })
             }
             Spacer(modifier = Modifier.height(20.dp))
             Row(
@@ -157,10 +165,10 @@ fun WalletFunction(
                     .padding(20.dp),
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
-                ItemFunction(image = R.mipmap.send, text = "转账", click = sendClick)
-                ItemFunction(image = R.mipmap.receive, text = "收款")
-                ItemFunction(image = R.mipmap.swap, text = "闪兑", click = swapClick)
-                ItemFunction(image = R.mipmap.history, text = "交易记录")
+                ItemFunction(image = R.mipmap.send, text = R.string.transfer, click = sendClick)
+                ItemFunction(image = R.mipmap.receive, text = R.string.receive_money)
+                ItemFunction(image = R.mipmap.swap, text = R.string.swap, click = swapClick)
+                ItemFunction(image = R.mipmap.history, text = R.string.transaction_history)
             }
         }
     }
@@ -212,7 +220,7 @@ fun ItemCoin(token: ERC20Token, count: Double, click: () -> Unit) {
 @Composable
 fun ItemFunction(
     @DrawableRes image: Int,
-    text: String,
+    @StringRes text: Int,
     backgroundColor: Color = Color(0x1AFFFFFF),
     textColor: Color = Color.White,
     click: () -> Unit = {}
@@ -229,7 +237,7 @@ fun ItemFunction(
         }
         Spacer(modifier = Modifier.height(8.dp))
         Text(
-            text = text,
+            text = stringResource(id = text),
             color = textColor,
             fontSize = 12.sp
         )

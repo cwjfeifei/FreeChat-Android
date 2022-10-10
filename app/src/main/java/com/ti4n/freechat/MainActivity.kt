@@ -77,7 +77,7 @@ class MainActivity : AppCompatActivity() {
                     ) {
                         AnimatedNavHost(
                             navController = navController,
-                            startDestination = Route.Home.route
+                            startDestination = Route.MainLogin.route
                         ) {
                             aniComposable(route = Route.Splash.route) {
                                 SplashView(navController)

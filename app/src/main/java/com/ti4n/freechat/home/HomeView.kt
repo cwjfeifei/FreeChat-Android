@@ -1,5 +1,6 @@
 package com.ti4n.freechat.home
 
+import android.util.Log
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.slideInVertically
@@ -14,6 +15,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavController
+import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import com.google.accompanist.navigation.animation.AnimatedNavHost
 import com.google.accompanist.navigation.animation.rememberAnimatedNavController
@@ -46,7 +49,7 @@ fun HomeView() {
     }
     Scaffold(bottomBar = {
         AnimatedVisibility(
-            visible = currentRoute == HomeTab.Chat.route || currentRoute == HomeTab.Square.route || currentRoute == HomeTab.Discover.route || currentRoute == HomeTab.Me.route,
+            visible = currentRoute == HomeTab.Chat.route || currentRoute == HomeTab.Contact.route || currentRoute == HomeTab.Square.route || currentRoute == HomeTab.Discover.route || currentRoute == HomeTab.Me.route,
             enter = slideInVertically {
                 it
             },
@@ -73,6 +76,7 @@ fun HomeView() {
                             Image(
                                 mipmap = when (it) {
                                     HomeTab.Chat -> if (currentRoute == it.route) R.mipmap.chat_sel else R.mipmap.chat_nor
+                                    HomeTab.Contact -> if (currentRoute == it.route) R.mipmap.address_sel else R.mipmap.address_nor
                                     HomeTab.Square -> if (currentRoute == it.route) R.mipmap.square_sel else R.mipmap.square_nor
                                     HomeTab.Discover -> if (currentRoute == it.route) R.mipmap.find_sel else R.mipmap.find_nor
                                     HomeTab.Me -> if (currentRoute == it.route) R.mipmap.mine_sel else R.mipmap.mine_nor
@@ -83,12 +87,13 @@ fun HomeView() {
                             Text(
                                 text = when (it) {
                                     HomeTab.Chat -> stringResource(id = R.string.chat)
+                                    HomeTab.Contact -> stringResource(id = R.string.contact)
                                     HomeTab.Square -> stringResource(id = R.string.square)
                                     HomeTab.Discover -> stringResource(id = R.string.discover)
                                     HomeTab.Me -> stringResource(id = R.string.me)
                                 },
                                 fontSize = 10.sp,
-                                color = Color(if (currentRoute == it.route) 0xFF7359F5 else 0xFF1A1A1A)
+                                color = Color(if (currentRoute == it.route) 0xFF4B6AF7 else 0xFF1A1A1A)
                             )
                         },
                         alwaysShowLabel = true
@@ -105,6 +110,11 @@ fun HomeView() {
                 HomeTab.Chat.route
             ) { _ ->
                 ChatListView(Modifier.padding(it))
+            }
+            noAniComposable(
+                HomeTab.Contact.route
+            ) { _ ->
+                Text(text = "通讯录", Modifier.padding(it))
             }
             noAniComposable(
                 HomeTab.Square.route
@@ -144,7 +154,7 @@ fun HomeView() {
                     hiltViewModel()
                 )
             }
-            aniComposable(Route.Swap.route) { navBackEntry ->
+            aniComposable(Route.Swap.route) { _ ->
                 SwapView(
                     navController
                 )
@@ -154,5 +164,5 @@ fun HomeView() {
 }
 
 enum class HomeTab(val route: String = "") {
-    Chat("chat"), Square("square"), Discover("discover"), Me("me")
+    Chat("chat"), Contact("contact"), Square("square"), Discover("discover"), Me("me")
 }

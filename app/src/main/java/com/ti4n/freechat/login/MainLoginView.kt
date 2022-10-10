@@ -3,6 +3,7 @@ package com.ti4n.freechat.login
 import androidx.annotation.StringRes
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.text.ClickableText
 import androidx.compose.material.Checkbox
 import androidx.compose.material.Snackbar
 import androidx.compose.material.Text
@@ -10,9 +11,13 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
@@ -34,6 +39,7 @@ fun MainLoginView(navController: NavController) {
     var showTip by remember {
         mutableStateOf(false)
     }
+    val uriHandler = LocalUriHandler.current
     LoginCommonView(R.string.welcome) {
         Spacer(modifier = Modifier.height(20.dp))
         ImageButton(R.string.login, R.mipmap.login_btn, textColor = Color.White) {
@@ -57,6 +63,63 @@ fun MainLoginView(navController: NavController) {
                 isAgree = !isAgree
                 if (isAgree) {
                     showTip = false
+                }
+            })
+            val text = buildAnnotatedString {
+                append(stringResource(id = R.string.agree_app_terms))
+
+                pushStringAnnotation(
+                    "user term",
+                    "https://docs.freechat.world/yong-hu-yu-fa-lv-tiao-kuan/freechat-yong-hu-xie-yi"
+                )
+                withStyle(SpanStyle(color = Color(0xFF4B6AF7))) {
+                    append(stringResource(id = R.string.user_term))
+                }
+                pop()
+                append("、")
+                pushStringAnnotation(
+                    "privacy",
+                    "https://docs.freechat.world/yong-hu-yu-fa-lv-tiao-kuan/yin-si-zheng-ce"
+                )
+                withStyle(SpanStyle(color = Color(0xFF4B6AF7))) {
+                    append(stringResource(id = R.string.privacy))
+                }
+                pop()
+                append("、")
+                pushStringAnnotation(
+                    "permission list",
+                    "https://docs.freechat.world/yong-hu-yu-fa-lv-tiao-kuan/she-bei-quan-xian-shi-yong-qing-dan"
+                )
+                withStyle(SpanStyle(color = Color(0xFF4B6AF7))) {
+                    append(stringResource(id = R.string.permission_list))
+                }
+                pop()
+                append("、")
+                pushStringAnnotation(
+                    "avoid abuse",
+                    "https://docs.freechat.world/yong-hu-yu-fa-lv-tiao-kuan/fang-zhi-lan-yong-zheng-ce"
+                )
+                withStyle(SpanStyle(color = Color(0xFF4B6AF7))) {
+                    append(stringResource(id = R.string.avoid_abuse))
+                }
+                pop()
+
+                append(stringResource(id = R.string.and))
+
+                pushStringAnnotation(
+                    "child protect",
+                    "https://docs.freechat.world/yong-hu-yu-fa-lv-tiao-kuan/er-tong-bao-hu-xie-yi"
+                )
+                withStyle(SpanStyle(color = Color(0xFF4B6AF7))) {
+                    append(stringResource(id = R.string.child_protect))
+                }
+                pop()
+
+                append(stringResource(id = R.string.etc_term))
+            }
+            ClickableText(text = text, onClick = {
+                text.getStringAnnotations(it, it).firstOrNull()?.let {
+                    uriHandler.openUri(it.item)
                 }
             })
             Text(

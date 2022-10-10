@@ -2,7 +2,7 @@ package com.ti4n.freechat.swap
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.ti4n.freechat.model.response.swap.SupportToken
+import com.ti4n.freechat.erc20.ERC20Token
 import com.ti4n.freechat.network.SwapApiService
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -12,15 +12,15 @@ import javax.inject.Inject
 @HiltViewModel
 class SwapViewModel @Inject constructor(val swapApiService: SwapApiService) : ViewModel() {
 
-    val supportTokens = MutableStateFlow(emptyList<SupportToken>())
-    val fromToken = MutableStateFlow<SupportToken?>(null)
-    val toToken = MutableStateFlow<SupportToken?>(null)
+    val supportTokens = MutableStateFlow(emptyList<ERC20Token>())
+    val fromToken = MutableStateFlow<ERC20Token?>(null)
+    val toToken = MutableStateFlow<ERC20Token?>(null)
     val amount = MutableStateFlow("")
 
     init {
         viewModelScope.launch {
             try {
-                val tokens = swapApiService.getSupportTokens().tokens.values.toList()
+                val tokens = swapApiService.getSupportTokens().result
                 supportTokens.value = tokens
                 fromToken.value = tokens.firstOrNull()
                 toToken.value = tokens[1]
@@ -30,11 +30,11 @@ class SwapViewModel @Inject constructor(val swapApiService: SwapApiService) : Vi
         }
     }
 
-    fun setFromToken(from: SupportToken) {
+    fun setFromToken(from: ERC20Token) {
         fromToken.value = from
     }
 
-    fun setToToken(to: SupportToken) {
+    fun setToToken(to: ERC20Token) {
         toToken.value = to
     }
 
@@ -47,8 +47,8 @@ class SwapViewModel @Inject constructor(val swapApiService: SwapApiService) : Vi
             viewModelScope.launch {
                 try {
                     swapApiService.quote(
-                        fromToken.value!!.address,
-                        toToken.value!!.address,
+                        fromToken.value!!.Address,
+                        toToken.value!!.Address,
                         amount.value
                     )
                 } catch (e: Exception) {
@@ -63,8 +63,8 @@ class SwapViewModel @Inject constructor(val swapApiService: SwapApiService) : Vi
             viewModelScope.launch {
                 try {
                     swapApiService.swap(
-                        fromToken.value!!.address,
-                        toToken.value!!.address,
+                        fromToken.value!!.Address,
+                        toToken.value!!.Address,
                         amount.value,
                         "",
                         0.5

@@ -75,19 +75,19 @@ fun TokenDetailSimplyView(
         Row(horizontalArrangement = Arrangement.spacedBy(48.dp)) {
             ItemFunction(
                 image = R.mipmap.zz,
-                text = "转账",
+                text = R.string.transfer,
                 textColor = Color(0xFF1A1A1A),
                 backgroundColor = Color(0xFFE6E6E6)
             )
             ItemFunction(
                 image = R.mipmap.sk,
-                text = "收款",
+                text = R.string.receive_money,
                 textColor = Color(0xFF1A1A1A),
                 backgroundColor = Color(0xFFE6E6E6)
             )
             ItemFunction(
                 image = R.mipmap.xq,
-                text = "详情",
+                text = R.string.detail,
                 textColor = Color(0xFF1A1A1A),
                 backgroundColor = Color(0xFFE6E6E6)
             ) {
