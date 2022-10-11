@@ -1,12 +1,19 @@
 package com.ti4n.freechat.util
 
+import android.content.Context
 import android.util.Log
+import androidx.datastore.preferences.core.edit
+import androidx.datastore.preferences.core.stringPreferencesKey
+import com.ti4n.freechat.di.dataStore
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onCompletion
 import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.produceIn
 import kotlinx.coroutines.reactive.asFlow
 import org.kethereum.DEFAULT_ETHEREUM_BIP44_PATH
 import org.kethereum.bip32.toKey
@@ -34,6 +41,7 @@ import org.web3j.protocol.http.HttpService
 import org.web3j.tx.gas.DefaultGasProvider
 import org.web3j.utils.Convert
 import org.web3j.utils.Numeric
+import java.io.File
 import java.math.BigInteger
 import kotlin.math.pow
 
@@ -55,21 +63,46 @@ object EthUtil {
             words
         )
 
-    fun transfer(to: String, amount: String, tokenAddress: String, accountWords: MnemonicWords) =
+    suspend fun createWalletFile(context: Context, password: String, mnemonicWords: String) {
+        val file = WalletUtils.generateWalletFile(
+            password,
+            ECKeyPair.create(MnemonicWords(mnemonicWords).privateKey().key),
+            context.cacheDir,
+            false
+        )
+        context.dataStore.edit {
+            it[stringPreferencesKey("account")] = mnemonicWords
+            it[stringPreferencesKey("file")] = file
+        }
+    }
+
+    fun transferERC20(
+        context: Context,
+        to: String,
+        amount: String,
+        tokenAddress: String,
+        decimal: Int,
+        password: String = "",
+        fileName: String = ""
+    ) =
         ERC20.load(
             tokenAddress,
             web3,
-            Credentials.create(accountWords.privateKey().key.toString()),
+            WalletUtils.loadCredentials(password, File(context.cacheDir, fileName)),
             DefaultGasProvider()
-        ).transfer(to, BigInteger(amount)).flowable().asFlow()
+        ).transfer(to, BigInteger.valueOf((amount.toDouble() * (10.0.pow(decimal))).toLong()))
+            .flowable()
+            .asFlow().flowOn(Dispatchers.IO)
 
     fun transfer(
+        context: Context,
         to: String = "0xf3a988124c1985ac2c61624ff686d06e16818ea4",
         amount: String = "0.001",
-        accountWords: MnemonicWords = MnemonicWords("crumble forest crop trick rescue light patient talk flock balcony labor ball")
+        password: String = "",
+        fileName: String = ""
     ): Flow<EthGetTransactionReceipt> {
-        val credentials = Credentials.create(accountWords.privateKey().key.toString(16))
-        Log.e("address", "transfer: ${credentials.address}")
+        val credentials =
+            WalletUtils.loadCredentials(password, File(context.cacheDir, fileName))
         val value = Convert.toWei(amount, Convert.Unit.ETHER).toBigInteger()
         val ethGetTransactionCount = web3
             .ethGetTransactionCount(credentials.address, DefaultBlockParameterName.LATEST)
@@ -87,7 +120,7 @@ object EthUtil {
             web3.ethSendRawTransaction(hexValue).flowable().asFlow()
         }.flatMapLatest {
             web3.ethGetTransactionReceipt(it.transactionHash).flowable().asFlow()
-        }
+        }.flowOn(Dispatchers.IO)
     }
 
     fun balanceOf(tokenAddress: String, accountWords: MnemonicWords) =
@@ -103,7 +136,7 @@ object EthUtil {
         DefaultBlockParameterName.LATEST
     ).flowable().asFlow().onEach {
         Log.e("balance", "balanceOf: ${it.balance}")
-    }
+    }.flowOn(Dispatchers.IO)
 
     fun gasPrice(from: String, to: String): Flow<Pair<String, String>?> =
         web3.ethGasPrice().flowable().asFlow().combine(
@@ -120,7 +153,7 @@ object EthUtil {
                     (b.amountUsed.toDouble() * a.gasPrice.toDouble()).toWei(18)
                 }"
             } else null
-        }
+        }.flowOn(Dispatchers.IO)
 }
 
 fun MnemonicWords.toKeyPair(walletIndex: Int = 0) =

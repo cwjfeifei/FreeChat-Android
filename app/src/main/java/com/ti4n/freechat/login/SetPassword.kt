@@ -143,15 +143,18 @@ fun SetPasswordView(navController: NavController, words: String) {
                 textColor = Color.White
             ) {
                 if (password1 == password2) {
-                    val file = File(context.cacheDir, "${MnemonicWords(words).address()}")
                     scope.launch {
+                        val file = WalletUtils.generateBip39WalletFromMnemonic(
+                            password1,
+                            words,
+                            context.cacheDir
+                        )
                         context.dataStore.edit {
                             it[stringPreferencesKey("account")] = words
+                            it[stringPreferencesKey("file")] = file.filename
                         }
+                        navController.navigate(Route.Home.route)
                     }
-                    file.mkdir()
-                    WalletUtils.generateBip39WalletFromMnemonic(password1, words, file)
-                    navController.navigate(Route.Home.route)
                 }
             }
         }

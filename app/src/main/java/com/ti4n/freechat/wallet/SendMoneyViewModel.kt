@@ -36,9 +36,12 @@ class SendMoneyViewModel @Inject constructor(
     fun setAddress(address: String) {
         toAddress.value = address
         viewModelScope.launch(Dispatchers.IO) {
-            EthUtil.gasPrice("0x43b083475fd9bc41df86263af2e2badd688697e1", "0x43b083475fd9bc41df86263af2e2badd688697e1")
+            EthUtil.gasPrice(
+                "0x43b083475fd9bc41df86263af2e2badd688697e1",
+                "0x43b083475fd9bc41df86263af2e2badd688697e1"
+            )
                 .collectLatest {
-                    Log.e("GAS", "setAddress: $it", )
+                    Log.e("GAS", "setAddress: $it")
                 }
         }
     }
@@ -53,12 +56,15 @@ class SendMoneyViewModel @Inject constructor(
 
     fun transfer() {
         viewModelScope.launch(Dispatchers.IO) {
-            EthUtil.transfer(
+            EthUtil.transferERC20(
+                context,
                 toAddress.value,
                 amount.value,
                 selectedToken.value.contractAddress,
-                MnemonicWords(context.dataStore.data.map { it[stringPreferencesKey("account")] }
-                    .filter { !it.isNullOrEmpty() }.first() ?: "")
+                selectedToken.value.Decimals,
+                "",
+                context.dataStore.data.map { it[stringPreferencesKey("file")] }
+                    .filter { !it.isNullOrEmpty() }.first() ?: ""
             ).collectLatest {
 
             }

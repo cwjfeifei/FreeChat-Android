@@ -16,6 +16,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.core.view.WindowCompat
+import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.lifecycleScope
@@ -28,6 +29,7 @@ import com.google.accompanist.navigation.material.bottomSheet
 import com.google.accompanist.navigation.material.rememberBottomSheetNavigator
 import com.ti4n.freechat.bottomsheet.ChooseImageSource
 import com.ti4n.freechat.bottomsheet.VideoVoiceChat
+import com.ti4n.freechat.di.dataStore
 import com.ti4n.freechat.erc20.ERC20Tokens
 import com.ti4n.freechat.home.HomeView
 import com.ti4n.freechat.login.*
@@ -42,6 +44,8 @@ import com.ti4n.freechat.widget.BigImageView
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.filterNotNull
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.reactive.collect
 import org.web3j.contracts.eip20.generated.ERC20
@@ -61,6 +65,7 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         WindowCompat.setDecorFitsSystemWindows(window, false)
         IM.init(this)
+
         setContent {
             FreeChatTheme {
                 // A surface container using the 'background' color from the theme
@@ -77,7 +82,7 @@ class MainActivity : AppCompatActivity() {
                     ) {
                         AnimatedNavHost(
                             navController = navController,
-                            startDestination = Route.MainLogin.route
+                            startDestination = Route.Home.route
                         ) {
                             aniComposable(route = Route.Splash.route) {
                                 SplashView(navController)
