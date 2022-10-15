@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.Icon
@@ -22,6 +23,7 @@ import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
@@ -31,6 +33,7 @@ import androidx.navigation.NavController
 import androidx.paging.PagingData
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.items
+import coil.compose.AsyncImage
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.ti4n.freechat.R
 import com.ti4n.freechat.Route
@@ -45,18 +48,18 @@ import java.util.Date
 @Composable
 fun TokenDetailSimplyView(
     navController: NavController,
-    viewModel: TokenTransactionViewModel = hiltViewModel()
+    viewModel: WalletViewModel = hiltViewModel()
 ) {
 
-    val token = viewModel.erc20Token
-    val transactions = viewModel.pager.collectAsLazyPagingItems()
+    val token by viewModel.selectedToken.collectAsState()
+    val transactions = viewModel.createPager().collectAsLazyPagingItems()
     val systemUiController = rememberSystemUiController()
+    val address by viewModel.address.collectAsState()
     SideEffect {
         systemUiController.setStatusBarColor(
             color = Color(0xFFF0F0F0)
         )
         systemUiController.setNavigationBarColor(Color.White)
-        Log.e("TokenDetailSimplyView", "TokenDetailSimplyView: $token")
     }
     Column(
         modifier = Modifier
@@ -71,6 +74,16 @@ fun TokenDetailSimplyView(
                 Icon(imageVector = Icons.Default.ArrowBack, contentDescription = null)
             }
         })
+        Spacer(modifier = Modifier.height(40.dp))
+        AsyncImage(
+            model = token?.LogoURI,
+            contentDescription = null,
+            modifier = Modifier
+                .size(60.dp)
+                .align(CenterHorizontally)
+        )
+        Spacer(modifier = Modifier.height(12.dp))
+
 
         Row(horizontalArrangement = Arrangement.spacedBy(48.dp)) {
             ItemFunction(
@@ -93,8 +106,8 @@ fun TokenDetailSimplyView(
             ) {
                 navController.navigate(
                     Route.TokenDetail.jump(
-                        viewModel.erc20Token?.symbol ?: "",
-                        viewModel.address
+                        token?.symbol ?: "",
+                        address
                     )
                 )
             }
@@ -108,8 +121,8 @@ fun TokenDetailSimplyView(
                     it?.let {
                         ItemTransaction(
                             transaction = it,
-                            address = viewModel.address,
-                            viewModel.erc20Token?.Decimals ?: 18
+                            address = address,
+                            token?.Decimals ?: 18
                         )
                     }
                 }

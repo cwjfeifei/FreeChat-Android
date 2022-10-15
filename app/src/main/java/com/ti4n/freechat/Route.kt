@@ -21,6 +21,7 @@ sealed class Route(val route: String) {
     object VideoVoiceChatBottom : Route("videoVoiceChat")
     object Wallet : Route("Wallet")
     object SendMoney : Route("sendMoney")
+    object ReceiveMoney : Route("receiveMoney")
     object SendMoneyInputDetail : Route("sendMoneyInputDetail")
     object TokenDetailSimply : Route("tokenSimply/{tokenSymbol}/{address}") {
         fun jump(tokenSymbol: String, address: String) = "tokenSimply/$tokenSymbol/$address"
@@ -34,4 +35,6 @@ sealed class Route(val route: String) {
     object NoInternet : Route("noInternet")
 
     object Swap : Route("swap")
+
+    object ConfirmTransaction : Route("ConfirmTransaction")
 }

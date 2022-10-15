@@ -41,39 +41,23 @@ object AppModule {
 
     @Provides
     fun provideFreeChatApi(okHttpClient: OkHttpClient): FreeChatApiService {
-        return Retrofit.Builder().baseUrl(freeChatUrl)
+        return Retrofit.Builder().baseUrl(freeChatUrl).client(okHttpClient)
             .addConverterFactory(GsonConverterFactory.create()).build().create()
     }
 
     @Provides
     fun provideEthScanApi(okHttpClient: OkHttpClient): EthScanApiService {
-        return Retrofit.Builder().baseUrl(ethScanUrl)
+        return Retrofit.Builder().baseUrl(ethScanUrl).client(okHttpClient)
             .addConverterFactory(GsonConverterFactory.create()).build().create()
     }
 
     @Provides
     fun provideSwapApi(okHttpClient: OkHttpClient): SwapApiService {
-        return Retrofit.Builder().baseUrl(swapBaseUrl)
+        return Retrofit.Builder().baseUrl(swapBaseUrl).client(okHttpClient)
             .addConverterFactory(GsonConverterFactory.create()).build().create()
     }
 
 //    @Provides
 //    fun provideAppDb(@ApplicationContext context: Context) =
 //        Room.databaseBuilder(context, AppDataBase::class.java, "app.db").build()
-
-    @Provides
-    fun provideErc20Tokens(@ApplicationContext context: Context): ERC20Tokens {
-        try {
-            val `is` = context.assets.open("TokenListInfos.json")
-            val size: Int = `is`.available()
-            val buffer = ByteArray(size)
-            `is`.read(buffer)
-            `is`.close()
-            val jsonString = String(buffer, Charsets.UTF_8)
-            return Gson().fromJson(jsonString, ERC20Tokens::class.java)
-        } catch (e: IOException) {
-            e.printStackTrace()
-            return ERC20Tokens(emptyList())
-        }
-    }
 }

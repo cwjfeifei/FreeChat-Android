@@ -75,4 +75,24 @@
     <string name="use_vpn_to_access">您可以使用Freechat加密网络或者其他网络加速工具来保证Freechat的正常使用。</string>
     <string name="re_test">重新检测</string>
     <string name="use_vpn">使用加密网络</string>
+
+    <string name="confirm_transaction">确认交易</string>
+    <string name="send_address">转出账户</string>
+    <string name="receive_address">接收账户</string>
+    <string name="consume_gas">消耗燃料</string>
+    <string name="max_gas">最高收费: %s</string>
+    <string name="total_consume">总额</string>
+    <string name="amount_gas">金额+燃料费</string>
+    <string name="max_consume">最大金额: </string>
+    <string name="confirm">确认</string>
+
+    <string name="look_in_etherscan">Etherscan查看</string>
+
+    <string name="finish_transaction">完成交易</string>
+    <string name="watch_detail">查看详情</string>
+    <string name="transaction_boardcasted">交易已广播</string>
+
+    <string name="scan_qrcode_to_send_me">扫描二维码向我付款</string>
+    <string name="save_qrcode">保存二维码</string>
+    <string name="share">分享</string>
 </resources>

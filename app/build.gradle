@@ -87,7 +87,7 @@ dependencies {
     kapt 'com.google.dagger:hilt-compiler:2.44'
     implementation 'androidx.hilt:hilt-navigation-compose:1.0.0'
 
-    implementation('io.coil-kt:coil-compose:2.2.1')
+    implementation('io.coil-kt:coil-compose:2.2.2')
 
     implementation 'io.openim:android-sdk:2.2.0@aar'
     implementation 'io.openim:core-sdk:2.2.0@aar'
@@ -96,22 +96,25 @@ dependencies {
     implementation 'com.squareup.retrofit2:converter-gson:2.9.0'
     implementation("com.squareup.okhttp3:logging-interceptor:4.10.0")
 
-    implementation('org.web3j:core:5.0.0') {
-        exclude group: 'org.bouncycastle', module: 'bcprov-jdk15on'
-    }
-    implementation('org.web3j:abi:5.0.0') {
-        exclude group: 'org.bouncycastle', module: 'bcprov-jdk15on'
-    }
-    implementation('org.web3j:contracts:5.0.0') {
-        exclude group: 'org.bouncycastle', module: 'bcprov-jdk15on'
-    }
+    implementation('org.web3j:core:5.0.0')
+    implementation('org.web3j:abi:5.0.0')
+    implementation('org.web3j:contracts:5.0.0')
 
     implementation "com.github.komputing.kethereum:bip32:$kethereum_version"
     implementation "com.github.komputing.kethereum:bip39:$kethereum_version"
     implementation "com.github.komputing.kethereum:bip39_wordlist_en:$kethereum_version"
     implementation "com.github.komputing.kethereum:model:$kethereum_version"
     implementation "com.github.komputing.kethereum:crypto:$kethereum_version"
-    implementation "com.github.komputing.kethereum:crypto_impl_bouncycastle:$kethereum_version"
+    implementation "com.github.komputing.kethereum:wallet:$kethereum_version"
+    implementation "com.github.komputing.kethereum:rpc:$kethereum_version"
+    implementation "com.github.komputing.kethereum:rpc_min3:$kethereum_version"
+    implementation "com.github.komputing.kethereum:erc20:$kethereum_version"
+    implementation "com.github.komputing.kethereum:extensions_kotlin:$kethereum_version"
+    implementation "com.github.komputing.kethereum:extensions_transactions:$kethereum_version"
+    implementation "com.github.komputing.kethereum:flows:$kethereum_version"
+    implementation("com.github.komputing.kethereum:crypto_impl_bouncycastle:$kethereum_version") {
+        exclude group: 'org.bouncycastle', module: 'bcprov-jdk15to18'
+    }
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.4")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-rx2:1.6.4")
 

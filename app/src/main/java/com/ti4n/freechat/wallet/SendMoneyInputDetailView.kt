@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -51,6 +52,7 @@ import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.ti4n.freechat.R
+import com.ti4n.freechat.Route
 import com.ti4n.freechat.erc20.ERC20Token
 import com.ti4n.freechat.widget.HomeTitle
 import com.ti4n.freechat.widget.ImageButton
@@ -60,7 +62,9 @@ fun SendMoneyInputDetailView(
     navController: NavController,
     viewModel: SendMoneyViewModel = hiltViewModel()
 ) {
+    val tokens by viewModel.tokens.collectAsState()
     val amount by viewModel.amount.collectAsState()
+    val remainAmount by viewModel.remainAmount.collectAsState()
     val selectedToken by viewModel.selectedToken.collectAsState()
     val systemUiController = rememberSystemUiController()
     SideEffect {
@@ -108,7 +112,7 @@ fun SendMoneyInputDetailView(
                     )
                     Spacer(modifier = Modifier.height(16.dp))
                     SelectToken(
-                        list = viewModel.tokens.result,
+                        list = tokens,
                         selectedToken = selectedToken,
                         onSelected = { viewModel.setSelectedToken(it) })
                 }
@@ -160,6 +164,8 @@ fun SendMoneyInputDetailView(
                         )
                     }
                 )
+                Spacer(modifier = Modifier.height(6.dp))
+                Text(text = "可用: $remainAmount", color = Color(0xFF1B1B1B))
             }
         }
         Spacer(modifier = Modifier.weight(1f))
@@ -177,7 +183,7 @@ fun SendMoneyInputDetailView(
                 mipmap = R.mipmap.next_btn,
                 textColor = Color.White
             ) {
-                viewModel.transfer()
+                navController.navigate(Route.ConfirmTransaction.route)
             }
         }
     }
@@ -187,7 +193,7 @@ fun SendMoneyInputDetailView(
 @Composable
 fun SelectToken(
     list: List<ERC20Token>,
-    selectedToken: ERC20Token,
+    selectedToken: ERC20Token?,
     onSelected: (ERC20Token) -> Unit
 ) {
     var expanded by remember {
@@ -205,10 +211,14 @@ fun SelectToken(
                 }
                 .padding(vertical = 5.dp, horizontal = 16.dp)
         ) {
-//            AsyncImage(model = selectedToken.LogoURI, contentDescription = null)
+            AsyncImage(
+                model = selectedToken?.LogoURI,
+                contentDescription = null,
+                modifier = Modifier.size(36.dp)
+            )
             Spacer(modifier = Modifier.width(10.dp))
             Text(
-                text = selectedToken.Name,
+                text = selectedToken?.Name ?: "",
                 color = Color.White,
                 fontWeight = FontWeight.Bold,
                 fontSize = 16.sp
@@ -216,7 +226,13 @@ fun SelectToken(
             Spacer(modifier = Modifier.weight(1f))
             Icon(imageVector = Icons.Default.ArrowDropDown, contentDescription = null)
         }
-        ExposedDropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
+        ExposedDropdownMenu(
+            expanded = expanded,
+            onDismissRequest = { expanded = false },
+            modifier = Modifier.background(
+                Color.White, RoundedCornerShape(8.dp)
+            )
+        ) {
             list.forEach {
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
@@ -230,7 +246,11 @@ fun SelectToken(
                         }
                         .padding(vertical = 5.dp, horizontal = 16.dp)
                 ) {
-//                    AsyncImage(model = it.LogoURI, contentDescription = null)
+                    AsyncImage(
+                        model = it.LogoURI,
+                        contentDescription = null,
+                        modifier = Modifier.size(30.dp)
+                    )
                     Spacer(modifier = Modifier.width(10.dp))
                     Text(
                         text = it.Name,

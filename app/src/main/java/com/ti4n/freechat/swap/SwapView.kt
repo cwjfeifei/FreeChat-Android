@@ -61,6 +61,7 @@ fun SwapView(navController: NavController, viewModel: SwapViewModel = hiltViewMo
     val tokens by viewModel.supportTokens.collectAsState()
     val fromToken by viewModel.fromToken.collectAsState()
     val toToken by viewModel.toToken.collectAsState()
+    val rate by viewModel.rate.collectAsState()
     var fromExpanded by remember {
         mutableStateOf(false)
     }
@@ -237,7 +238,7 @@ fun SwapView(navController: NavController, viewModel: SwapViewModel = hiltViewMo
                             Text(text = "汇率", color = Color(0xFF999999))
                             Spacer(modifier = Modifier.weight(1f))
                             Text(
-                                text = "1${fromToken?.symbol ?: ""}=1${toToken?.symbol ?: ""}",
+                                text = "1${fromToken?.symbol ?: ""}=$rate ${toToken?.symbol ?: ""}",
                                 color = Color(0xFF1A1A1A),
                                 fontSize = 16.sp
                             )
@@ -264,7 +265,7 @@ fun SwapView(navController: NavController, viewModel: SwapViewModel = hiltViewMo
                 textColor = Color.White,
                 modifier = Modifier.align(CenterHorizontally)
             ) {
-
+                viewModel.swap("")
             }
         }
     }

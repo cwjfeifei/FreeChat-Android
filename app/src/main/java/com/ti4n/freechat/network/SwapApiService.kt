@@ -13,9 +13,6 @@ const val swapBaseUrl = "https://api.1inch.io/v4.0/1/"
 
 interface SwapApiService {
 
-    @GET
-    suspend fun getSupportTokens(@Url url: String = "https://freechat.world/api/v5/market/tokenlist"): ERC20Tokens
-
     @GET("approve/allowance")
     suspend fun getAllowedNumber(
         @Query("tokenAddress") tokenAddress: String,

@@ -24,6 +24,7 @@ import androidx.navigation.NavController
 import com.ti4n.freechat.R
 import com.ti4n.freechat.Route
 import com.ti4n.freechat.di.dataStore
+import com.ti4n.freechat.util.EthUtil
 import com.ti4n.freechat.util.address
 import com.ti4n.freechat.widget.Image
 import com.ti4n.freechat.widget.ImageButton
@@ -144,15 +145,7 @@ fun SetPasswordView(navController: NavController, words: String) {
             ) {
                 if (password1 == password2) {
                     scope.launch {
-                        val file = WalletUtils.generateBip39WalletFromMnemonic(
-                            password1,
-                            words,
-                            context.cacheDir
-                        )
-                        context.dataStore.edit {
-                            it[stringPreferencesKey("account")] = words
-                            it[stringPreferencesKey("file")] = file.filename
-                        }
+                        EthUtil.createWalletFile(context, password1, words)
                         navController.navigate(Route.Home.route)
                     }
                 }

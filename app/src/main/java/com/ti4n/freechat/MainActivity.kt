@@ -16,6 +16,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.core.view.WindowCompat
+import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.ViewModel
@@ -48,12 +49,17 @@ import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.reactive.collect
+import org.kethereum.bip39.model.MnemonicWords
+import org.kethereum.wallet.createWallet
+import org.kethereum.wallet.model.Wallet
 import org.web3j.contracts.eip20.generated.ERC20
 import org.web3j.crypto.Credentials
+import org.web3j.crypto.WalletUtils
 import org.web3j.protocol.Web3j
 import org.web3j.protocol.core.DefaultBlockParameterName
 import org.web3j.protocol.http.HttpService
 import org.web3j.tx.gas.DefaultGasProvider
+import java.io.File
 import javax.inject.Inject
 import kotlin.math.pow
 
@@ -65,7 +71,6 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         WindowCompat.setDecorFitsSystemWindows(window, false)
         IM.init(this)
-
         setContent {
             FreeChatTheme {
                 // A surface container using the 'background' color from the theme
@@ -154,9 +159,4 @@ class MainActivity : AppCompatActivity() {
             }
         }
     }
-
-    @Inject
-    lateinit var freeChatApiService: FreeChatApiService
-
-
 }

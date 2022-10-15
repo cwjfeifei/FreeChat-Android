@@ -7,11 +7,16 @@ import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.paging.Pager
+import androidx.paging.PagingConfig
+import androidx.paging.cachedIn
 import com.ti4n.freechat.di.PreferencesDataStore
 import com.ti4n.freechat.di.dataStore
 import com.ti4n.freechat.erc20.ERC20Token
 import com.ti4n.freechat.erc20.ERC20Tokens
 import com.ti4n.freechat.erc20.ethereum
+import com.ti4n.freechat.network.FreeChatApiService
+import com.ti4n.freechat.paging.EthTransactionPagingSourceFactory
 import com.ti4n.freechat.util.EthUtil
 import com.ti4n.freechat.util.address
 import com.ti4n.freechat.util.toWei
@@ -35,53 +40,59 @@ import javax.inject.Inject
 
 @HiltViewModel
 class WalletViewModel @Inject constructor(
-    val erC20Token: ERC20Tokens,
+    val pagingSourceFactory: EthTransactionPagingSourceFactory,
+    val freeChatApiService: FreeChatApiService,
     @ApplicationContext context: Context
 ) :
     ViewModel() {
 
-    val list = MutableStateFlow(erC20Token.result.map { it to 0.0 })
+    val list = MutableStateFlow<List<Pair<ERC20Token, String>>>(emptyList())
     val address = MutableStateFlow("")
-    val account = context.dataStore.data.map { it[stringPreferencesKey("account")] ?: "" }
+    val account = context.dataStore.data.map { it[stringPreferencesKey("address")] ?: "" }
+    val erc20Tokens = MutableStateFlow<List<ERC20Token>>(emptyList())
+    val selectedToken = MutableStateFlow<ERC20Token?>(null)
 
     init {
         viewModelScope.launch {
-            account.filterNotNull().stateIn(this).collectLatest {
-                Log.e("account", ": $it")
-                address.value = MnemonicWords(it).address().hex
-                getBalance(MnemonicWords(it))
-                getEthBalance(address.value)
-            }
+            address.value = account.filterNotNull().first()
+            erc20Tokens.value = freeChatApiService.getSupportTokens().result
+            list.value = erc20Tokens.value.map { it to "0" }
+            getBalance()
+            getEthBalance(address.value)
         }
     }
 
-    suspend fun getBalance(accountWords: MnemonicWords) {
-        erC20Token.result.forEach { erc20 ->
-            withContext(Dispatchers.IO) {
-                try {
-                    EthUtil.balanceOf(erc20.contractAddress, accountWords).collectLatest {
-                        val wei = it.toWei(erc20.Decimals)
-                        val new = erc20 to wei
-                        Log.e("balance", "getBalance: ${erc20.Name}  $wei")
-                        list.value.toMutableList().replaceAll { if (it.first == erc20) new else it }
-                    }
-                } catch (e: Exception) {
-                    e.printStackTrace()
-                }
-            }
-        }
-    }
-
-    suspend fun getEthBalance(address: String) {
-        withContext(Dispatchers.IO) {
+    suspend fun getBalance() {
+        erc20Tokens.value.forEach { erc20 ->
             try {
-                EthUtil.balanceOf(address).collectLatest {
-                    val wei = it.balance.toWei(18)
-                    list.value = list.value + (ethereum to wei)
+                val it = EthUtil.balanceOf(erc20, address.value)
+                if (erc20.symbol == "USDT") {
+                    Log.e("USDT", "getBalance: $it")
                 }
+                val new = erc20 to (it ?: "")
+                val newList = list.value.toMutableList()
+                newList.replaceAll { if (it.first == erc20) new else it }
+                list.value = newList
             } catch (e: Exception) {
                 e.printStackTrace()
             }
         }
     }
+
+    suspend fun getEthBalance(address: String) {
+        try {
+            val balance = EthUtil.balanceOf(address)
+            list.value = list.value + (ethereum to balance.toString())
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+    }
+
+    fun setSelectedToken(token: ERC20Token) {
+        selectedToken.value = token
+    }
+
+    fun createPager() = Pager(PagingConfig(20)) {
+        pagingSourceFactory.create(address.value, selectedToken.value?.contractAddress)
+    }.flow.cachedIn(viewModelScope)
 }
