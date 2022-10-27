@@ -3,7 +3,6 @@
 package com.ti4n.freechat
 
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.animation.ExperimentalAnimationApi
@@ -16,12 +15,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.core.view.WindowCompat
-import androidx.datastore.preferences.core.edit
-import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.viewModelScope
 import com.google.accompanist.navigation.animation.AnimatedNavHost
 import com.google.accompanist.navigation.animation.rememberAnimatedNavController
 import com.google.accompanist.navigation.material.ExperimentalMaterialNavigationApi
@@ -30,11 +24,9 @@ import com.google.accompanist.navigation.material.bottomSheet
 import com.google.accompanist.navigation.material.rememberBottomSheetNavigator
 import com.ti4n.freechat.bottomsheet.ChooseImageSource
 import com.ti4n.freechat.bottomsheet.VideoVoiceChat
-import com.ti4n.freechat.di.dataStore
-import com.ti4n.freechat.erc20.ERC20Tokens
+import com.ti4n.freechat.db.AppDataBase
 import com.ti4n.freechat.home.HomeView
 import com.ti4n.freechat.login.*
-import com.ti4n.freechat.network.FreeChatApiService
 import com.ti4n.freechat.profile.ProfileView
 import com.ti4n.freechat.splash.NoInternetView
 import com.ti4n.freechat.splash.PermissionView
@@ -43,30 +35,15 @@ import com.ti4n.freechat.ui.theme.FreeChatTheme
 import com.ti4n.freechat.util.*
 import com.ti4n.freechat.widget.BigImageView
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.flow.filterNotNull
-import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.reactive.collect
-import org.kethereum.bip39.model.MnemonicWords
-import org.kethereum.wallet.createWallet
-import org.kethereum.wallet.model.Wallet
-import org.web3j.contracts.eip20.generated.ERC20
-import org.web3j.crypto.Credentials
-import org.web3j.crypto.WalletUtils
-import org.web3j.protocol.Web3j
-import org.web3j.protocol.core.DefaultBlockParameterName
-import org.web3j.protocol.http.HttpService
-import org.web3j.tx.gas.DefaultGasProvider
-import java.io.File
 import javax.inject.Inject
-import kotlin.math.pow
 
 
 @OptIn(ExperimentalAnimationApi::class, ExperimentalMaterialNavigationApi::class)
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
+
+    @Inject
+    lateinit var db: AppDataBase
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         WindowCompat.setDecorFitsSystemWindows(window, false)
@@ -87,7 +64,7 @@ class MainActivity : AppCompatActivity() {
                     ) {
                         AnimatedNavHost(
                             navController = navController,
-                            startDestination = Route.Home.route
+                            startDestination = Route.Splash.route
                         ) {
                             aniComposable(route = Route.Splash.route) {
                                 SplashView(navController)
@@ -128,7 +105,7 @@ class MainActivity : AppCompatActivity() {
                             }
                             aniComposable(route = Route.Home.route) {
                                 navController.backQueue.removeIf { it.destination.route != Route.Home.route }
-                                HomeView()
+                                HomeView(db.userBaseInfoDao())
                             }
                             aniComposable(
                                 route = Route.BigImage.route
@@ -148,7 +125,10 @@ class MainActivity : AppCompatActivity() {
                             }
 
                             bottomSheet(Route.ChooseImageSourceBottom.route) {
-                                ChooseImageSource(navController)
+                                val backStackEntry = remember {
+                                    navController.getBackStackEntry(Route.CompleteProfile.route)
+                                }
+                                ChooseImageSource(navController, hiltViewModel(backStackEntry))
                             }
                             bottomSheet(Route.VideoVoiceChatBottom.route) {
                                 VideoVoiceChat(navController)

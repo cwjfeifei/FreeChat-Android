@@ -47,6 +47,7 @@ import com.ti4n.freechat.erc20.ERC20Token
 import com.ti4n.freechat.widget.HomeTitle
 import com.ti4n.freechat.widget.Image
 import androidx.compose.runtime.*
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.ClipboardManager
 import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.platform.LocalContext
@@ -65,7 +66,7 @@ fun WalletView(navController: NavController, viewModel: WalletViewModel = hiltVi
             color = Color(0xFFF0F0F0)
         )
     }
-    val list by viewModel.list.collectAsState()
+    val list = viewModel.list
     val address by viewModel.address.collectAsState()
     Column(
         modifier = Modifier
@@ -80,13 +81,8 @@ fun WalletView(navController: NavController, viewModel: WalletViewModel = hiltVi
             }
         })
         Spacer(modifier = Modifier.height(20.dp))
-        WalletFunction(
-            address,
-            list.map {
-                (it.first.tokenPriceUSD.toDoubleOrNull() ?: 0.0) * (it.second.toDoubleOrNull()
-                    ?: 0.0)
-            }
-                .sum(),
+        WalletFunction(address,
+            list.map { it.usd.toDouble() }.sum(),
             sendClick = { navController.navigate(Route.SendMoney.route) },
             receiveClick = { navController.navigate(Route.ReceiveMoney.route) },
             swapClick = { navController.navigate(Route.Swap.route) })
@@ -100,12 +96,11 @@ fun WalletView(navController: NavController, viewModel: WalletViewModel = hiltVi
         Spacer(modifier = Modifier.height(8.dp))
         LazyColumn(modifier = Modifier.padding(horizontal = 16.dp)) {
             items(list) {
-                ItemCoin(token = it.first, count = it.second) {
-                    viewModel.setSelectedToken(it.first)
+                ItemCoin(token = it.token, count = it.balance, usd = it.usd) {
+                    viewModel.setSelectedToken(it.token)
                     navController.navigate(
                         Route.TokenDetailSimply.jump(
-                            it.first.symbol,
-                            viewModel.address.value
+                            it.token.symbol, viewModel.address.value
                         )
                     )
                 }
@@ -129,7 +124,11 @@ fun WalletFunction(
             .fillMaxWidth()
             .padding(horizontal = 16.dp)
     ) {
-        Image(mipmap = R.mipmap.guzhi_bg, modifier = Modifier.fillMaxWidth())
+        Image(
+            mipmap = R.mipmap.guzhi_bg,
+            modifier = Modifier.fillMaxWidth(),
+            contentScale = ContentScale.FillWidth
+        )
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier.padding(vertical = 20.dp, horizontal = 16.dp)
@@ -137,9 +136,7 @@ fun WalletFunction(
             Spacer(modifier = Modifier.height(20.dp))
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Text(
-                    text = "FCID:$address",
-                    color = Color.White.copy(alpha = 0.7f),
-                    fontSize = 12.sp
+                    text = "FCID:$address", color = Color.White.copy(alpha = 0.7f), fontSize = 12.sp
                 )
                 Spacer(modifier = Modifier.width(4.dp))
                 Image(mipmap = R.mipmap.copy, Modifier.clickable {
@@ -151,11 +148,10 @@ fun WalletFunction(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.Center,
                 modifier = Modifier
-                    .padding(horizontal = 16.dp)
                     .fillMaxWidth()
                     .height(48.dp)
                     .border(1.dp, Color.White, RoundedCornerShape(8.dp))
-                    .background(Color(0xFF364EA7), RoundedCornerShape(8.dp))
+                    .background(Color(0x33364EA7), RoundedCornerShape(8.dp))
                     .padding(vertical = 12.dp)
             ) {
                 Text(text = "资产总值:", color = Color.White.copy(alpha = 0.7f), fontSize = 12.sp)
@@ -169,40 +165,33 @@ fun WalletFunction(
             }
             Spacer(modifier = Modifier.height(20.dp))
             Row(
-                Modifier
-                    .fillMaxWidth()
-                    .padding(20.dp),
-                horizontalArrangement = Arrangement.SpaceBetween
+                horizontalArrangement = Arrangement.spacedBy(46.dp)
             ) {
                 ItemFunction(image = R.mipmap.send, text = R.string.transfer, click = sendClick)
                 ItemFunction(
-                    image = R.mipmap.receive,
-                    text = R.string.receive_money,
-                    click = receiveClick
+                    image = R.mipmap.receive, text = R.string.receive_money, click = receiveClick
                 )
                 ItemFunction(image = R.mipmap.swap, text = R.string.swap, click = swapClick)
-//                ItemFunction(image = R.mipmap.history, text = R.string.transaction_history)
             }
+            Spacer(modifier = Modifier.height(20.dp))
         }
     }
 }
 
 @Composable
-fun ItemCoin(token: ERC20Token, count: String, click: () -> Unit) {
+fun ItemCoin(token: ERC20Token, count: String, usd: String, click: () -> Unit) {
     Row(
         Modifier
             .fillMaxWidth()
             .clickable { click() }
-            .padding(vertical = 12.dp), verticalAlignment = Alignment.CenterVertically
-    ) {
-        AsyncImage(
-            model = token.LogoURI,
+            .padding(vertical = 12.dp),
+        verticalAlignment = Alignment.CenterVertically) {
+        AsyncImage(model = token.LogoURI,
             contentDescription = null,
             modifier = Modifier.size(40.dp),
             onError = {
                 it.result.throwable.printStackTrace()
-            }
-        )
+            })
         Column(modifier = Modifier.padding(start = 8.dp)) {
             Text(
                 text = token.Name,
@@ -228,7 +217,7 @@ fun ItemCoin(token: ERC20Token, count: String, click: () -> Unit) {
             )
             Spacer(modifier = Modifier.height(6.dp))
             Text(
-                text = "=$${(count.toDoubleOrNull() ?: 0.0) * (token.tokenPriceUSD.toDoubleOrNull() ?: 0.0)}",
+                text = "=$$usd",
                 color = Color(0xFF1A1A1A),
                 fontSize = 12.sp,
                 fontWeight = FontWeight.Medium
@@ -245,8 +234,7 @@ fun ItemFunction(
     textColor: Color = Color.White,
     click: () -> Unit = {}
 ) {
-    Column(
-        horizontalAlignment = Alignment.CenterHorizontally,
+    Column(horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier.clickable { click() }) {
         Box(
             modifier = Modifier
@@ -257,9 +245,7 @@ fun ItemFunction(
         }
         Spacer(modifier = Modifier.height(8.dp))
         Text(
-            text = stringResource(id = text),
-            color = textColor,
-            fontSize = 12.sp
+            text = stringResource(id = text), color = textColor, fontSize = 12.sp
         )
     }
 }

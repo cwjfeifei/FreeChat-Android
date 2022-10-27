@@ -8,12 +8,15 @@ import com.ti4n.freechat.di.dataStore
 import com.ti4n.freechat.erc20.ERC20Token
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.reactive.asFlow
 import kotlinx.coroutines.withContext
 import org.kethereum.DEFAULT_ETHEREUM_BIP44_PATH
@@ -28,6 +31,7 @@ import org.kethereum.model.PrivateKey
 import org.kethereum.model.PublicKey
 import org.kethereum.rpc.HttpEthereumRPC
 import org.komputing.kethereum.erc20.ERC20RPCConnector
+import org.komputing.kethereum.erc20.ERC20TransactionGenerator
 import org.web3j.contracts.eip20.generated.ERC20
 import org.web3j.crypto.Credentials
 import org.web3j.crypto.ECKeyPair
@@ -39,6 +43,7 @@ import org.web3j.protocol.core.methods.request.Transaction
 import org.web3j.protocol.core.methods.response.EthEstimateGas
 import org.web3j.protocol.core.methods.response.EthGasPrice
 import org.web3j.protocol.core.methods.response.EthGetTransactionReceipt
+import org.web3j.protocol.core.methods.response.EthSendTransaction
 import org.web3j.protocol.http.HttpService
 import org.web3j.tx.gas.DefaultGasProvider
 import org.web3j.utils.Convert
@@ -57,6 +62,9 @@ object EthUtil {
 
     fun mnemonicWordsExist(words: String) =
         WalletUtils.isValidAddress(MnemonicWords(words).address().hex)
+
+    fun addressExist(address: String) =
+        WalletUtils.isValidAddress(address)
 
     fun getMnemonicCode(words: String = "") =
         if (words == "") MnemonicWords(generateMnemonic(wordList = WORDLIST_ENGLISH)) else MnemonicWords(
@@ -104,15 +112,30 @@ object EthUtil {
         password: String = ""
     ) = ERC20.load(
         tokenAddress, web3, loadCredentials(context, password), DefaultGasProvider()
-    ).transfer(to, BigInteger.valueOf((amount.toDouble() * (10.0.pow(decimal))).toLong()))
-        .flowable().asFlow().flowOn(Dispatchers.IO)
+    ).transfer(
+        to,
+        BigInteger((amount.toDouble() * (10.0.pow(decimal))).toBigDecimal().toPlainString())
+    )
+        .flowable().asFlow().catch { it.printStackTrace() }.onStart {
+            Log.e(
+                "TAG",
+                "transfer: ${tokenAddress} ${
+                    BigInteger(
+                        (amount.toDouble() * (10.0.pow(decimal))).toBigDecimal().toPlainString()
+                    )
+                } ${to}"
+            )
+        }.onEach {
+            Log.e("transfer", "transfer: ${it.transactionHash}")
+            Log.e("transfer", "transfer: ${it.status}")
+        }.flowOn(Dispatchers.IO)
 
     suspend fun transfer(
         context: Context,
-        to: String = "0xf3a988124c1985ac2c61624ff686d06e16818ea4",
-        amount: String = "0.001",
+        to: String,
+        amount: String,
         password: String = ""
-    ): Flow<EthGetTransactionReceipt> {
+    ): Flow<EthSendTransaction> {
         val credentials = loadCredentials(context, password)
         val value = Convert.toWei(amount, Convert.Unit.ETHER).toBigInteger()
         Log.e("transfer", "transfer: ${credentials.address}")
@@ -123,10 +146,9 @@ object EthUtil {
         )
         val signedMessage = TransactionEncoder.signMessage(rawTransaction, credentials)
         val hexValue = Numeric.toHexString(signedMessage)
-        return web3.ethSendRawTransaction(hexValue).flowable().asFlow().flatMapLatest {
+        return web3.ethSendRawTransaction(hexValue).flowable().asFlow().onEach {
             Log.e("transfer", "transfer: ${it.transactionHash}")
             Log.e("transfer", "transfer: ${it.error}")
-            web3.ethGetTransactionReceipt(it.transactionHash).flowable().asFlow()
         }.flowOn(Dispatchers.IO)
     }
 
@@ -167,7 +189,8 @@ fun MnemonicWords.address(walletIndex: Int = 0) = toKeyPair().toAddress()
 fun BigInteger.toWei(decimal: Int) =
     (toDouble() / (10.0.pow(decimal))).toBigDecimal().toPlainString()
 
-fun Double.toWei(decimal: Int) = this / 10.0.pow(decimal)
+fun Double.toWei(decimal: Int) = (this / 10.0.pow(decimal)).toBigDecimal().toPlainString()
+fun Float.toWei(decimal: Int) = (this / 10.0.pow(decimal)).toBigDecimal().toPlainString()
 
 fun org.kethereum.model.Credentials.toWeb3Credentials() =
     Credentials.create(ECKeyPair((ecKeyPair?.privateKey?.key), (ecKeyPair?.publicKey?.key)))

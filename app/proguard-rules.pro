@@ -24,3 +24,7 @@
 -keep class io.openim.**{*;}
 -keep class open_im_sdk.**{*;}
 -keep class open_im_sdk_callback.**{*;}
+
+-keep class com.alibaba.sdk.android.oss.** { *; }
+-dontwarn okio.**
+-dontwarn org.apache.commons.codec.binary.**                    

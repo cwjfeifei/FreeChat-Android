@@ -27,6 +27,7 @@ import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.Text
+import androidx.compose.material.TextButton
 import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
@@ -40,6 +41,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
@@ -48,6 +50,7 @@ import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.navigation.NavController
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
@@ -122,7 +125,7 @@ fun ReceiveMoneyView(navController: NavController) {
                     .fillMaxWidth()
                     .padding(horizontal = 20.dp)
             ) {
-                Button(
+                TextButton(
                     onClick = {
                         scope.launch(Dispatchers.IO) {
                             val cv = ContentValues().apply {
@@ -166,7 +169,7 @@ fun ReceiveMoneyView(navController: NavController) {
                     Text(text = stringResource(id = R.string.save_qrcode), color = Color.White)
                 }
                 Spacer(modifier = Modifier.width(16.dp))
-                Button(
+                TextButton(
                     onClick = {
                         val sendIntent = Intent().apply {
                             action = Intent.ACTION_SEND
@@ -193,6 +196,20 @@ fun ReceiveMoneyView(navController: NavController) {
                     Text(text = stringResource(id = R.string.share), color = Color.White)
                 }
             }
+            Spacer(modifier = Modifier.weight(1f))
+            Text(
+                text = stringResource(id = R.string.attention),
+                color = Color(0xFF4D4D4D),
+                modifier = Modifier.align(CenterHorizontally)
+            )
+            Spacer(modifier = Modifier.height(12.dp))
+            Text(
+                text = stringResource(id = R.string.attention_content),
+                color = Color(0xFF666666),
+                fontSize = 12.sp,
+                modifier = Modifier.padding(horizontal = 16.dp)
+            )
+            Spacer(modifier = Modifier.height(24.dp))
         }
     }
 }

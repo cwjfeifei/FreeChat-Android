@@ -24,7 +24,7 @@ fun SetNameView(navController: NavController, viewModel: ProfileViewModel) {
     val systemUiController = rememberSystemUiController()
     SideEffect {
         systemUiController.setSystemBarsColor(
-            color = Color(0xFFF0F0F0)
+            color = Color.White
         )
     }
     var temName by remember {
@@ -32,21 +32,17 @@ fun SetNameView(navController: NavController, viewModel: ProfileViewModel) {
     }
     Scaffold(topBar = {
         TopAppBar(
-            backgroundColor = Color(0xFFF0F0F0),
-            contentPadding = PaddingValues(horizontal = 24.dp),
-            elevation = 0.dp
+            backgroundColor = Color.White, elevation = 0.dp, modifier = Modifier.statusBarsPadding()
         ) {
-            Text(
-                text = stringResource(id = R.string.cancel),
+            Text(text = stringResource(id = R.string.cancel),
                 color = Color(0xFF181818),
                 fontSize = 14.sp,
                 modifier = Modifier
-                    .padding(horizontal = 12.dp, vertical = 4.dp)
                     .clickable {
                         navController.navigateUp()
-                    },
-                textAlign = TextAlign.Center
-            )
+                    }
+                    .padding(horizontal = 16.dp, vertical = 4.dp),
+                textAlign = TextAlign.Center)
             Spacer(modifier = Modifier.weight(1f))
             Text(
                 text = stringResource(id = R.string.set_name),
@@ -55,40 +51,45 @@ fun SetNameView(navController: NavController, viewModel: ProfileViewModel) {
                 fontWeight = FontWeight.Medium
             )
             Spacer(modifier = Modifier.weight(1f))
-            Text(
-                text = stringResource(id = R.string.done),
+            Text(text = stringResource(id = R.string.done),
                 fontSize = 14.sp,
-                color = if (temName.isNotEmpty()) Color(0xFF1A1A1A) else Color(0xFFB1B1B1),
+                color = if (temName.isNotEmpty()) Color(0xFF26C24F) else Color(0xFFB3B3B3),
                 fontWeight = FontWeight.Medium,
                 modifier = Modifier
-                    .background(Color(0xFFE0E0E0), RoundedCornerShape(5.dp))
                     .clickable {
                         if (temName.isNotEmpty()) {
                             viewModel.setName(temName)
                             navController.navigateUp()
                         }
                     }
-                    .padding(horizontal = 12.dp, vertical = 4.dp)
-            )
+                    .padding(horizontal = 16.dp, vertical = 4.dp))
         }
     }, backgroundColor = Color(0xFFF0F0F0)) {
-        TextField(
-            value = temName,
-            onValueChange = { temName = it },
-            modifier = Modifier
-                .padding(it)
-                .fillMaxWidth(),
-            maxLines = 1,
-            colors = TextFieldDefaults.textFieldColors(
-                focusedIndicatorColor = Color.Transparent,
-                unfocusedIndicatorColor = Color.Transparent,
-                backgroundColor = Color.White
-            ),
-            trailingIcon = {
-                if (temName != "")
-                    Image(mipmap = R.mipmap.close, modifier = Modifier.clickable { temName = "" })
-            },
-            textStyle = TextStyle(fontSize = 16.sp, color = Color.Black)
-        )
+        Column(Modifier.fillMaxSize()) {
+            Spacer(modifier = Modifier.height(8.dp))
+            TextField(value = temName,
+                onValueChange = { temName = it },
+                modifier = Modifier
+                    .padding(it)
+                    .fillMaxWidth(),
+                maxLines = 1,
+                colors = TextFieldDefaults.textFieldColors(
+                    focusedIndicatorColor = Color.Transparent,
+                    unfocusedIndicatorColor = Color.Transparent,
+                    backgroundColor = Color.White
+                ),
+                trailingIcon = {
+                    if (temName != "") Image(mipmap = R.mipmap.close,
+                        modifier = Modifier.clickable { temName = "" })
+                },
+                textStyle = TextStyle(fontSize = 16.sp, color = Color.Black),
+                placeholder = {
+                    Text(
+                        text = stringResource(id = R.string.please_input_your_name),
+                        color = Color(0xFFB3B3B3),
+                        fontSize = 16.sp
+                    )
+                })
+        }
     }
 }

@@ -1,5 +1,6 @@
 package com.ti4n.freechat.wallet
 
+import android.icu.text.SimpleDateFormat
 import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.ActivityResultLauncher
@@ -17,10 +18,12 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.Card
+import androidx.compose.material.Divider
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.Text
@@ -49,20 +52,26 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import androidx.paging.compose.collectAsLazyPagingItems
+import androidx.paging.compose.items
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.google.zxing.BarcodeFormat
 import com.journeyapps.barcodescanner.ScanContract
 import com.journeyapps.barcodescanner.ScanOptions
 import com.ti4n.freechat.R
 import com.ti4n.freechat.Route
+import com.ti4n.freechat.db.RecentTransfer
+import com.ti4n.freechat.util.EthUtil
 import com.ti4n.freechat.widget.HomeTitle
 import com.ti4n.freechat.widget.Image
 import com.ti4n.freechat.widget.ImageButton
+import org.web3j.crypto.MnemonicUtils
 
 
 @Composable
 fun SendMoneyView(navController: NavController, viewModel: SendMoneyViewModel = hiltViewModel()) {
     val address by viewModel.toAddress.collectAsState()
+    val recentAddress = viewModel.recentAddress.collectAsLazyPagingItems()
     val systemUiController = rememberSystemUiController()
     val barcodeLauncher = rememberLauncherForActivityResult(ScanContract()) { result ->
         if (result.contents == null) {
@@ -82,8 +91,8 @@ fun SendMoneyView(navController: NavController, viewModel: SendMoneyViewModel = 
     Box(modifier = Modifier.fillMaxSize()) {
         Image(
             mipmap = R.mipmap.transfer_bg,
-            modifier = Modifier.fillMaxWidth(),
-            contentScale = ContentScale.FillWidth
+            modifier = Modifier.fillMaxSize(),
+            contentScale = ContentScale.FillBounds
         )
         Column(
             modifier = Modifier
@@ -142,27 +151,20 @@ fun SendMoneyView(navController: NavController, viewModel: SendMoneyViewModel = 
                                 colors = TextFieldDefaults.textFieldColors(
                                     focusedIndicatorColor = Color.Transparent,
                                     unfocusedIndicatorColor = Color.Transparent,
-                                    backgroundColor = Color(0xFFF5F5F5)
+                                    backgroundColor = Color(0xFFF5F5F5),
+                                    textColor = Color(0xFFB3B3B3)
                                 ),
                                 shape = RoundedCornerShape(4.dp),
                                 placeholder = {
                                     Text(
                                         text = stringResource(id = R.string.receive_account_hint),
                                         color = Color(0xFFB3B3B3),
-                                        style = TextStyle(textAlign = TextAlign.Center),
                                         modifier = Modifier
                                             .fillMaxWidth(),
                                         fontSize = 12.sp
                                     )
                                 },
-                                textStyle = TextStyle(
-                                    textAlign = TextAlign.Center,
-                                    color = Color(0xFFB3B3B3)
-                                ),
                                 keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Done),
-                                keyboardActions = KeyboardActions(onDone = {
-                                    viewModel.addressDone()
-                                })
                             )
                             Box(
                                 modifier = Modifier
@@ -178,11 +180,37 @@ fun SendMoneyView(navController: NavController, viewModel: SendMoneyViewModel = 
                                     }, contentAlignment = Alignment.Center
                             ) {
                                 Text(
-                                    text = "粘贴",
+                                    text = stringResource(id = R.string.paste),
                                     color = Color.White,
                                     style = TextStyle(textAlign = TextAlign.Center)
                                 )
                             }
+                        }
+                    }
+                }
+            }
+            Spacer(modifier = Modifier.height(8.dp))
+            Text(
+                text = stringResource(id = R.string.recent_transfer),
+                color = Color(0xFF4B6AF7),
+                modifier = Modifier.padding(16.dp)
+            )
+            Divider(thickness = 1.dp, color = Color.Black.copy(alpha = 0.1f))
+            if (recentAddress.itemCount == 0) {
+                Spacer(modifier = Modifier.weight(1f))
+                Image(mipmap = R.mipmap.no_data)
+                Spacer(modifier = Modifier.height(16.dp))
+                Text(
+                    text = stringResource(id = R.string.no_data),
+                    color = Color(0xFF999999),
+                    fontSize = 12.sp
+                )
+                Spacer(modifier = Modifier.weight(1f))
+            } else {
+                LazyColumn(Modifier.padding(start = 16.dp)) {
+                    items(recentAddress) {
+                        it?.let {
+                            ItemRecentTransfer(recentTransfer = it)
                         }
                     }
                 }
@@ -202,9 +230,31 @@ fun SendMoneyView(navController: NavController, viewModel: SendMoneyViewModel = 
                     mipmap = R.mipmap.next_btn,
                     textColor = Color.White
                 ) {
-                    navController.navigate(Route.SendMoneyInputDetail.route)
+                    if (EthUtil.addressExist(address)) {
+                        viewModel.addressDone()
+                        navController.navigate(Route.SendMoneyInputDetail.route)
+                    }
                 }
             }
         }
+    }
+}
+
+@Composable
+fun ItemRecentTransfer(recentTransfer: RecentTransfer) {
+    Column {
+        Spacer(modifier = Modifier.height(16.dp))
+        Text(
+            text = recentTransfer.toAddress,
+            color = Color(0xFF4D4D4D)
+        )
+        Spacer(modifier = Modifier.height(6.dp))
+        Text(
+            text = SimpleDateFormat("yyyy-MM-dd hh:mm").format(recentTransfer.date),
+            color = Color(0xFF999999),
+            fontSize = 12.sp
+        )
+        Spacer(modifier = Modifier.height(16.dp))
+        Divider(thickness = 1.dp, color = Color.Black.copy(alpha = 0.1f))
     }
 }

@@ -1,5 +1,7 @@
 package com.ti4n.freechat.login
 
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.StringRes
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -7,9 +9,11 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.material.Divider
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -26,8 +30,11 @@ import com.google.android.material.datepicker.MaterialDatePicker
 import com.ti4n.freechat.widget.Image
 import com.ti4n.freechat.R
 import com.ti4n.freechat.Route
+import com.ti4n.freechat.util.EthUtil
+import com.ti4n.freechat.util.IM
 import com.ti4n.freechat.widget.ImageButton
 import com.ti4n.freechat.util.getActivity
+import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 
 @Composable
@@ -46,6 +53,13 @@ fun CompleteProfileView(controller: NavController, viewModel: ProfileViewModel =
     val location by viewModel.location.collectAsState()
     val datePicker by lazy { MaterialDatePicker.Builder.datePicker().build() }
     val context = LocalContext.current
+    val scope = rememberCoroutineScope()
+    LaunchedEffect(Unit) {
+        IM.login(
+            "0x43b083475fd9bc41df86263af2e2badd688697e1",
+            "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVSUQiOiIweDQzYjA4MzQ3NWZkOWJjNDFkZjg2MjYzYWYyZTJiYWRkNjg4Njk3ZTEiLCJQbGF0Zm9ybSI6IkxpbnV4IiwiZXhwIjoxNjc0NDcyOTQwLCJuYmYiOjE2NjY2OTY2NDAsImlhdCI6MTY2NjY5Njk0MH0.LKHcvY66dujiKMep0iYNyaOlHRSJdJ4NFoXfUauyKyc"
+        )
+    }
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier
@@ -54,6 +68,7 @@ fun CompleteProfileView(controller: NavController, viewModel: ProfileViewModel =
                 Color.White
             )
             .padding(horizontal = 16.dp)
+            .systemBarsPadding()
     ) {
         Spacer(modifier = Modifier.height(40.dp))
         Text(
@@ -124,7 +139,13 @@ fun CompleteProfileView(controller: NavController, viewModel: ProfileViewModel =
             mipmap = R.mipmap.login_btn,
             textColor = Color.White
         ) {
-            controller.navigate(Route.Home.route)
+            scope.launch {
+                val credentials = EthUtil.loadCredentials(context, "")
+                viewModel.register(
+                    credentials.address,
+                    ""
+                )
+            }
         }
         Spacer(modifier = Modifier.height(20.dp))
     }

@@ -4,12 +4,19 @@ import android.content.Context
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.preferencesDataStore
+import androidx.room.Room
+import com.alibaba.sdk.android.oss.OSSClient
+import com.alibaba.sdk.android.oss.common.auth.OSSAuthCredentialsProvider
+import com.alibaba.sdk.android.oss.common.auth.OSSCredentialProvider
 import com.google.gson.Gson
+import com.ti4n.freechat.db.AppDataBase
 import com.ti4n.freechat.erc20.ERC20Tokens
 import com.ti4n.freechat.network.EthScanApiService
 import com.ti4n.freechat.network.FreeChatApiService
+import com.ti4n.freechat.network.FreeChatIMService
 import com.ti4n.freechat.network.SwapApiService
 import com.ti4n.freechat.network.ethScanUrl
+import com.ti4n.freechat.network.freeChatIMUrl
 import com.ti4n.freechat.network.freeChatUrl
 import com.ti4n.freechat.network.swapBaseUrl
 import dagger.Module
@@ -57,7 +64,13 @@ object AppModule {
             .addConverterFactory(GsonConverterFactory.create()).build().create()
     }
 
-//    @Provides
-//    fun provideAppDb(@ApplicationContext context: Context) =
-//        Room.databaseBuilder(context, AppDataBase::class.java, "app.db").build()
+    @Provides
+    fun provideIMApi(okHttpClient: OkHttpClient): FreeChatIMService {
+        return Retrofit.Builder().baseUrl(freeChatIMUrl).client(okHttpClient)
+            .addConverterFactory(GsonConverterFactory.create()).build().create()
+    }
+
+    @Provides
+    fun provideAppDb(@ApplicationContext context: Context) =
+        Room.databaseBuilder(context, AppDataBase::class.java, "app.db").build()
 }

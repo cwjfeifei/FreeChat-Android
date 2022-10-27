@@ -5,6 +5,10 @@ import android.util.Log
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.paging.Pager
+import androidx.paging.PagingConfig
+import com.ti4n.freechat.db.AppDataBase
+import com.ti4n.freechat.db.RecentTransfer
 import com.ti4n.freechat.di.dataStore
 import com.ti4n.freechat.erc20.ERC20Token
 import com.ti4n.freechat.erc20.ERC20Tokens
@@ -24,27 +28,36 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import org.kethereum.bip39.model.MnemonicWords
+import java.math.RoundingMode
+import java.util.Date
 import javax.inject.Inject
+import kotlin.math.pow
 
 @HiltViewModel
 class SendMoneyViewModel @Inject constructor(
     @ApplicationContext val context: Context,
-    val freeChatApiService: FreeChatApiService
+    val freeChatApiService: FreeChatApiService,
+    val db: AppDataBase
 ) : ViewModel() {
     val tokens = MutableStateFlow(emptyList<ERC20Token>())
 
     val toAddress = MutableStateFlow("")
     val amount = MutableStateFlow("")
+    val amountUSD = MutableStateFlow(0f)
     val selectedToken = MutableStateFlow<ERC20Token?>(null)
     val fromAddress = MutableStateFlow("")
     val remainAmount = MutableStateFlow("")
 
     val gas = MutableStateFlow("")
     val maxGas = MutableStateFlow("")
-    val gasUSD = MutableStateFlow("")
-    val maxGasUSD = MutableStateFlow("")
+    val gasUSD = MutableStateFlow(0f)
 
     val transactionSend = MutableSharedFlow<Boolean>(0, 1)
+    val transactionHash = MutableStateFlow("")
+
+    val recentAddress = Pager(PagingConfig(50), null) {
+        db.recentTransferDao().getAllAddress()
+    }.flow
 
     init {
         viewModelScope.launch {
@@ -66,45 +79,43 @@ class SendMoneyViewModel @Inject constructor(
         if (toAddress.value.isNotEmpty()) {
             viewModelScope.launch(Dispatchers.IO) {
                 EthUtil.gasPrice(
-                    fromAddress.value,
-                    toAddress.value
-                )
-                    .collectLatest {
-                        it?.let {
-                            maxGas.value = it.first
-                            gas.value = it.second
-                            val rate =
-                                freeChatApiService.getRate("ETH-USD").data.first()
-                            gasUSD.value =
-                                (it.second.toDouble() * rate.idxPx.toDouble()).toBigDecimal()
-                                    .toPlainString()
-                            maxGasUSD.value =
-                                (it.first.toDouble() * rate.idxPx.toDouble()).toBigDecimal()
-                                    .toPlainString()
-                            Log.e("USD", "addressDone: ${gasUSD.value}  ${maxGasUSD.value}")
-                        }
+                    fromAddress.value, toAddress.value
+                ).collectLatest {
+                    it?.let {
+                        maxGas.value = it.first
+                        gas.value = it.second
+                        val rate = freeChatApiService.getRate("ETH-USD").data.first()
+                        gasUSD.value = it.second.toFloat() * rate.idxPx.toFloat()
                     }
+                }
             }
         }
     }
 
     fun setAmount(_amount: String) {
         amount.value = _amount
+        viewModelScope.launch {
+            amountUSD.value =
+                (_amount.toFloatOrNull()
+                    ?: 0f) * (freeChatApiService.getRate("${selectedToken.value?.symbol}-USD").data.firstOrNull()?.idxPx?.toFloatOrNull()
+                    ?: 0f)
+        }
     }
 
     fun setSelectedToken(token: ERC20Token) {
         selectedToken.value = token
         viewModelScope.launch {
-            remainAmount.value = EthUtil.balanceOf(
+            remainAmount.value = if (token.symbol != "ETH") EthUtil.balanceOf(
                 token, fromAddress.value
-            )?.toBigDecimal()?.toPlainString() ?: ""
+            )?.toBigDecimal()?.toPlainString() ?: "" else EthUtil.balanceOf(fromAddress.value)
+                ?.toBigDecimal()?.toPlainString() ?: ""
         }
 
     }
 
     fun transfer() {
-        viewModelScope.launch(Dispatchers.IO) {
-            if (selectedToken.value?.symbol != "ETH")
+        viewModelScope.launch {
+            if (selectedToken.value?.symbol != "ETH") {
                 EthUtil.transferERC20(
                     context,
                     toAddress.value,
@@ -113,15 +124,23 @@ class SendMoneyViewModel @Inject constructor(
                     selectedToken.value!!.Decimals,
                     "",
                 ).collectLatest {
+                    transactionHash.value = it.transactionHash
+                    db.recentTransferDao()
+                        .insert(RecentTransfer(toAddress.value, Date(System.currentTimeMillis())))
                     transactionSend.tryEmit(true)
                 }
-            else EthUtil.transfer(
-                context,
-                toAddress.value,
-                amount.value,
-                "",
-            ).collectLatest {
-                transactionSend.tryEmit(true)
+            } else {
+                EthUtil.transfer(
+                    context,
+                    toAddress.value,
+                    amount.value,
+                    "",
+                ).collectLatest {
+                    transactionHash.value = it.transactionHash
+                    db.recentTransferDao()
+                        .insert(RecentTransfer(toAddress.value, Date(System.currentTimeMillis())))
+                    transactionSend.tryEmit(true)
+                }
             }
         }
     }

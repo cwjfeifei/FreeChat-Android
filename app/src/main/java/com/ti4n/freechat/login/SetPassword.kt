@@ -20,6 +20,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.ti4n.freechat.R
 import com.ti4n.freechat.Route
@@ -28,6 +29,13 @@ import com.ti4n.freechat.util.EthUtil
 import com.ti4n.freechat.util.address
 import com.ti4n.freechat.widget.Image
 import com.ti4n.freechat.widget.ImageButton
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.filter
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.take
 import kotlinx.coroutines.launch
 import org.kethereum.bip39.model.MnemonicWords
 import org.web3j.crypto.MnemonicUtils
@@ -35,7 +43,11 @@ import org.web3j.crypto.WalletUtils
 import java.io.File
 
 @Composable
-fun SetPasswordView(navController: NavController, words: String) {
+fun SetPasswordView(
+    navController: NavController,
+    words: String,
+    viewModel: SetPasswordViewModel = hiltViewModel()
+) {
     var password1 by remember {
         mutableStateOf("")
     }
@@ -44,6 +56,11 @@ fun SetPasswordView(navController: NavController, words: String) {
     }
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
+    LaunchedEffect(Unit) {
+        viewModel.navigationRoute.filter { it.isNotEmpty() }.collectLatest {
+            navController.navigate(it)
+        }
+    }
     LoginCommonView(R.string.set_password) {
         Spacer(Modifier.height(60.dp))
         TextField(
@@ -146,7 +163,7 @@ fun SetPasswordView(navController: NavController, words: String) {
                 if (password1 == password2) {
                     scope.launch {
                         EthUtil.createWalletFile(context, password1, words)
-                        navController.navigate(Route.Home.route)
+                        viewModel.login(MnemonicWords(words).address().hex)
                     }
                 }
             }

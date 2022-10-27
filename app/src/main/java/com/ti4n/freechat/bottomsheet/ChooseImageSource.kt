@@ -1,5 +1,8 @@
 package com.ti4n.freechat.bottomsheet
 
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.PickVisualMediaRequest
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Divider
@@ -11,16 +14,26 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import com.ti4n.freechat.login.ProfileViewModel
 
 @Composable
-fun ChooseImageSource(navController: NavController) {
-    Column(Modifier.fillMaxWidth().navigationBarsPadding()) {
+fun ChooseImageSource(navController: NavController, viewModel: ProfileViewModel) {
+    val pickImage =
+        rememberLauncherForActivityResult(ActivityResultContracts.PickVisualMedia()) { uri ->
+            uri?.path?.let {
+                viewModel.setAvatar(it)
+            }
+        }
+    Column(
+        Modifier
+            .fillMaxWidth()
+            .navigationBarsPadding()
+    ) {
         SelectableItem("拍摄") {
-
         }
         Divider(color = Color(0xFFE5E5E5))
         SelectableItem("图片库") {
-
+            pickImage.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
         }
         Divider(color = Color(0xFFE5E5E5))
         SelectableItem("NET库") {

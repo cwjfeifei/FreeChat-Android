@@ -55,6 +55,7 @@ fun SearchView(showSearchView: MutableState<Boolean>, searchText: MutableState<S
         horizontalArrangement = Arrangement.Center,
         modifier = Modifier
             .fillMaxWidth()
+            .then(if (isShowSearchView) Modifier.statusBarsPadding() else Modifier)
             .height(32.dp)
             .padding(horizontal = 8.dp)
     ) {

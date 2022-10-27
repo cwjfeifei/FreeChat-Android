@@ -27,13 +27,15 @@ import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Popup
+import androidx.navigation.NavController
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.ti4n.freechat.R
+import com.ti4n.freechat.Route
 import com.ti4n.freechat.widget.Image
 import com.ti4n.freechat.widget.*
 
 @Composable
-fun ChatListView(modifier: Modifier = Modifier) {
+fun ChatListView(navController: NavController, modifier: Modifier = Modifier) {
     val systemUiController = rememberSystemUiController()
     SideEffect {
         systemUiController.setSystemBarsColor(
@@ -101,7 +103,9 @@ fun ChatListView(modifier: Modifier = Modifier) {
         } else {
             LazyColumn(state = scrollState, modifier = Modifier.background(Color.White)) {
                 items(1) {
-                    ChatItem(scrollState)
+                    ChatItem(scrollState) {
+                        navController.navigate(Route.PrivateChat.route)
+                    }
                     Box(
                         Modifier
                             .padding(horizontal = 24.dp)
@@ -116,7 +120,7 @@ fun ChatListView(modifier: Modifier = Modifier) {
 }
 
 @Composable
-fun ChatItem(scrollState: LazyListState) {
+fun ChatItem(scrollState: LazyListState, onClick: () -> Unit) {
     val revealState = rememberRevealState()
     if (scrollState.isScrollInProgress) {
         LaunchedEffect(Unit) {
@@ -154,6 +158,7 @@ fun ChatItem(scrollState: LazyListState) {
                 .fillMaxWidth()
                 .height(78.dp)
                 .background(Color.White)
+                .clickable { onClick() }
                 .padding(horizontal = 24.dp, vertical = 16.dp)
         ) {
             Image(mipmap = R.mipmap.logo, modifier = Modifier.size(44.dp))

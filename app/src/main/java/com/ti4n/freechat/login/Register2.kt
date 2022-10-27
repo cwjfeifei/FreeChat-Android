@@ -143,14 +143,11 @@ fun Register2View(
             ) {
                 if (viewModel.canRegister()) {
                     navController.navigate(
-                        when (type) {
-                            LoginType.Login -> Route.SetPassword.route
-                            LoginType.Register -> Route.SetPassword.jump(
-                                viewModel.words.value.joinToString(
-                                    " "
-                                )
+                        Route.SetPassword.jump(
+                            viewModel.words.value.joinToString(
+                                " "
                             )
-                        }
+                        )
                     )
                 } else {
                     Toast.makeText(context, "顺序不对", Toast.LENGTH_SHORT).show()

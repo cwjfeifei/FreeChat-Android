@@ -2,6 +2,7 @@ package com.ti4n.freechat.paging
 
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
+import com.ti4n.freechat.erc20.ethereum
 import com.ti4n.freechat.model.response.Transaction
 import com.ti4n.freechat.network.EthScanApiService
 import dagger.assisted.Assisted
@@ -20,12 +21,16 @@ class EthTransactionPagingSource @AssistedInject constructor(
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, Transaction> {
         val page = params.key ?: 1
         return try {
-            val transactions = if (tokenAddress == null) {
+            val transactions = if (tokenAddress == ethereum.contractAddress) {
                 ethScanApiService.ethTractionHistory(address, page)
             } else {
-                ethScanApiService.tokenTractionHistory(address, page, tokenAddress)
+                ethScanApiService.tokenTractionHistory(address, page, tokenAddress!!)
             }
-            LoadResult.Page(transactions.result, null, page + 1)
+            LoadResult.Page(
+                transactions.result,
+                null,
+                if (transactions.result.count() < 20) null else page + 1
+            )
         } catch (e: Exception) {
             e.printStackTrace()
             LoadResult.Error(e)

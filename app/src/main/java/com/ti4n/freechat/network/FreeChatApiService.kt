@@ -17,10 +17,6 @@ import retrofit2.http.Url
 const val freeChatUrl = "https://freechat.world/api/"
 
 interface FreeChatApiService {
-    var erc20Tokens: List<ERC20Token>?
-
-    @POST("auth/user_register")
-    suspend fun register(@Body register: Register): BaseResponse<UserToken>
 
     @GET("v5/market/tokenlist")
     suspend fun getSupportTokens(): ERC20Tokens

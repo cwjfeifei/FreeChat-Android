@@ -83,7 +83,7 @@
     <string name="max_gas">最高收费: %s</string>
     <string name="total_consume">总额</string>
     <string name="amount_gas">金额+燃料费</string>
-    <string name="max_consume">最大金额: </string>
+    <string name="max_consume">最大金额: %s</string>
     <string name="confirm">确认</string>
 
     <string name="look_in_etherscan">Etherscan查看</string>
@@ -91,8 +91,22 @@
     <string name="finish_transaction">完成交易</string>
     <string name="watch_detail">查看详情</string>
     <string name="transaction_boardcasted">交易已广播</string>
+    <string name="swap_finish">兑换成功，请查收</string>
 
     <string name="scan_qrcode_to_send_me">扫描二维码向我付款</string>
     <string name="save_qrcode">保存二维码</string>
     <string name="share">分享</string>
+    <string name="paste">粘贴</string>
+    <string name="recent_transfer">最近转账</string>
+    <string name="attention">注意事项</string>
+    <string name="attention_content">仅可向此地址转入Ethereum网络通证（如ETH或ERC10/20/721通证），转入其他通证将无法找回或遗失。</string>
+
+    <string name="all_record">全部记录</string>
+    <string name="no_data">暂无记录</string>
+    <string name="input_amount">请输入数量</string>
+
+    <string name="camera">拍摄</string>
+    <string name="picture">照片</string>
+
+    <string name="please_input_your_name">请输入您的名字</string>
 </resources>

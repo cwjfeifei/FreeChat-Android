@@ -4,7 +4,7 @@ data class Quote(
     val estimatedGas: Int,
     val fromToken: Token,
     val fromTokenAmount: String,
-    val protocols: List<Protocol>,
+//    val protocols: List<Protocol>,
     val toToken: Token,
     val toTokenAmount: String
 ) {

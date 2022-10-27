@@ -98,7 +98,6 @@ fun LoginView(
                 if (viewModel.wordsIsCorrect()) {
                     navController.navigate(Route.SetPassword.jump(words.joinToString(" ") { it.value }))
                 } else {
-
                     Toast.makeText(
                         context,
                         tip,

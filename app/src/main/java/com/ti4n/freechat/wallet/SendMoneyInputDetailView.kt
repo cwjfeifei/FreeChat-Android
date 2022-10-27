@@ -55,6 +55,7 @@ import com.ti4n.freechat.R
 import com.ti4n.freechat.Route
 import com.ti4n.freechat.erc20.ERC20Token
 import com.ti4n.freechat.widget.HomeTitle
+import com.ti4n.freechat.widget.Image
 import com.ti4n.freechat.widget.ImageButton
 
 @Composable
@@ -159,7 +160,8 @@ fun SendMoneyInputDetailView(
                             modifier = Modifier
                                 .padding(end = 8.dp)
                                 .background(Color(0xFF6B8FF8), RoundedCornerShape(2.dp))
-                                .padding(vertical = 2.dp, horizontal = 10.dp),
+                                .padding(vertical = 2.dp, horizontal = 10.dp)
+                                .clickable { viewModel.setAmount(remainAmount) },
                             Color.White
                         )
                     }
@@ -183,7 +185,8 @@ fun SendMoneyInputDetailView(
                 mipmap = R.mipmap.next_btn,
                 textColor = Color.White
             ) {
-                navController.navigate(Route.ConfirmTransaction.route)
+                if (amount <= remainAmount)
+                    navController.navigate(Route.ConfirmTransaction.route)
             }
         }
     }
