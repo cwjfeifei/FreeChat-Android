@@ -1,5 +1,6 @@
 package com.ti4n.freechat.login
 
+import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.StringRes
@@ -25,6 +26,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import coil.compose.AsyncImage
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.google.android.material.datepicker.MaterialDatePicker
 import com.ti4n.freechat.widget.Image
@@ -32,6 +34,7 @@ import com.ti4n.freechat.R
 import com.ti4n.freechat.Route
 import com.ti4n.freechat.util.EthUtil
 import com.ti4n.freechat.util.IM
+import com.ti4n.freechat.util.Minio
 import com.ti4n.freechat.widget.ImageButton
 import com.ti4n.freechat.util.getActivity
 import kotlinx.coroutines.launch
@@ -54,12 +57,6 @@ fun CompleteProfileView(controller: NavController, viewModel: ProfileViewModel =
     val datePicker by lazy { MaterialDatePicker.Builder.datePicker().build() }
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
-    LaunchedEffect(Unit) {
-        IM.login(
-            "0x43b083475fd9bc41df86263af2e2badd688697e1",
-            "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVSUQiOiIweDQzYjA4MzQ3NWZkOWJjNDFkZjg2MjYzYWYyZTJiYWRkNjg4Njk3ZTEiLCJQbGF0Zm9ybSI6IkxpbnV4IiwiZXhwIjoxNjc0NDcyOTQwLCJuYmYiOjE2NjY2OTY2NDAsImlhdCI6MTY2NjY5Njk0MH0.LKHcvY66dujiKMep0iYNyaOlHRSJdJ4NFoXfUauyKyc"
-        )
-    }
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier
@@ -85,8 +82,12 @@ fun CompleteProfileView(controller: NavController, viewModel: ProfileViewModel =
             fontWeight = FontWeight.Medium
         )
         Spacer(modifier = Modifier.height(12.dp))
-        Image(
-            mipmap = R.mipmap.pic_photo,
+        if (avatar != null) AsyncImage(model = avatar,
+            contentDescription = null,
+            modifier = Modifier
+                .size(90.dp)
+                .clickable { controller.navigate(Route.ChooseImageSourceBottom.route) })
+        else Image(mipmap = R.mipmap.pic_photo,
             modifier = Modifier
                 .size(90.dp)
                 .clickable { controller.navigate(Route.ChooseImageSourceBottom.route) })
@@ -99,15 +100,13 @@ fun CompleteProfileView(controller: NavController, viewModel: ProfileViewModel =
         CompleteProfileItem(R.string.gender, false) {
             Row {
                 GenderItem(
-                    title = stringResource(id = R.string.male),
-                    isSelected = gender == 0
+                    title = stringResource(id = R.string.male), isSelected = gender == 0
                 ) {
                     viewModel.setGender(0)
                 }
                 Spacer(modifier = Modifier.width(2.dp))
                 GenderItem(
-                    title = stringResource(id = R.string.female),
-                    isSelected = gender == 1
+                    title = stringResource(id = R.string.female), isSelected = gender == 1
                 ) {
                     viewModel.setGender(1)
                 }
@@ -135,16 +134,17 @@ fun CompleteProfileView(controller: NavController, viewModel: ProfileViewModel =
         Divider(color = Color(0xFFE5E5E5))
         Spacer(modifier = Modifier.weight(1f))
         ImageButton(
-            title = R.string.complete_setting,
-            mipmap = R.mipmap.login_btn,
-            textColor = Color.White
+            title = R.string.complete_setting, mipmap = R.mipmap.login_btn, textColor = Color.White
         ) {
             scope.launch {
-                val credentials = EthUtil.loadCredentials(context, "")
-                viewModel.register(
-                    credentials.address,
-                    ""
-                )
+                viewModel.avatar.value?.let {
+                    Minio.uploadFile(context, it)?.let {
+                        val credentials = EthUtil.loadCredentials(context, "")
+                        viewModel.register(
+                            credentials.address, it, ""
+                        ) { controller.navigate(Route.Home.route) }
+                    }
+                }
             }
         }
         Spacer(modifier = Modifier.height(20.dp))
@@ -162,7 +162,8 @@ fun CompleteProfileItem(
         modifier = Modifier
             .fillMaxWidth()
             .height(50.dp)
-            .clickable { click() }, verticalAlignment = Alignment.CenterVertically
+            .clickable { click() },
+        verticalAlignment = Alignment.CenterVertically
     ) {
         Text(text = stringResource(id = title), color = Color(0xFF333333), fontSize = 16.sp)
         Spacer(modifier = Modifier.weight(1f))
@@ -181,11 +182,12 @@ fun ProfileValueText(value: String) {
 
 @Composable
 fun GenderItem(title: String, isSelected: Boolean, click: (String) -> Unit) {
-    Box(contentAlignment = Alignment.Center, modifier = Modifier
-        .fillMaxHeight()
-        .width(140.dp)
-        .background(if (isSelected) Color(0xFF799AF9) else Color(0xFFF5F5F5))
-        .clickable { click(title) }) {
+    Box(contentAlignment = Alignment.Center,
+        modifier = Modifier
+            .fillMaxHeight()
+            .width(140.dp)
+            .background(if (isSelected) Color(0xFF799AF9) else Color(0xFFF5F5F5))
+            .clickable { click(title) }) {
         Text(
             text = title,
             textAlign = TextAlign.Center,

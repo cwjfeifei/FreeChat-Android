@@ -1,5 +1,6 @@
 package com.ti4n.freechat.home
 
+import android.util.Log
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.slideInVertically
@@ -199,7 +200,7 @@ fun HomeView(userBaseInfoDao: UserBaseInfoDao) {
             }
             aniComposable(Route.PrivateChat.route) { _ ->
                 PrivateChatView(
-                    "", navController
+                    navController
                 )
             }
         }

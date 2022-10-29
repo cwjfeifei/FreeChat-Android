@@ -24,14 +24,11 @@ import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.ExposedDropdownMenuBox
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
-import androidx.compose.material.SwipeToDismiss
 import androidx.compose.material.Text
-import androidx.compose.material.TextField
 import androidx.compose.material.TextFieldDefaults
 import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material.swipeable
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.collectAsState
@@ -56,7 +53,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.compose.ui.viewinterop.AndroidView
 import androidx.compose.ui.window.Dialog
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
@@ -67,7 +63,7 @@ import com.ti4n.freechat.erc20.ERC20Token
 import com.ti4n.freechat.widget.HomeTitle
 import com.ti4n.freechat.widget.Image
 import com.ti4n.freechat.widget.ImageButton
-import com.ti4n.freechat.widget.NoPaddingTextField
+import com.ti4n.freechat.widget.CustomPaddingTextField
 
 @Composable
 fun SwapView(navController: NavController, viewModel: SwapViewModel = hiltViewModel()) {
@@ -178,7 +174,7 @@ fun SwapView(navController: NavController, viewModel: SwapViewModel = hiltViewMo
                             maxLines = 1
                         )
                         Spacer(modifier = Modifier.height(6.dp))
-                        NoPaddingTextField(
+                        CustomPaddingTextField(
                             value = amount,
                             onValueChange = {
                                 viewModel.setAmount(it)
@@ -251,7 +247,7 @@ fun SwapView(navController: NavController, viewModel: SwapViewModel = hiltViewMo
                             fontWeight = FontWeight.Medium
                         )
                         Spacer(modifier = Modifier.height(6.dp))
-                        NoPaddingTextField(
+                        CustomPaddingTextField(
                             value = toAmount,
                             onValueChange = {
                                 viewModel.setToAmount(it)

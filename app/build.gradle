@@ -123,4 +123,7 @@ dependencies {
     implementation 'com.aliyun.dpa:oss-android-sdk:2.9.11'
 
     implementation fileTree(dir: 'libs', include: ['*.aar'])
+
+    implementation("aws.sdk.kotlin:s3:0.17.5-beta")
+
 }

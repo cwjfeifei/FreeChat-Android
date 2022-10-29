@@ -1,6 +1,7 @@
 package com.ti4n.freechat.login
 
 import android.content.Context
+import android.net.Uri
 import android.util.Log
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
@@ -12,7 +13,9 @@ import com.ti4n.freechat.di.dataStore
 import com.ti4n.freechat.model.request.Register
 import com.ti4n.freechat.network.FreeChatApiService
 import com.ti4n.freechat.network.FreeChatIMService
+import com.ti4n.freechat.util.EthUtil
 import com.ti4n.freechat.util.IM
+import com.ti4n.freechat.util.Minio
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -26,14 +29,14 @@ class ProfileViewModel @Inject constructor(
     @ApplicationContext val context: Context
 ) : ViewModel() {
 
-    val avatar = MutableStateFlow("")
+    val avatar = MutableStateFlow<Uri?>(null)
     val name = MutableStateFlow("")
     val birthday = MutableStateFlow(0L)
     val gender = MutableStateFlow(-1)
     val country = MutableStateFlow("")
     val location = MutableStateFlow("")
 
-    fun setAvatar(avatar: String) {
+    fun setAvatar(avatar: Uri) {
         this.avatar.value = avatar
     }
 
@@ -57,14 +60,14 @@ class ProfileViewModel @Inject constructor(
         this.location.value = location
     }
 
-    fun register(address: String, password: String) {
+    fun register(address: String, avatar: String, password: String, success: () -> Unit) {
         viewModelScope.launch {
             try {
                 apiService.register(
                     Register(
                         address,
                         birthday.value / 1000,
-                        "https://lh3.googleusercontent.com/ogw/AOh-ky0I3eIhSRKJwRDtzc4wcxd25W8UY70WNYk0tkyifw=s64-c-mo",
+                        avatar,
                         gender.value,
                         name.value,
                         password
@@ -79,20 +82,15 @@ class ProfileViewModel @Inject constructor(
                             userToken.userID,
                             name.value,
                             userToken.token,
-                            avatar.value,
+                            avatar,
                             birthday.value / 1000
                         )
                     )
+                    success()
                 }
             } catch (e: Exception) {
                 e.printStackTrace()
             }
-        }
-    }
-
-    fun upload() {
-        viewModelScope.launch {
-            Log.e("TAG", "upload: ${IM.uploadFile(avatar.value)}")
         }
     }
 }

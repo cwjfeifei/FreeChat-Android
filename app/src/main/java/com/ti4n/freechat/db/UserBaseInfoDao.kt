@@ -13,6 +13,9 @@ interface UserBaseInfoDao {
     @Query("SELECT * FROM userbaseinfo WHERE userId = :address LIMIT 1")
     fun getUserInfo(address: String): Flow<UserBaseInfo?>
 
+    @Query("SELECT * FROM userbaseinfo LIMIT 1")
+    fun getUserInfo(): Flow<UserBaseInfo?>
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(userBaseInfo: UserBaseInfo)
 }

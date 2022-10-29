@@ -36,7 +36,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import org.bouncycastle.jcajce.provider.asymmetric.rsa.CipherSpi.NoPadding
 
 @Composable
 fun Image(
@@ -74,7 +73,7 @@ fun ImageButton(
 }
 
 @Composable
-fun NoPaddingTextField(
+fun CustomPaddingTextField(
     value: String,
     onValueChange: (String) -> Unit,
     modifier: Modifier = Modifier,
@@ -94,7 +93,8 @@ fun NoPaddingTextField(
     interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
     shape: Shape =
         MaterialTheme.shapes.small.copy(bottomEnd = ZeroCornerSize, bottomStart = ZeroCornerSize),
-    colors: TextFieldColors = TextFieldDefaults.textFieldColors()
+    colors: TextFieldColors = TextFieldDefaults.textFieldColors(),
+    padding: PaddingValues = PaddingValues(0.dp)
 ) {
     // If color is not provided via the text style, use content color as a default
     val textColor = textStyle.color.takeOrElse {
@@ -138,7 +138,7 @@ fun NoPaddingTextField(
                 isError = isError,
                 interactionSource = interactionSource,
                 colors = colors,
-                contentPadding = PaddingValues(0.dp)
+                contentPadding = padding
             )
         }
     ))

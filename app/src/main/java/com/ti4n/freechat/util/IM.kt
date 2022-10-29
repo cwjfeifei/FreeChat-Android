@@ -1,7 +1,9 @@
 package com.ti4n.freechat.util
 
 import android.content.Context
+import android.net.Uri
 import android.util.Log
+import androidx.compose.runtime.mutableStateListOf
 import com.ti4n.freechat.db.UserBaseInfo
 import com.ti4n.freechat.db.UserBaseInfoDao
 import com.ti4n.freechat.model.response.UserToken
@@ -33,10 +35,10 @@ import kotlin.coroutines.suspendCoroutine
 
 object IM {
 
-    private val imClient = OpenIMClient.getInstance()
+    val imClient = OpenIMClient.getInstance()
     val currentUserInfo = MutableStateFlow(UserInfo())
-    val newMessages = MutableStateFlow(listOf<Message>())
-    val conversations = mutableListOf<ConversationInfo>()
+    val newMessages = mutableStateListOf<Message>()
+    val conversations = mutableStateListOf<ConversationInfo>()
     val totalUnreadCount = MutableStateFlow(0)
 
     fun init(context: Context) {
@@ -45,7 +47,7 @@ object IM {
             "ws://47.57.185.242:10001",
             context.cacheDir.absolutePath,
             6,
-            "oss",
+            "minio",
             null,
             object : OnConnListener {
                 override fun onConnectFailed(code: Long, error: String?) {
@@ -77,8 +79,8 @@ object IM {
             }
 
             override fun onSuccess(data: String?) {
-                getAllConversations()
                 it.resume(data)
+                getAllConversations()
             }
         }, userId, token)
     }
@@ -131,7 +133,7 @@ object IM {
         imClient.messageManager.setAdvancedMsgListener(object : OnAdvanceMsgListener {
             override fun onRecvNewMessage(msg: Message?) {
                 if (msg != null) {
-                    newMessages.value = newMessages.value + msg
+                    newMessages.add(msg)
                 }
             }
 
@@ -149,9 +151,7 @@ object IM {
 
             override fun onRecvMessageRevokedV2(info: RevokedInfo?) {
                 if (info != null) {
-                    val messages = newMessages.value.toMutableList()
-                    messages.removeAll { it.clientMsgID == info.clientMsgID }
-                    newMessages.value = messages
+                    newMessages.removeAll { it.clientMsgID == info.clientMsgID }
                 }
             }
         })
@@ -227,7 +227,7 @@ object IM {
             )
         }
 
-    suspend fun getHistoryMessages(startMsg: Message?, conversationId: String) = suspendCoroutine {
+    suspend fun getHistoryMessages(startMsg: Message?, userId: String) = suspendCoroutine {
         imClient.messageManager.getHistoryMessageListReverse(
             object : OnBase<List<Message>> {
                 override fun onError(code: Int, error: String?) {
@@ -238,7 +238,7 @@ object IM {
                     it.resume(data ?: listOf())
                 }
 
-            }, "", "", conversationId, startMsg, 20
+            }, userId, null, "single_$userId", startMsg, 20
         )
     }
 
@@ -246,11 +246,12 @@ object IM {
         imClient.conversationManager.getAllConversationList(object :
             OnBase<List<ConversationInfo>> {
             override fun onError(code: Int, error: String?) {
-
+                Log.e("get conversations", "onError: $error")
             }
 
             override fun onSuccess(data: List<ConversationInfo>?) {
                 data?.let {
+                    conversations.clear()
                     conversations.addAll(it)
                 }
             }
@@ -267,21 +268,113 @@ object IM {
     }
 
     suspend fun sendTextMessage(address: String, content: String) = suspendCoroutine {
-        imClient.messageManager.sendMessage(
-            object : OnMsgSendCallback {
-                override fun onError(code: Int, error: String?) {
-                    it.resumeWithException(IMError(code, error))
-                }
+        imClient.conversationManager.getOneConversation(object : OnBase<ConversationInfo> {
+            override fun onError(code: Int, error: String?) {
+                it.resumeWithException(IMError(code, error))
+            }
 
-                override fun onSuccess(s: Message?) {
-                    it.resume(s)
-                }
+            override fun onSuccess(data: ConversationInfo?) {
+                imClient.messageManager.sendMessage(
+                    object : OnMsgSendCallback {
+                        override fun onError(code: Int, error: String?) {
+                            it.resumeWithException(IMError(code, error))
+                        }
 
-                override fun onProgress(progress: Long) {
+                        override fun onSuccess(s: Message?) {
+                            it.resume(s)
+                            if (s != null) newMessages.add(s)
+                        }
 
-                }
-            }, imClient.messageManager.createTextMessage(content), address, null, OfflinePushInfo()
-        )
+                        override fun onProgress(progress: Long) {
+
+                        }
+                    },
+                    imClient.messageManager.createTextMessage(content),
+                    address,
+                    null,
+                    OfflinePushInfo()
+                )
+            }
+        }, address, 1)
+    }
+
+    suspend fun sendImageMessage(address: String, imagePath: String) = suspendCoroutine {
+        imClient.conversationManager.getOneConversation(object : OnBase<ConversationInfo> {
+            override fun onError(code: Int, error: String?) {
+                it.resumeWithException(IMError(code, error))
+            }
+
+            override fun onSuccess(data: ConversationInfo?) {
+                imClient.messageManager.sendMessage(
+                    object : OnMsgSendCallback {
+                        override fun onError(code: Int, error: String?) {
+                            it.resumeWithException(IMError(code, error))
+                        }
+
+                        override fun onSuccess(s: Message?) {
+                            it.resume(s)
+                            if (s != null) newMessages.add(s)
+                        }
+
+                        override fun onProgress(progress: Long) {
+
+                        }
+                    },
+                    imClient.messageManager.createImageMessageFromFullPath(imagePath),
+                    address,
+                    null,
+                    OfflinePushInfo()
+                )
+            }
+        }, address, 1)
+    }
+
+    suspend fun sendImageMessage(context: Context, address: String, uri: Uri): Message? {
+        context.getPathFromUri(uri)?.let {
+            return sendImageMessage(address, it)
+        }
+        return null
+    }
+
+    suspend fun getUserInfo(vararg toUserId: String) = suspendCoroutine {
+        imClient.userInfoManager.getUsersInfo(object : OnBase<List<UserInfo>> {
+            override fun onError(code: Int, error: String?) {
+                it.resumeWithException(IMError(code, error))
+            }
+
+            override fun onSuccess(data: List<UserInfo>?) {
+                it.resume(data)
+            }
+        }, toUserId.asList())
+    }
+
+    suspend fun pinConversation(conversationId: String, isPin: Boolean) = suspendCoroutine {
+        imClient.conversationManager.pinConversation(object : OnBase<String> {
+            override fun onError(code: Int, error: String?) {
+                it.resumeWithException(IMError(code, error))
+            }
+
+            override fun onSuccess(data: String?) {
+                it.resume(data)
+                conversations[conversations.indexOfFirst { it.conversationID == conversationId }] =
+                    conversations.first { it.conversationID == conversationId }.apply {
+                        isPinned = isPin
+                    }
+            }
+        }, conversationId, isPin)
+    }
+
+    suspend fun deleteConversation(conversationId: String) = suspendCoroutine {
+        imClient.conversationManager.deleteConversation(object : OnBase<String> {
+            override fun onError(code: Int, error: String?) {
+                it.resumeWithException(IMError(code, error))
+            }
+
+            override fun onSuccess(data: String?) {
+                it.resume(data)
+                conversations.removeAll { it.conversationID == conversationId }
+            }
+        }, conversationId)
     }
 }
 
