@@ -20,10 +20,12 @@ import io.openim.android.sdk.models.BlacklistInfo
 import io.openim.android.sdk.models.ConversationInfo
 import io.openim.android.sdk.models.FriendApplicationInfo
 import io.openim.android.sdk.models.FriendInfo
+import io.openim.android.sdk.models.FriendshipInfo
 import io.openim.android.sdk.models.Message
 import io.openim.android.sdk.models.OfflinePushInfo
 import io.openim.android.sdk.models.ReadReceiptInfo
 import io.openim.android.sdk.models.RevokedInfo
+import io.openim.android.sdk.models.SoundElem
 import io.openim.android.sdk.models.UserInfo
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -39,6 +41,7 @@ object IM {
     val currentUserInfo = MutableStateFlow(UserInfo())
     val newMessages = mutableStateListOf<Message>()
     val conversations = mutableStateListOf<ConversationInfo>()
+    val friends = mutableStateListOf<FriendInfo>()
     val totalUnreadCount = MutableStateFlow(0)
 
     fun init(context: Context) {
@@ -47,7 +50,7 @@ object IM {
             "ws://47.57.185.242:10001",
             context.cacheDir.absolutePath,
             6,
-            "minio",
+            "aws",
             null,
             object : OnConnListener {
                 override fun onConnectFailed(code: Long, error: String?) {
@@ -81,6 +84,7 @@ object IM {
             override fun onSuccess(data: String?) {
                 it.resume(data)
                 getAllConversations()
+                getFriend()
             }
         }, userId, token)
     }
@@ -142,7 +146,6 @@ object IM {
             }
 
             override fun onRecvGroupMessageReadReceipt(list: MutableList<ReadReceiptInfo>?) {
-                TODO("Not yet implemented")
             }
 
             override fun onRecvMessageRevoked(msgId: String?) {
@@ -157,39 +160,35 @@ object IM {
         })
         imClient.friendshipManager.setOnFriendshipListener(object : OnFriendshipListener {
             override fun onBlacklistAdded(u: BlacklistInfo?) {
-                TODO("Not yet implemented")
             }
 
             override fun onBlacklistDeleted(u: BlacklistInfo?) {
-                TODO("Not yet implemented")
             }
 
             override fun onFriendApplicationAccepted(u: FriendApplicationInfo?) {
-                TODO("Not yet implemented")
             }
 
             override fun onFriendApplicationAdded(u: FriendApplicationInfo?) {
-                TODO("Not yet implemented")
+
             }
 
             override fun onFriendApplicationDeleted(u: FriendApplicationInfo?) {
-                TODO("Not yet implemented")
             }
 
             override fun onFriendApplicationRejected(u: FriendApplicationInfo?) {
-                TODO("Not yet implemented")
             }
 
             override fun onFriendInfoChanged(u: FriendInfo?) {
-                TODO("Not yet implemented")
             }
 
             override fun onFriendAdded(u: FriendInfo?) {
-                TODO("Not yet implemented")
+                u?.let {
+                    friends.add(it)
+                }
             }
 
             override fun onFriendDeleted(u: FriendInfo?) {
-                TODO("Not yet implemented")
+                friends.removeAll { u?.userID == it.userID }
             }
         })
     }
@@ -257,14 +256,6 @@ object IM {
             }
 
         })
-    }
-
-    fun addContact(address: String) {
-
-    }
-
-    fun startConversion(address: String) {
-
     }
 
     suspend fun sendTextMessage(address: String, content: String) = suspendCoroutine {
@@ -336,6 +327,28 @@ object IM {
         return null
     }
 
+    suspend fun sendVoiceMessage(address: String, voicePath: String, duration: Long) =
+        suspendCoroutine {
+            imClient.messageManager.sendMessage(
+                object : OnMsgSendCallback {
+                    override fun onError(code: Int, error: String?) {
+                        it.resumeWithException(IMError(code, error))
+                    }
+
+                    override fun onSuccess(s: Message?) {
+                        it.resume(s)
+                        if (s != null) newMessages.add(s)
+                    }
+
+                    override fun onProgress(progress: Long) {
+
+                    }
+                },
+                imClient.messageManager.createSoundMessageFromFullPath(voicePath, duration),
+                address, null, OfflinePushInfo()
+            )
+        }
+
     suspend fun getUserInfo(vararg toUserId: String) = suspendCoroutine {
         imClient.userInfoManager.getUsersInfo(object : OnBase<List<UserInfo>> {
             override fun onError(code: Int, error: String?) {
@@ -375,6 +388,44 @@ object IM {
                 conversations.removeAll { it.conversationID == conversationId }
             }
         }, conversationId)
+    }
+
+    fun getFriend() {
+        imClient.friendshipManager.getFriendList(object : OnBase<List<UserInfo>> {
+            override fun onError(code: Int, error: String?) {
+                Log.e("friend list", "onError: $error")
+            }
+
+            override fun onSuccess(data: List<UserInfo>?) {
+                data?.let {
+                    friends.addAll(it.filter { it.isFriendship }.map { it.friendInfo })
+                }
+            }
+        })
+    }
+
+    suspend fun isFriend(with: String) = suspendCoroutine {
+        imClient.friendshipManager.checkFriend(object : OnBase<List<FriendshipInfo>> {
+            override fun onError(code: Int, error: String?) {
+                it.resumeWithException(IMError(code, error))
+            }
+
+            override fun onSuccess(data: List<FriendshipInfo>?) {
+                it.resume(data?.firstOrNull()?.result == 1)
+            }
+        }, listOf(with))
+    }
+
+    suspend fun addFriend(id: String) = suspendCoroutine {
+        imClient.friendshipManager.addFriend(object : OnBase<String> {
+            override fun onError(code: Int, error: String?) {
+                it.resumeWithException(IMError(code, error))
+            }
+
+            override fun onSuccess(data: String?) {
+                it.resume(data)
+            }
+        }, id, "")
     }
 }
 

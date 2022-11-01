@@ -28,6 +28,7 @@ import com.ti4n.freechat.Route
 import com.ti4n.freechat.db.UserBaseInfoDao
 import com.ti4n.freechat.di.dataStore
 import com.ti4n.freechat.im.PrivateChatView
+import com.ti4n.freechat.profile.ProfileView
 import com.ti4n.freechat.swap.SwapView
 import com.ti4n.freechat.util.IM
 import com.ti4n.freechat.util.aniComposable
@@ -68,7 +69,7 @@ fun HomeView(userBaseInfoDao: UserBaseInfoDao) {
             }
     }
     Scaffold(bottomBar = {
-        AnimatedVisibility(visible = currentRoute == HomeTab.Chat.route || currentRoute == HomeTab.Contact.route || currentRoute == HomeTab.Square.route || currentRoute == HomeTab.Discover.route || currentRoute == HomeTab.Me.route,
+        AnimatedVisibility(visible = currentRoute == HomeTab.Chat.route || currentRoute == HomeTab.Contact.route || currentRoute == HomeTab.Me.route,
             enter = slideInVertically {
                 it
             },
@@ -102,8 +103,8 @@ fun HomeView(userBaseInfoDao: UserBaseInfoDao) {
                                 mipmap = when (it) {
                                     HomeTab.Chat -> if (currentRoute == it.route) R.mipmap.chat_sel else R.mipmap.chat_nor
                                     HomeTab.Contact -> if (currentRoute == it.route) R.mipmap.address_sel else R.mipmap.address_nor
-                                    HomeTab.Square -> if (currentRoute == it.route) R.mipmap.square_sel else R.mipmap.square_nor
-                                    HomeTab.Discover -> if (currentRoute == it.route) R.mipmap.find_sel else R.mipmap.find_nor
+//                                    HomeTab.Square -> if (currentRoute == it.route) R.mipmap.square_sel else R.mipmap.square_nor
+//                                    HomeTab.Discover -> if (currentRoute == it.route) R.mipmap.find_sel else R.mipmap.find_nor
                                     HomeTab.Me -> if (currentRoute == it.route) R.mipmap.mine_sel else R.mipmap.mine_nor
                                 }
                             )
@@ -113,8 +114,8 @@ fun HomeView(userBaseInfoDao: UserBaseInfoDao) {
                             text = when (it) {
                                 HomeTab.Chat -> stringResource(id = R.string.chat)
                                 HomeTab.Contact -> stringResource(id = R.string.contact)
-                                HomeTab.Square -> stringResource(id = R.string.square)
-                                HomeTab.Discover -> stringResource(id = R.string.discover)
+//                                HomeTab.Square -> stringResource(id = R.string.square)
+//                                HomeTab.Discover -> stringResource(id = R.string.discover)
                                 HomeTab.Me -> stringResource(id = R.string.me)
                             },
                             fontSize = 10.sp,
@@ -137,18 +138,18 @@ fun HomeView(userBaseInfoDao: UserBaseInfoDao) {
             noAniComposable(
                 HomeTab.Contact.route
             ) { _ ->
-                Text(text = "通讯录", Modifier.padding(it))
+                ContactView(navController = navController)
             }
-            noAniComposable(
-                HomeTab.Square.route
-            ) { _ ->
-                SquareView(Modifier.padding(it), navController = navController)
-            }
-            noAniComposable(
-                HomeTab.Discover.route
-            ) { _ ->
-                DiscoverView(Modifier.padding(it), navController = navController)
-            }
+//            noAniComposable(
+//                HomeTab.Square.route
+//            ) { _ ->
+//                SquareView(Modifier.padding(it), navController = navController)
+//            }
+//            noAniComposable(
+//                HomeTab.Discover.route
+//            ) { _ ->
+//                DiscoverView(Modifier.padding(it), navController = navController)
+//            }
             noAniComposable(
                 HomeTab.Me.route
             ) { _ ->
@@ -203,10 +204,18 @@ fun HomeView(userBaseInfoDao: UserBaseInfoDao) {
                     navController
                 )
             }
+            aniComposable(
+                route = Route.Profile.route
+            ) {
+                ProfileView(navController = navController)
+            }
         }
     }
 }
 
 enum class HomeTab(val route: String = "") {
-    Chat("chat"), Contact("contact"), Square("square"), Discover("discover"), Me("me")
+    Chat("chat"), Contact("contact"),
+
+    //    Square("square"), Discover("discover"),
+    Me("me")
 }

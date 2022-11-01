@@ -16,15 +16,15 @@ import java.io.File
 
 object Minio {
 
-    private const val END_POINT = "http://47.57.185.242:10005"
-    private const val BUCKET = "openim"
+    private const val END_POINT = "https://freechatoss.s3.ap-southeast-1.amazonaws.com"
+    private const val BUCKET = "freechatoss"
 
     private val s3 = S3Client {
-        region = ""
+        region = "ap-southeast-1"
         credentialsProvider = object : CredentialsProvider {
             override suspend fun getCredentials() = Credentials(
-                accessKeyId = "user12345",
-                secretAccessKey = "key12345",
+                accessKeyId = "AKIAR57G45STDV42P4MX",
+                secretAccessKey = "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",
                 sessionToken = null,
                 providerName = null,
             )
@@ -45,6 +45,7 @@ object Minio {
             }
             "$END_POINT/$BUCKET/${file.name}"
         } catch (e: Exception) {
+            e.printStackTrace()
             null
         }
     }

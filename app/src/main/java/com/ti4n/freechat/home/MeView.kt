@@ -140,9 +140,9 @@ data class MeItemData(
 
 val meItems = listOf(
     MeItemData(R.mipmap.me_money, "钱包", Route.Wallet.route),
-    MeItemData(R.mipmap.me_service, "服务"),
-    MeItemData(R.mipmap.me_square, "我的广场"),
-    MeItemData(R.mipmap.me_grade, "我的评分"),
+//    MeItemData(R.mipmap.me_service, "服务"),
+//    MeItemData(R.mipmap.me_square, "我的广场"),
+//    MeItemData(R.mipmap.me_grade, "我的评分"),
     MeItemData(R.mipmap.me_help, "帮助"),
     MeItemData(R.mipmap.me_setting, "设置")
 )

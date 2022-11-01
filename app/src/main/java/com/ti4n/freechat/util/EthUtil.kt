@@ -172,9 +172,7 @@ object EthUtil {
             ).flowable().asFlow()
         ) { a: EthGasPrice?, b: EthEstimateGas? ->
             return@combine if (a != null && b != null) {
-                "${((b.amountUsed.toDouble() + 2000) * a.gasPrice.toDouble()).toWei(18)}" to "${
-                    (b.amountUsed.toDouble() * a.gasPrice.toDouble()).toWei(18)
-                }"
+                "${((b.amountUsed.toDouble() + 2000) * a.gasPrice.toDouble()).toWei(18)}" to (b.amountUsed.toDouble() * a.gasPrice.toDouble()).toWei(18)
             } else null
         }.flowOn(Dispatchers.IO)
 

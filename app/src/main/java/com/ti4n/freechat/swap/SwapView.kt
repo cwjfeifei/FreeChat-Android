@@ -389,7 +389,7 @@ fun SwapView(navController: NavController, viewModel: SwapViewModel = hiltViewMo
                         modifier = Modifier
                             .weight(1f)
                             .clickable {
-                                uriHandler.openUri("https://goerli.etherscan.io/tx/$transactionHash")
+                                uriHandler.openUri("https://etherscan.io/tx/$transactionHash")
                             }
                             .padding(vertical = 12.dp),
                         style = TextStyle(textAlign = TextAlign.Center)

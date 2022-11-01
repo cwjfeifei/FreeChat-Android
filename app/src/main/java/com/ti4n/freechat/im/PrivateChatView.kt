@@ -1,6 +1,9 @@
 package com.ti4n.freechat.im
 
 import android.app.Activity
+import android.media.AudioAttributes
+import android.media.AudioManager
+import android.media.MediaPlayer
 import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.PickVisualMediaRequest
@@ -12,6 +15,7 @@ import androidx.compose.animation.expandVertically
 import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -38,6 +42,7 @@ import androidx.compose.material.TextFieldDefaults
 import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.pullrefresh.pullRefresh
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.collectAsState
@@ -47,11 +52,13 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.Alignment.Companion.CenterVertically
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.nativeCanvas
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
@@ -66,9 +73,15 @@ import androidx.navigation.NavController
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.items
 import coil.compose.AsyncImage
+import com.google.accompanist.permissions.ExperimentalPermissionsApi
+import com.google.accompanist.permissions.PermissionStatus
+import com.google.accompanist.permissions.rememberPermissionState
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.ti4n.freechat.R
+import com.ti4n.freechat.Route
 import com.ti4n.freechat.util.IM
+import com.ti4n.freechat.util.Minio
+import com.ti4n.freechat.util.RecordVoiceUtil
 import com.ti4n.freechat.util.coloredShadow
 import com.ti4n.freechat.widget.Image
 import com.ti4n.freechat.widget.CustomPaddingTextField
@@ -76,7 +89,9 @@ import com.ti4n.freechat.widget.HomeTitle
 import io.openim.android.sdk.models.Message
 import io.openim.android.sdk.models.UserInfo
 import kotlinx.coroutines.launch
+import java.io.File
 
+@OptIn(ExperimentalPermissionsApi::class)
 @Composable
 fun PrivateChatView(
     navController: NavController, viewModel: PrivateChatViewModel = hiltViewModel()
@@ -90,6 +105,9 @@ fun PrivateChatView(
     val toUserInfo by viewModel.toUserInfo.collectAsState()
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
+    val recordPermissionState = rememberPermissionState(
+        android.Manifest.permission.RECORD_AUDIO
+    )
     SideEffect {
         systemUiController.setStatusBarColor(
             color = Color.Transparent
@@ -126,18 +144,18 @@ fun PrivateChatView(
             items(IM.newMessages.filter { it.recvID == viewModel.toUserId || it.sendID == viewModel.toUserId }
                 .reversed()) {
                 if (it.sendID == meInfo?.userId) {
-                    MineMessage(message = it)
+                    MineMessage(message = it, navController = navController)
                 } else {
-                    ToUserMessage(message = it)
+                    ToUserMessage(message = it, navController = navController)
                 }
                 Spacer(modifier = Modifier.height(16.dp))
             }
             items(messages.itemSnapshotList.reversed()) {
                 it?.let {
                     if (it.sendID == meInfo?.userId) {
-                        MineMessage(message = it)
+                        MineMessage(message = it, navController = navController)
                     } else {
-                        ToUserMessage(message = it)
+                        ToUserMessage(message = it, navController = navController)
                     }
                 }
                 Spacer(modifier = Modifier.height(16.dp))
@@ -159,7 +177,9 @@ fun PrivateChatView(
                 })
 
                 else -> Image(mipmap = R.mipmap.yuyin_chat, modifier = Modifier.clickable {
-                    inputType = InputType.Voice
+                    if (recordPermissionState.status == PermissionStatus.Granted) {
+                        inputType = InputType.Voice
+                    } else recordPermissionState.launchPermissionRequest()
                 })
             }
             if (inputType == InputType.Voice) {
@@ -172,7 +192,28 @@ fun PrivateChatView(
                             Color.White, RoundedCornerShape(4.dp)
                         )
                         .padding(vertical = 6.dp)
-                        .weight(1f),
+                        .weight(1f)
+                        .pointerInput(Unit) {
+                            detectTapGestures(
+                                onPress = {
+                                    val startTime = System.currentTimeMillis()
+                                    val savedFile = File(context.cacheDir, "${startTime}_voice.mp3")
+                                    val recorder = RecordVoiceUtil(savedFile)
+                                    try {
+                                        recorder.record()
+                                        awaitRelease()
+                                    } finally {
+                                        val endTime = System.currentTimeMillis()
+                                        recorder.finish()
+                                        IM.sendVoiceMessage(
+                                            viewModel.toUserId,
+                                            savedFile.absolutePath,
+                                            (endTime - startTime) / 1000
+                                        )
+                                    }
+                                },
+                            )
+                        },
                     textAlign = TextAlign.Center
                 )
             } else {
@@ -199,9 +240,9 @@ fun PrivateChatView(
                     keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Send)
                 )
             }
-            Image(mipmap = R.mipmap.biaoqing, modifier = Modifier.clickable {
-                inputType = InputType.Emoji
-            })
+//            Image(mipmap = R.mipmap.biaoqing, modifier = Modifier.clickable {
+//                inputType = InputType.Emoji
+//            })
             Image(mipmap = R.mipmap.more_type, modifier = Modifier.clickable {
                 inputType = InputType.More
             })
@@ -257,7 +298,7 @@ fun ItemMoreFunction(@DrawableRes image: Int, @StringRes text: Int, click: () ->
 }
 
 @Composable
-fun ToUserMessage(message: Message) {
+fun ToUserMessage(message: Message, navController: NavController) {
     val bgImg = ContextCompat.getDrawable(
         LocalContext.current, R.mipmap.chat_bg_others
     )
@@ -269,7 +310,9 @@ fun ToUserMessage(message: Message) {
         AsyncImage(
             model = message.senderFaceUrl,
             contentDescription = null,
-            modifier = Modifier.size(38.dp)
+            modifier = Modifier
+                .size(38.dp)
+                .clickable { navController.navigate(Route.Profile.jump(message.sendID)) }
         )
         Spacer(modifier = Modifier.width(6.dp))
         if (!message.pictureElem.snapshotPicture.url.isNullOrEmpty())
@@ -280,6 +323,33 @@ fun ToUserMessage(message: Message) {
                     .clip(RoundedCornerShape(8.dp))
                     .weight(1f)
             )
+        else if (!message.soundElem.soundPath.isNullOrEmpty())
+            Row(verticalAlignment = CenterVertically, modifier = Modifier
+                .drawBehind {
+                    bgImg?.updateBounds(0, 0, size.width.toInt(), size.height.toInt())
+                    bgImg?.draw(drawContext.canvas.nativeCanvas)
+                }
+                .clickable {
+                    val mediaPlayer = MediaPlayer()
+                    mediaPlayer.setAudioAttributes(
+                        AudioAttributes
+                            .Builder()
+                            .setContentType(AudioAttributes.CONTENT_TYPE_SPEECH)
+                            .build()
+                    )
+                    mediaPlayer.setDataSource(message.soundElem.soundPath)
+                    mediaPlayer.prepare()
+                    mediaPlayer.start()
+                }
+                .padding(horizontal = 12.dp, vertical = 8.dp)) {
+                Text(
+                    text = "${message.soundElem.duration}”",
+                    color = Color.Black,
+                    fontSize = 16.sp,
+                )
+                Spacer(modifier = Modifier.width(10.dp))
+                Image(mipmap = R.mipmap.yuyin_r)
+            }
         else
             Text(text = message.content,
                 color = Color.Black,
@@ -295,7 +365,7 @@ fun ToUserMessage(message: Message) {
 }
 
 @Composable
-fun MineMessage(message: Message) {
+fun MineMessage(message: Message, navController: NavController) {
     val bgImg = ContextCompat.getDrawable(
         LocalContext.current, R.mipmap.chat_bg_mine
     )
@@ -313,6 +383,33 @@ fun MineMessage(message: Message) {
                     .clip(RoundedCornerShape(8.dp))
                     .weight(1f)
             )
+        else if (!message.soundElem.soundPath.isNullOrEmpty())
+            Row(verticalAlignment = CenterVertically, modifier = Modifier
+                .drawBehind {
+                    bgImg?.updateBounds(0, 0, size.width.toInt(), size.height.toInt())
+                    bgImg?.draw(drawContext.canvas.nativeCanvas)
+                }
+                .clickable {
+                    val mediaPlayer = MediaPlayer()
+                    mediaPlayer.setAudioAttributes(
+                        AudioAttributes
+                            .Builder()
+                            .setContentType(AudioAttributes.CONTENT_TYPE_SPEECH)
+                            .build()
+                    )
+                    mediaPlayer.setDataSource(message.soundElem.soundPath)
+                    mediaPlayer.prepare()
+                    mediaPlayer.start()
+                }
+                .padding(horizontal = 12.dp, vertical = 8.dp)) {
+                Image(mipmap = R.mipmap.yuyin_r)
+                Spacer(modifier = Modifier.width(10.dp))
+                Text(
+                    text = "${message.soundElem.duration}”",
+                    color = Color.Black,
+                    fontSize = 16.sp,
+                )
+            }
         else
             Text(text = message.content,
                 color = Color.Black,
@@ -327,7 +424,9 @@ fun MineMessage(message: Message) {
         AsyncImage(
             model = message.senderFaceUrl,
             contentDescription = null,
-            modifier = Modifier.size(38.dp)
+            modifier = Modifier
+                .size(38.dp)
+                .clickable { navController.navigate(Route.Profile.jump(message.sendID)) }
         )
     }
 }

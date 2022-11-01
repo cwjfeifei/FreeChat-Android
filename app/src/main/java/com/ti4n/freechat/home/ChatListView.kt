@@ -88,18 +88,18 @@ fun ChatListView(
                         DropdownMenuItem(onClick = { }) {
                             Text(text = "添加好友", fontSize = 16.sp, color = Color.White)
                         }
+//                        Divider(color = Color(0xFF5F5F5F))
+//                        DropdownMenuItem(onClick = { }) {
+//                            Text(text = "创建圈子", fontSize = 16.sp, color = Color.White)
+//                        }
                         Divider(color = Color(0xFF5F5F5F))
-                        DropdownMenuItem(onClick = { }) {
-                            Text(text = "创建圈子", fontSize = 16.sp, color = Color.White)
-                        }
-                        Divider(color = Color(0xFF5F5F5F))
-                        DropdownMenuItem(onClick = { }) {
+                        DropdownMenuItem(onClick = { navController.navigate(Route.Wallet.route) }) {
                             Text(text = "钱包", fontSize = 16.sp, color = Color.White)
                         }
-                        Divider(color = Color(0xFF5F5F5F))
-                        DropdownMenuItem(onClick = { }) {
-                            Text(text = "扫一扫", fontSize = 16.sp, color = Color.White)
-                        }
+//                        Divider(color = Color(0xFF5F5F5F))
+//                        DropdownMenuItem(onClick = { }) {
+//                            Text(text = "扫一扫", fontSize = 16.sp, color = Color.White)
+//                        }
                     }
                 }
                 Spacer(modifier = Modifier.width(24.dp))
@@ -119,7 +119,8 @@ fun ChatListView(
                         it.faceURL,
                         it.showName,
                         when {
-                            message.pictureElem.snapshotPicture.url.isNotEmpty() -> "[图片]"
+                            !message.pictureElem.snapshotPicture.url.isNullOrEmpty() -> "[图片]"
+                            !message.soundElem.soundPath.isNullOrEmpty() -> "[语音]"
                             else -> message.content
                         },
                         SimpleDateFormat("yyyy-MM-dd hh:mm").format(

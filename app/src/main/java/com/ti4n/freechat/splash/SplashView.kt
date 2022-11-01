@@ -8,6 +8,7 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.SideEffect
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
@@ -38,11 +39,14 @@ fun SplashView(navController: NavController) {
     SideEffect {
         systemUiController.setSystemBarsColor(Color.Transparent)
     }
-    Box(modifier = Modifier.fillMaxSize()) {
+    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
         Image(
-            mipmap = R.mipmap.homepage,
+            mipmap = R.mipmap.splash_bg,
             modifier = Modifier.fillMaxSize(),
             contentScale = ContentScale.FillBounds
+        )
+        Image(
+            mipmap = R.mipmap.splash_freechat
         )
     }
     LaunchedEffect(Unit) {

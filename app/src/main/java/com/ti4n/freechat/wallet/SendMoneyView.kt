@@ -198,12 +198,14 @@ fun SendMoneyView(navController: NavController, viewModel: SendMoneyViewModel = 
             Divider(thickness = 1.dp, color = Color.Black.copy(alpha = 0.1f))
             if (recentAddress.itemCount == 0) {
                 Spacer(modifier = Modifier.weight(1f))
-                Image(mipmap = R.mipmap.no_data)
+                Image(mipmap = R.mipmap.no_data, Modifier.fillMaxWidth())
                 Spacer(modifier = Modifier.height(16.dp))
                 Text(
                     text = stringResource(id = R.string.no_data),
                     color = Color(0xFF999999),
-                    fontSize = 12.sp
+                    fontSize = 12.sp,
+                    modifier = Modifier.fillMaxWidth(),
+                    textAlign = TextAlign.Center
                 )
                 Spacer(modifier = Modifier.weight(1f))
             } else {

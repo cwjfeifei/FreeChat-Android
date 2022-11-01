@@ -112,11 +112,6 @@ class MainActivity : AppCompatActivity() {
                             ) {
                                 BigImageView(navController = navController, it.requiredArg("url"))
                             }
-                            aniComposable(
-                                route = Route.Profile.route
-                            ) {
-                                ProfileView(navController = navController)
-                            }
                             aniComposable(Route.PermissionIntro.route) {
                                 PermissionView(navController)
                             }

@@ -13,7 +13,9 @@ sealed class Route(val route: String) {
     object CompleteProfile : Route("completeProfile")
     object SetName : Route("setName")
     object Home : Route("home")
-    object Profile : Route("profile")
+    object Profile : Route("profile/{id}") {
+        fun jump(id: String) = "profile/$id"
+    }
 
     object BigImage : Route("image")
 

@@ -37,5 +37,6 @@ class PrivateChatViewModel @Inject constructor(
         viewModelScope.launch {
             toUserInfo.value = IM.getUserInfo(toUserId)?.firstOrNull() ?: UserInfo()
         }
+        IM.newMessages.clear()
     }
 }
