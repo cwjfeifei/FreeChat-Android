@@ -1,5 +1,13 @@
 package com.ti4n.freechat.login
 
+import android.content.ClipData
+import android.content.ClipboardManager
+import android.content.Context
+import android.graphics.Bitmap
+import android.graphics.Canvas
+import android.provider.MediaStore
+import android.view.View
+import android.widget.Toast
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
@@ -15,6 +23,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -23,9 +32,16 @@ import androidx.navigation.NavController
 import com.ti4n.freechat.R
 import com.ti4n.freechat.Route
 import com.ti4n.freechat.widget.ImageButton
+import java.text.SimpleDateFormat
+import java.util.*
+
 
 @Composable
-fun Register1View(navController: NavController, viewModel: RegisterViewModel = hiltViewModel()) {
+fun Register1View(
+    navController: NavController,
+    rootView: View,  // For save to Gallery
+    viewModel: RegisterViewModel = hiltViewModel()
+) {
     val scrollState = rememberScrollState()
     val words by viewModel.words.collectAsState()
     LoginCommonView(R.string.keep_mnemonic_to_find_account) {
@@ -63,8 +79,30 @@ fun Register1View(navController: NavController, viewModel: RegisterViewModel = h
                 horizontalArrangement = Arrangement.SpaceBetween,
                 modifier = Modifier.fillMaxWidth()
             ) {
+                var context = LocalContext.current
+
                 TextButton(
-                    onClick = { },
+                    onClick = {
+                        // 将view界面存储到Gallery (TODO 仅保存到当前compose的图)
+                        var bitmap = Bitmap.createBitmap(
+                            rootView.width, rootView.height,
+                            Bitmap.Config.ARGB_8888
+                        )
+                        val canvas = Canvas(bitmap)
+                        rootView.draw(canvas)
+
+                        var fileName = "FCC_" + SimpleDateFormat("yyyy-MM-dd hh:mm").format(
+                            Date(System.currentTimeMillis())
+                        )
+                        // 保存至系统图库
+                        MediaStore.Images.Media.insertImage(
+                            context.contentResolver,
+                            bitmap,
+                            fileName,
+                            "FreeChat words"
+                        )
+                        Toast.makeText(context, "图片已保存", Toast.LENGTH_SHORT).show()
+                    },
                     shape = RoundedCornerShape(4.dp),
                     colors = ButtonDefaults.buttonColors(backgroundColor = Color(0xFF6B8FF8))
                 ) {
@@ -75,25 +113,35 @@ fun Register1View(navController: NavController, viewModel: RegisterViewModel = h
                         fontWeight = FontWeight.Medium
                     )
                 }
+//                TextButton(
+//                    onClick = { },
+//                    shape = RoundedCornerShape(4.dp),
+//                    colors = ButtonDefaults.buttonColors(backgroundColor = Color(0xFF6B8FF8))
+//                ) {
+//                    Text(
+//                        text = "发送为短信",
+//                        color = Color.White,
+//                        fontSize = 12.sp,
+//                        fontWeight = FontWeight.Medium
+//                    )
+//                }
                 TextButton(
-                    onClick = { },
+                    onClick = {
+                        var clipMgr =
+                            context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager;
+                        val data = ClipData.newPlainText(
+                            "FreeChat Words",  // What should I set for this "label"?
+                            words.toString().replace("[", "").replace("]", "")
+                        )
+                        clipMgr.setPrimaryClip(data)
+                        Toast.makeText(context, "已复制到粘贴板", Toast.LENGTH_SHORT).show()
+                    },
                     shape = RoundedCornerShape(4.dp),
                     colors = ButtonDefaults.buttonColors(backgroundColor = Color(0xFF6B8FF8))
                 ) {
                     Text(
-                        text = "发送为短信",
-                        color = Color.White,
-                        fontSize = 12.sp,
-                        fontWeight = FontWeight.Medium
-                    )
-                }
-                TextButton(
-                    onClick = { },
-                    shape = RoundedCornerShape(4.dp),
-                    colors = ButtonDefaults.buttonColors(backgroundColor = Color(0xFF6B8FF8))
-                ) {
-                    Text(
-                        text = "备份为keystore",
+//                        text = "备份为keystore",
+                        text = "复制",
                         color = Color.White,
                         fontSize = 12.sp,
                         fontWeight = FontWeight.Medium
