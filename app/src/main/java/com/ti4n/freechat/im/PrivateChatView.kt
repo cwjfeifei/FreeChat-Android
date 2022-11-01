@@ -67,7 +67,9 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.content.ContextCompat
+import androidx.core.content.FileProvider
 import androidx.core.graphics.drawable.updateBounds
+import androidx.core.net.toUri
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.paging.compose.collectAsLazyPagingItems
@@ -108,6 +110,9 @@ fun PrivateChatView(
     val recordPermissionState = rememberPermissionState(
         android.Manifest.permission.RECORD_AUDIO
     )
+    val cameraPermissionState = rememberPermissionState(
+        android.Manifest.permission.CAMERA
+    )
     SideEffect {
         systemUiController.setStatusBarColor(
             color = Color.Transparent
@@ -124,6 +129,18 @@ fun PrivateChatView(
             }
         }
     }
+    var photoFile: File? = null
+    val takePhoto =
+        rememberLauncherForActivityResult(ActivityResultContracts.TakePicture()) {
+            if (it) {
+                photoFile?.let {
+                    scope.launch {
+                        IM.sendImageMessage(viewModel.toUserId, it.absolutePath)
+                    }
+                }
+            }
+        }
+
     Column(
         Modifier
             .fillMaxSize()
@@ -265,7 +282,19 @@ fun PrivateChatView(
                     horizontalArrangement = Arrangement.spacedBy(32.dp)
                 ) {
                     ItemMoreFunction(image = R.mipmap.camera_chat, text = R.string.camera) {
-
+                        if (cameraPermissionState.status == PermissionStatus.Granted) {
+                            photoFile =
+                                File(context.cacheDir, "${System.currentTimeMillis()}_camera.jpg")
+                            takePhoto.launch(
+                                FileProvider.getUriForFile(
+                                    context,
+                                    "com.ti4n.freechat.provider",
+                                    photoFile!!
+                                )
+                            )
+                        } else {
+                            cameraPermissionState.launchPermissionRequest()
+                        }
                     }
                     ItemMoreFunction(image = R.mipmap.picture_chat, text = R.string.picture) {
                         pickImage.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))

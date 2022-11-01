@@ -126,6 +126,7 @@ fun ChatListView(
                         SimpleDateFormat("yyyy-MM-dd hh:mm").format(
                             Date(it.latestMsgSendTime)
                         ),
+                        it.unreadCount,
                         pin = { viewModel.pinConversation(it.conversationID, !it.isPinned) },
                         delete = { viewModel.deleteConversation(it.conversationID) }
                     ) {
@@ -151,6 +152,7 @@ fun ChatItem(
     nickname: String,
     content: String,
     time: String,
+    unread: Int,
     pin: () -> Unit,
     delete: () -> Unit,
     onClick: () -> Unit
@@ -194,7 +196,22 @@ fun ChatItem(
             .background(Color.White)
             .clickable { onClick() }
             .padding(horizontal = 24.dp, vertical = 16.dp)) {
-            AsyncImage(model = avatar, contentDescription = null, modifier = Modifier.size(44.dp))
+            BadgedBox(badge = {
+                if (unread != 0) {
+                    Badge(
+                        backgroundColor = Color(0xFFE64940),
+                        contentColor = Color.White
+                    ) {
+                        Text(text = "$unread")
+                    }
+                }
+            }) {
+                AsyncImage(
+                    model = avatar,
+                    contentDescription = null,
+                    modifier = Modifier.size(44.dp)
+                )
+            }
             Spacer(modifier = Modifier.width(12.dp))
             Column {
                 Text(

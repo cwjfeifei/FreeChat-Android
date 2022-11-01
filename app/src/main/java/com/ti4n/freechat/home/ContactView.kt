@@ -4,6 +4,7 @@ import android.icu.text.SimpleDateFormat
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.expandVertically
 import androidx.compose.animation.shrinkVertically
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -37,6 +38,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.capitalize
+import androidx.compose.ui.text.toUpperCase
 import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -49,7 +52,10 @@ import com.ti4n.freechat.util.IM
 import com.ti4n.freechat.widget.HomeTitle
 import com.ti4n.freechat.widget.Image
 import io.openim.android.sdk.models.FriendInfo
+import projekt.cloud.piece.c2.pinyin.C2Pinyin.pinyin
+import java.util.Locale
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun ContactView(
     navController: NavController,
@@ -71,15 +77,39 @@ fun ContactView(
             HomeTitle(R.string.contact)
         }, elevation = 0.dp, modifier = Modifier.statusBarsPadding())
         Spacer(modifier = Modifier.height(6.dp))
-        LazyColumn(modifier = Modifier.background(Color.White)) {
-            item {
-                ItemNewFriend {
+        Box {
+            val items = IM.friends.groupBy {
+                it.nickname.pinyin.first()
+            }
+            LazyColumn(modifier = Modifier.background(Color.White)) {
+                item {
+                    ItemNewFriend {
 
+                    }
+                }
+                items.forEach {
+                    stickyHeader(key = it.key) {
+                        ItemLetter(letter = it.key)
+                    }
+                    items(it.value) {
+                        ItemFriend(friendInfo = it) {
+                            navController.navigate(Route.Profile.jump(it.userID))
+                        }
+                    }
                 }
             }
-            items(IM.friends) {
-                ItemFriend(friendInfo = it) {
-                    navController.navigate(Route.Profile.jump(it.userID))
+            Column(modifier = Modifier.align(Alignment.CenterEnd)) {
+                items.map { it.key }.forEach {
+                    Text(
+                        text = it.uppercase(),
+                        color = Color(0xFF4D4D4D),
+                        fontSize = 9.sp,
+                        modifier = modifier
+                            .clickable {
+
+                            }
+                            .padding(horizontal = 4.dp, vertical = 1.dp)
+                    )
                 }
             }
         }
@@ -127,6 +157,22 @@ fun ItemFriend(friendInfo: FriendInfo, click: () -> Unit) {
         Spacer(modifier = Modifier.width(10.dp))
         Text(
             text = friendInfo.nickname, color = Color(0xFF1A1A1A), fontSize = 16.sp
+        )
+    }
+}
+
+@Composable
+fun ItemLetter(letter: Char) {
+    Row(
+        Modifier
+            .fillMaxWidth()
+            .height(30.dp)
+            .background(Color(0xFFF0F0F0))
+            .padding(horizontal = 16.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Text(
+            text = letter.uppercase(), color = Color(0xFF666666), fontSize = 12.sp
         )
     }
 }

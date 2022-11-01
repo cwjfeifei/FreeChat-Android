@@ -126,4 +126,5 @@ dependencies {
     implementation fileTree(dir: 'libs', include: ['*.aar'])
 
     implementation("aws.sdk.kotlin:s3:0.17.5-beta")
+    implementation 'com.github.1552980358:C2Pinyin:2.3.3'
 }

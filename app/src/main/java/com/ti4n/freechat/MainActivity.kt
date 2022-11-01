@@ -82,7 +82,7 @@ class MainActivity : AppCompatActivity() {
                                 )
                             }
                             aniComposable(route = Route.Register1.route) {
-                                Register1View(navController, window.decorView)
+                                Register1View(navController)
                             }
                             aniComposable(route = Route.Register2.route) {
                                 val backStackEntry = remember {

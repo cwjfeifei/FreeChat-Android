@@ -23,7 +23,10 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalView
+import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -39,11 +42,12 @@ import java.util.*
 @Composable
 fun Register1View(
     navController: NavController,
-    rootView: View,  // For save to Gallery
     viewModel: RegisterViewModel = hiltViewModel()
 ) {
     val scrollState = rememberScrollState()
     val words by viewModel.words.collectAsState()
+    val view = LocalView.current
+    val clipboardManager = LocalClipboardManager.current
     LoginCommonView(R.string.keep_mnemonic_to_find_account) {
         Spacer(Modifier.height(14.dp))
         Column(Modifier.verticalScroll(scrollState)) {
@@ -75,23 +79,19 @@ fun Register1View(
                 }
             }
             Spacer(Modifier.height(12.dp))
-            Row(
-                horizontalArrangement = Arrangement.SpaceBetween,
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                var context = LocalContext.current
-
+            Row(modifier = Modifier.fillMaxWidth()) {
+                val context = LocalContext.current
                 TextButton(
                     onClick = {
                         // 将view界面存储到Gallery (TODO 仅保存到当前compose的图)
-                        var bitmap = Bitmap.createBitmap(
-                            rootView.width, rootView.height,
+                        val bitmap = Bitmap.createBitmap(
+                            view.width, view.height,
                             Bitmap.Config.ARGB_8888
                         )
                         val canvas = Canvas(bitmap)
-                        rootView.draw(canvas)
+                        view.draw(canvas)
 
-                        var fileName = "FCC_" + SimpleDateFormat("yyyy-MM-dd hh:mm").format(
+                        val fileName = "FCC_" + SimpleDateFormat("yyyy-MM-dd hh:mm").format(
                             Date(System.currentTimeMillis())
                         )
                         // 保存至系统图库
@@ -104,7 +104,8 @@ fun Register1View(
                         Toast.makeText(context, "图片已保存", Toast.LENGTH_SHORT).show()
                     },
                     shape = RoundedCornerShape(4.dp),
-                    colors = ButtonDefaults.buttonColors(backgroundColor = Color(0xFF6B8FF8))
+                    colors = ButtonDefaults.buttonColors(backgroundColor = Color(0xFF6B8FF8)),
+                    modifier = Modifier.weight(1f)
                 ) {
                     Text(
                         text = "保存为图片",
@@ -125,19 +126,15 @@ fun Register1View(
 //                        fontWeight = FontWeight.Medium
 //                    )
 //                }
+                Spacer(modifier = Modifier.width(14.dp))
                 TextButton(
                     onClick = {
-                        var clipMgr =
-                            context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager;
-                        val data = ClipData.newPlainText(
-                            "FreeChat Words",  // What should I set for this "label"?
-                            words.toString().replace("[", "").replace("]", "")
-                        )
-                        clipMgr.setPrimaryClip(data)
+                        clipboardManager.setText(AnnotatedString(words.joinToString(" ")))
                         Toast.makeText(context, "已复制到粘贴板", Toast.LENGTH_SHORT).show()
                     },
                     shape = RoundedCornerShape(4.dp),
-                    colors = ButtonDefaults.buttonColors(backgroundColor = Color(0xFF6B8FF8))
+                    colors = ButtonDefaults.buttonColors(backgroundColor = Color(0xFF6B8FF8)),
+                    modifier = Modifier.weight(1f)
                 ) {
                     Text(
 //                        text = "备份为keystore",
