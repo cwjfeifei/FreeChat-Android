@@ -51,4 +51,5 @@ class ProfileViewModel @Inject constructor(
             IM.addFriend(toUserId)
         }
     }
+
 }

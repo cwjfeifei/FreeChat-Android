@@ -105,7 +105,7 @@ fun Register1View(
                     },
                     shape = RoundedCornerShape(4.dp),
                     colors = ButtonDefaults.buttonColors(backgroundColor = Color(0xFF141B33)),
-                    modifier = Modifier.weight(1f)
+                    modifier = Modifier.weight(1f).width(136.dp)
                 ) {
                     Text(
                         text = "保存为图片",
@@ -134,7 +134,7 @@ fun Register1View(
                     },
                     shape = RoundedCornerShape(4.dp),
                     colors = ButtonDefaults.buttonColors(backgroundColor = Color(0xFF141B33)),
-                    modifier = Modifier.weight(1f)
+                    modifier = Modifier.weight(1f).width(136.dp)
                 ) {
                     Text(
 //                        text = "备份为keystore",
@@ -178,6 +178,7 @@ fun Register1View(
             ImageButton(title = R.string.back, mipmap = R.mipmap.return_btn) {
                 navController.navigateUp()
             }
+            Spacer(Modifier.width(4.dp))
             ImageButton(
                 title = R.string.next,
                 mipmap = R.mipmap.next_btn,

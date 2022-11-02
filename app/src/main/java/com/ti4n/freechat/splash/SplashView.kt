@@ -70,7 +70,7 @@ fun SplashView(navController: NavController) {
             .firstOrNull() ?: false
         if (agree) {
             val isLogin =
-                !context.dataStore.data.map { it[stringPreferencesKey("account")] }.firstOrNull()
+                !context.dataStore.data.map { it[stringPreferencesKey("email")] }.firstOrNull()
                     .isNullOrEmpty()
             delay(1.seconds)
             if (isLogin) {

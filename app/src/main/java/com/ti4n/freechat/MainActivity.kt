@@ -81,6 +81,13 @@ class MainActivity : AppCompatActivity() {
                                     it.arguments?.getString("words", "") ?: ""
                                 )
                             }
+                            aniComposable(route = Route.SetEmail.route) {
+                                SetEmailView(
+                                    navController,
+                                    it.arguments?.getString("words", "") ?: "",
+                                    it.arguments?.getString("password", "") ?: ""
+                                )
+                            }
                             aniComposable(route = Route.Register1.route) {
                                 Register1View(navController)
                             }

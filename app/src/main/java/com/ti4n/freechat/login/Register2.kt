@@ -135,6 +135,7 @@ fun Register2View(
             ImageButton(title = R.string.back, mipmap = R.mipmap.return_btn) {
                 navController.navigateUp()
             }
+            Spacer(Modifier.width(4.dp))
             ImageButton(
                 title = when (type) {
                     LoginType.Login -> R.string.login_freechat

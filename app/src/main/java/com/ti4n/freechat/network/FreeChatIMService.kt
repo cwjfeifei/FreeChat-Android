@@ -11,11 +11,12 @@ import retrofit2.http.Header
 import retrofit2.http.POST
 import retrofit2.http.Url
 
-const val freeChatIMUrl = "http://47.57.185.242:10002/"
+const val freeChatIMUrl = "http://47.57.185.242:10004/"
 
 interface FreeChatIMService {
 
-    @POST("auth/user_register")
+//    @POST("auth/user_register")
+    @POST("auth/password")
     suspend fun register(@Body register: Register): BaseResponse<UserToken>
 
     @POST("auth/user_token")

@@ -20,7 +20,12 @@
     <string name="keep_mnemonic_to_find_account">请妥善保管您的助记词\n便于您找回账户</string>
     <string name="next">下一步</string>
     <string name="input_mnemonic_by_order">请按顺序验证助记词</string>
-    <string name="set_password">请设置您的临时密码</string>
+    <string name="title_set_password">请确认您的账户密码</string>
+    <string name="set_password">请输入您的账户密码</string>
+    <string name="set_password2">请确认您的账户密码</string>
+    <string name="title_set_email">请设置账户保护电子邮箱</string>
+    <string name="set_email">请输入您的电子邮箱</string>
+    <string name="set_email2">再次确认您的电子邮箱</string>
     <string name="cancel">取消</string>
     <string name="set_name">设置名字</string>
     <string name="done">完成</string>

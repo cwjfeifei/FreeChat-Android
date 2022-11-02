@@ -9,17 +9,41 @@ import androidx.compose.ui.graphics.drawscope.drawIntoCanvas
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import com.ti4n.freechat.network.freeChatUrl
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlinx.coroutines.withContext
+import java.io.UnsupportedEncodingException
+import java.security.MessageDigest
+import java.security.NoSuchAlgorithmException
 import kotlin.coroutines.resume
+import kotlin.experimental.and
 
 suspend fun pingFreeChat() = withContext(Dispatchers.IO) {
     suspendCancellableCoroutine {
         it.resume(Runtime.getRuntime().exec("ping -c 1 -w 100 https://freechat.world/").waitFor() == 0)
     }
 }
+
+fun md5(content: String): String? {
+    val hash: ByteArray
+    hash = try {
+        MessageDigest.getInstance("MD5").digest(content.toByteArray(charset("UTF-8")))
+    } catch (e: NoSuchAlgorithmException) {
+        throw RuntimeException("NoSuchAlgorithmException", e)
+    } catch (e: UnsupportedEncodingException) {
+        throw RuntimeException("UnsupportedEncodingException", e)
+    }
+    val hex = StringBuilder(hash.size * 2)
+    for (b in hash) {
+        if ((b and 0xFF.toByte()) < 0x10) {
+            hex.append("0")
+        }
+
+        hex.append(Integer.toHexString((b and 0xFF.toByte()).toInt()))
+    }
+    return hex.toString()
+}
+
 
 fun Modifier.coloredShadow(
     color: Color = Color.Black,

@@ -91,7 +91,10 @@ fun PermissionView(navController: NavController) {
             }
         }
         Spacer(modifier = Modifier.weight(1f))
-        ImageButton(title = R.string.i_know, mipmap = R.mipmap.login_btn, textColor = Color.White) {
+        ImageButton(title = R.string.i_know,
+            mipmap = R.mipmap.login_btn,
+            textColor = Color.White,
+            modifier = Modifier.padding(bottom = 12.dp)) {
             scope.launch {
                 context.dataStore.edit {
                     it[booleanPreferencesKey("agreePermission")] = true

@@ -1,12 +1,7 @@
 package com.ti4n.freechat.login
 
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.grid.GridCells
-import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -15,58 +10,47 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.datastore.preferences.core.edit
-import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.ti4n.freechat.R
-import com.ti4n.freechat.Route
-import com.ti4n.freechat.di.dataStore
 import com.ti4n.freechat.util.EthUtil
 import com.ti4n.freechat.util.address
-import com.ti4n.freechat.widget.Image
 import com.ti4n.freechat.widget.ImageButton
-import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.filter
-import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.stateIn
-import kotlinx.coroutines.flow.take
 import kotlinx.coroutines.launch
 import org.kethereum.bip39.model.MnemonicWords
-import org.web3j.crypto.MnemonicUtils
-import org.web3j.crypto.WalletUtils
-import java.io.File
 
+// 邮箱注册Freechat
 @Composable
-fun SetPasswordView(
+fun SetEmailView(
     navController: NavController,
     words: String,
+    password: String,
     viewModel: RegisterViewModel = hiltViewModel()
 ) {
-    var password1 by remember {
+    var email1 by remember {
         mutableStateOf("")
     }
-    var password2 by remember {
+    var email2 by remember {
         mutableStateOf("")
     }
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
-//    LaunchedEffect(Unit) {
+    var emailCheck = ""
+    LaunchedEffect(Unit) {
 //        viewModel.navigationRoute.filter { it.isNotEmpty() }.collectLatest {
 //            navController.navigate(it)
 //        }
-//    }
-    LoginCommonView(R.string.set_password) {
+    }
+    LoginCommonView(R.string.title_set_email) {
         Spacer(Modifier.height(60.dp))
         TextField(
-            value = password1,
-            onValueChange = { password1 = it },
+            value = email1,
+            onValueChange = { email1 = it },
             modifier = Modifier
                 .fillMaxWidth(),
             maxLines = 1,
@@ -83,7 +67,7 @@ fun SetPasswordView(
             ),
             placeholder = {
                 Text(
-                    text = stringResource(id=R.string.set_password),
+                    text = stringResource(id = R.string.set_email) ,
                     color = Color(0xFF999999),
                     fontSize = 14.sp,
                     textAlign = TextAlign.Center,
@@ -93,8 +77,8 @@ fun SetPasswordView(
         )
         Spacer(Modifier.height(20.dp))
         TextField(
-            value = password2,
-            onValueChange = { password2 = it },
+            value = email2,
+            onValueChange = { email2 = it },
             modifier = Modifier
                 .fillMaxWidth(),
             maxLines = 1,
@@ -105,13 +89,13 @@ fun SetPasswordView(
             ),
             shape = RoundedCornerShape(4.dp),
             textStyle = TextStyle(
-                fontSize = 16.sp,
+                fontSize = 14.sp,
                 color = Color.Black,
                 textAlign = TextAlign.Center
             ),
             placeholder = {
                 Text(
-                    text = stringResource(id=R.string.set_password2),
+                    text =stringResource(id = R.string.set_email2),
                     color = Color(0xFF999999),
                     fontSize = 14.sp,
                     textAlign = TextAlign.Center,
@@ -121,7 +105,7 @@ fun SetPasswordView(
         )
         Spacer(Modifier.height(12.dp))
         Text(
-            text = "确保您的密码有大写字母、小写字母等，位数大于8位。",
+            text = emailCheck,
             color = Color(0xFF808080),
             fontSize = 12.sp
         )
@@ -141,13 +125,14 @@ fun SetPasswordView(
                 Text(text = "注意", color = Color(0xFF4D4D4D), fontSize = 12.sp)
                 Spacer(Modifier.height(8.dp))
                 Text(
-                    text = "临时密码并不能找回您的账户，您依然需要助记词进行账户重置。再次提醒您请保护好您的助记词，助记词是唯一恢复您账户及资产的方式。",
+                    text = "账户密码并不能找回您的账户，您依然需要助记词进行账户重置。再次提醒您请保护好您的助记词，助记词是唯一恢复您账户及资产的方式。",
                     color = Color(0xFF666666),
                     fontSize = 10.sp
                 )
             }
         }
         Spacer(Modifier.weight(1f))
+        var context = LocalContext.current
         Row(
             Modifier
                 .fillMaxWidth()
@@ -162,13 +147,20 @@ fun SetPasswordView(
                 mipmap = R.mipmap.next_btn,
                 textColor = Color.White
             ) {
-                if (password1 == password2 && password1.length >=8) {
-                    navController.navigate(Route.SetEmail.jump(words, password1))
-//                    scope.launch {
+                if (email1 == email2) {
+                    scope.launch {
 //                        EthUtil.createWalletFile(context, password1, words)
-//
-//                        viewModel.login(MnemonicWords(words).address().hex)
-//                    }
+                        // TODO register FreeChat account
+                        viewModel.registerFreeChat(
+                            context,
+                            navController,
+                            words = words,
+                            email = email1,
+                            password = password
+                        )
+                    }
+                } else {
+                    emailCheck = "输入的邮箱不一致"
                 }
             }
         }

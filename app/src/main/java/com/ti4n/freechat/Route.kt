@@ -7,6 +7,9 @@ sealed class Route(val route: String) {
     object SetPassword : Route("setPassword/{words}") {
         fun jump(words: String) = "setPassword/$words"
     }
+    object SetEmail : Route("setEmail/{words}/{password}") {
+        fun jump(words: String, password: String) = "setEmail/$words/$password"
+    }
 
     object Register1 : Route("register1")
     object Register2 : Route("register2")

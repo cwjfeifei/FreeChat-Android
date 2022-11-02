@@ -10,6 +10,7 @@ import com.ti4n.freechat.model.request.GetToken
 import com.ti4n.freechat.network.FreeChatIMService
 import com.ti4n.freechat.util.IM
 import dagger.hilt.android.lifecycle.HiltViewModel
+import io.openim.android.sdk.OpenIMClient
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.distinctUntilChanged
@@ -48,4 +49,10 @@ class SetPasswordViewModel @Inject constructor(
             }
         }
     }
+//
+//    fun registerNew(address : String, password : String) {
+//        viewModelScope.launch {
+//            OpenIMClient.getInstance().userInfoManager.
+//        }
+//    }
 }
