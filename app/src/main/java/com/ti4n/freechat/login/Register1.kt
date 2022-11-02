@@ -105,7 +105,7 @@ fun Register1View(
                     },
                     shape = RoundedCornerShape(4.dp),
                     colors = ButtonDefaults.buttonColors(backgroundColor = Color(0xFF141B33)),
-                    modifier = Modifier.weight(1f).width(136.dp)
+                    modifier = Modifier.weight(1f)
                 ) {
                     Text(
                         text = "保存为图片",
@@ -134,7 +134,7 @@ fun Register1View(
                     },
                     shape = RoundedCornerShape(4.dp),
                     colors = ButtonDefaults.buttonColors(backgroundColor = Color(0xFF141B33)),
-                    modifier = Modifier.weight(1f).width(136.dp)
+                    modifier = Modifier.weight(1f)
                 ) {
                     Text(
 //                        text = "备份为keystore",
