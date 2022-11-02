@@ -155,7 +155,7 @@ fun LoginCommonView(@StringRes title: Int, content: @Composable ColumnScope.() -
         Spacer(modifier = Modifier.height(50.dp))
         Image(R.mipmap.logo)
         Spacer(modifier = Modifier.height(3.dp))
-        Image(R.mipmap.freechat)
+        Image(R.mipmap.register_freechat)
         Spacer(modifier = Modifier.height(40.dp))
         Text(
             text = stringResource(id = title),

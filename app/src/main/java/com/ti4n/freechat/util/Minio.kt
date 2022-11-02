@@ -23,8 +23,8 @@ object Minio {
         region = "ap-southeast-1"
         credentialsProvider = object : CredentialsProvider {
             override suspend fun getCredentials() = Credentials(
-                accessKeyId = "AKIAR57G45STDV42P4MX",
-                secretAccessKey = "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",
+                accessKeyId = "",
+                secretAccessKey = "",
                 sessionToken = null,
                 providerName = null,
             )

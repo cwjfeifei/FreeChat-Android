@@ -90,6 +90,8 @@ dependencies {
     implementation 'androidx.hilt:hilt-navigation-compose:1.0.0'
 
     implementation('io.coil-kt:coil-compose:2.2.2')
+    implementation('io.coil-kt:coil-gif:2.2.2')
+    implementation 'com.github.penfeizhou.android.animation:apng:2.24.0'
 
     implementation 'io.openim:android-sdk:2.3.4.1@aar'
     implementation 'io.openim:core-sdk:2.3.4@aar'

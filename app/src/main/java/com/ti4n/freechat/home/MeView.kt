@@ -1,5 +1,6 @@
 package com.ti4n.freechat.home
 
+import android.os.Build.VERSION.SDK_INT
 import androidx.annotation.DrawableRes
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -19,14 +20,22 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import coil.ImageLoader
 import coil.compose.AsyncImage
+import coil.compose.rememberAsyncImagePainter
+import coil.decode.GifDecoder
+import coil.decode.ImageDecoderDecoder
+import coil.request.ImageRequest
+import coil.size.Size
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.ti4n.freechat.R
 import com.ti4n.freechat.Route
+import com.ti4n.freechat.util.AnimatedPngDecoder
 import com.ti4n.freechat.widget.Image
 
 @Composable
@@ -37,6 +46,17 @@ fun MeView(
 ) {
     val me by viewModel.me.collectAsState()
     val systemUiController = rememberSystemUiController()
+    val context = LocalContext.current
+    val imageLoader = ImageLoader.Builder(context)
+        .components {
+            if (SDK_INT >= 28) {
+                add(ImageDecoderDecoder.Factory())
+            } else {
+                add(GifDecoder.Factory())
+            }
+            add(AnimatedPngDecoder.Factory())
+        }
+        .build()
     SideEffect {
         systemUiController.setStatusBarColor(
             color = Color.Transparent
@@ -48,11 +68,15 @@ fun MeView(
             .fillMaxSize()
             .background(Color(0xFFF0F0F0)),
     ) {
-        Image(
-            mipmap = R.mipmap.mine_bg,
-            modifier = Modifier
+        androidx.compose.foundation.Image(
+            painter = rememberAsyncImagePainter(
+                ImageRequest.Builder(context).data(data = "file:///android_asset/face.apng").build(),
+                imageLoader = imageLoader
+            ),
+            contentDescription = null,
+            modifier = modifier
                 .fillMaxWidth()
-                .aspectRatio(375 / 260f),
+                .aspectRatio(1f),
             contentScale = ContentScale.FillBounds
         )
         LazyColumn(modifier = Modifier.background(Color.White)) {

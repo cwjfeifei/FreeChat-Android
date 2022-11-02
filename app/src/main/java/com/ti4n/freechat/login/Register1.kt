@@ -104,7 +104,7 @@ fun Register1View(
                         Toast.makeText(context, "图片已保存", Toast.LENGTH_SHORT).show()
                     },
                     shape = RoundedCornerShape(4.dp),
-                    colors = ButtonDefaults.buttonColors(backgroundColor = Color(0xFF6B8FF8)),
+                    colors = ButtonDefaults.buttonColors(backgroundColor = Color(0xFF141B33)),
                     modifier = Modifier.weight(1f)
                 ) {
                     Text(
@@ -133,7 +133,7 @@ fun Register1View(
                         Toast.makeText(context, "已复制到粘贴板", Toast.LENGTH_SHORT).show()
                     },
                     shape = RoundedCornerShape(4.dp),
-                    colors = ButtonDefaults.buttonColors(backgroundColor = Color(0xFF6B8FF8)),
+                    colors = ButtonDefaults.buttonColors(backgroundColor = Color(0xFF141B33)),
                     modifier = Modifier.weight(1f)
                 ) {
                     Text(
