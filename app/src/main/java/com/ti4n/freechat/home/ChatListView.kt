@@ -109,7 +109,42 @@ fun ChatListView(
         SearchView(showSearchView = showSearchView, searchText = searchText)
         Spacer(modifier = Modifier.height(8.dp))
         if (showSearchView.value) {
-
+            LazyColumn(state = scrollState, modifier = Modifier.background(Color.White)) {
+                items(if (searchText.value.isEmpty()) emptyList() else IM.conversations.filter {
+                    it.showName.contains(
+                        searchText.value
+                    )
+                }
+                    .sortedBy { it.isPinned }) {
+                    val message = Gson().fromJson(it.latestMsg, Message::class.java)
+                    ChatItem(
+                        scrollState,
+                        it.faceURL,
+                        it.showName,
+                        when {
+                            !message.pictureElem.snapshotPicture.url.isNullOrEmpty() -> "[图片]"
+                            !message.soundElem.soundPath.isNullOrEmpty() -> "[语音]"
+                            else -> message.content
+                        },
+                        SimpleDateFormat("yyyy-MM-dd hh:mm").format(
+                            Date(it.latestMsgSendTime)
+                        ),
+                        it.unreadCount,
+                        it.isPinned,
+                        pin = { viewModel.pinConversation(it.conversationID, !it.isPinned) },
+                        delete = { viewModel.deleteConversation(it.conversationID) }
+                    ) {
+                        navController.navigate(Route.PrivateChat.jump(it.userID))
+                    }
+                    Box(
+                        Modifier
+                            .padding(horizontal = 24.dp)
+                            .fillMaxWidth()
+                            .height(1.dp)
+                            .background(color = Color(0xFFF0F0F0))
+                    )
+                }
+            }
         } else {
             LazyColumn(state = scrollState, modifier = Modifier.background(Color.White)) {
                 items(IM.conversations.sortedBy { it.isPinned }) {
@@ -127,6 +162,7 @@ fun ChatListView(
                             Date(it.latestMsgSendTime)
                         ),
                         it.unreadCount,
+                        it.isPinned,
                         pin = { viewModel.pinConversation(it.conversationID, !it.isPinned) },
                         delete = { viewModel.deleteConversation(it.conversationID) }
                     ) {
@@ -153,6 +189,7 @@ fun ChatItem(
     content: String,
     time: String,
     unread: Int,
+    isPin: Boolean,
     pin: () -> Unit,
     delete: () -> Unit,
     onClick: () -> Unit
@@ -173,7 +210,7 @@ fun ChatItem(
                     .background(Color(0xFF1E84EF))
                     .clickable { pin() }
             ) {
-                Image(mipmap = R.mipmap.top)
+                Image(mipmap = if (isPin) R.mipmap.top_cancel else R.mipmap.top)
             }
             Box(
                 contentAlignment = Alignment.Center,

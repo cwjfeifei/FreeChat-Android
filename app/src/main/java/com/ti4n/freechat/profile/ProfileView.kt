@@ -189,10 +189,11 @@ fun ProfileView(navController: NavController, viewModel: ProfileViewModel = hilt
 //                    ProfileItem("评论Ta")
 //                    Divider(color = Color(0xFFE6E6E6), thickness = 1.dp)
 //                }
-//                item {
-//                    ProfileItem("备注和标签")
-//                    Divider(color = Color(0xFFE6E6E6), thickness = 1.dp)
-//                }
+                if (!isSelf)
+                    item {
+                        ProfileItem("备注")
+                        Divider(color = Color(0xFFE6E6E6), thickness = 1.dp)
+                    }
 //                item {
 //                    ProfileItem("权限设置")
 //                    Divider(color = Color(0xFFE6E6E6), thickness = 1.dp)

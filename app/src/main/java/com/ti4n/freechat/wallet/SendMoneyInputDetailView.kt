@@ -221,7 +221,7 @@ fun SelectToken(
             )
             Spacer(modifier = Modifier.width(10.dp))
             Text(
-                text = selectedToken?.Name ?: "",
+                text = (selectedToken?.symbol ?: "") + " " + (selectedToken?.Name ?: ""),
                 color = Color.White,
                 fontWeight = FontWeight.Bold,
                 fontSize = 16.sp
@@ -256,10 +256,9 @@ fun SelectToken(
                     )
                     Spacer(modifier = Modifier.width(10.dp))
                     Text(
-                        text = it.Name,
-                        color = Color.Black,
-                        fontWeight = FontWeight.Bold,
-                        fontSize = 16.sp
+                        text = it.symbol + " " + it.Name,
+                        color = Color(0xFF1A1A1A),
+                        fontSize = 14.sp
                     )
                     Spacer(modifier = Modifier.weight(1f))
                 }

@@ -43,6 +43,7 @@ object IM {
     val conversations = mutableStateListOf<ConversationInfo>()
     val friends = mutableStateListOf<FriendInfo>()
     val totalUnreadCount = MutableStateFlow(0)
+    val showNewFriendApplication = MutableStateFlow(false)
 
     fun init(context: Context) {
         imClient.initSDK(7,
@@ -169,7 +170,7 @@ object IM {
             }
 
             override fun onFriendApplicationAdded(u: FriendApplicationInfo?) {
-
+                showNewFriendApplication.value = true
             }
 
             override fun onFriendApplicationDeleted(u: FriendApplicationInfo?) {
@@ -179,6 +180,10 @@ object IM {
             }
 
             override fun onFriendInfoChanged(u: FriendInfo?) {
+                u?.let { friend ->
+                    friends.removeAll { it.userID == friend.userID }
+                    friends.add(friend)
+                }
             }
 
             override fun onFriendAdded(u: FriendInfo?) {
@@ -426,6 +431,31 @@ object IM {
                 it.resume(data)
             }
         }, id, "")
+    }
+
+    suspend fun setRemark(id: String, remark: String) = suspendCoroutine {
+        imClient.friendshipManager.setFriendRemark(object : OnBase<String> {
+            override fun onError(code: Int, error: String?) {
+                it.resumeWithException(IMError(code, error))
+            }
+
+            override fun onSuccess(data: String?) {
+                it.resume(data)
+            }
+        }, id, remark)
+    }
+
+    suspend fun getFriendApplication() = suspendCoroutine {
+        imClient.friendshipManager.getRecvFriendApplicationList(object :
+            OnBase<List<FriendApplicationInfo>> {
+            override fun onError(code: Int, error: String?) {
+                it.resumeWithException(IMError(code, error))
+            }
+
+            override fun onSuccess(data: List<FriendApplicationInfo>?) {
+                it.resume(data)
+            }
+        })
     }
 }
 
