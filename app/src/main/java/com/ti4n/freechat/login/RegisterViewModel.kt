@@ -2,11 +2,13 @@ package com.ti4n.freechat.login
 
 import android.content.Context
 import android.util.Log
+import android.widget.Toast
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavController
+import com.ti4n.freechat.R
 import com.ti4n.freechat.Route
 import com.ti4n.freechat.db.AppDataBase
 import com.ti4n.freechat.db.UserBaseInfo
@@ -73,7 +75,7 @@ class RegisterViewModel @Inject constructor(
     }
 
     fun registerFreeChat(context: Context, navController: NavController, words:String, email: String, password: String ) {
-        var userID = MnemonicWords(words).address().hex
+        var userID = MnemonicWords(words).address().hex // wallet address
         Log.d(TAG, "registerFreeChat: " + userID+", " + email)
         val parameter = getParameter(email, password)
         viewModelScope.launch {
@@ -108,16 +110,12 @@ class RegisterViewModel @Inject constructor(
 //                    navigationRoute.emit(Route.Home.route)
                     navController.navigate(Route.CompleteProfile.route)
                 } else {
-                    navController.navigate(Route.CompleteProfile.route)
-//                    navigationRoute.emit(Route.CompleteProfile.route)
+                    Toast.makeText(context, response.errMsg, Toast.LENGTH_SHORT).show()
                 }
             } catch (e: Exception) {
-//                navigationRoute.emit(Route.CompleteProfile.route)
-                // debug -
-                navController.navigate(Route.CompleteProfile.route)
-                e.printStackTrace()
+                Toast.makeText(context, R.string.use_vpn_to_access, Toast.LENGTH_SHORT).show()
+                Log.w(TAG, "registerFreeChat: ", e)
             }
         }
-//        OpenIMClient.getInstance().userInfoManager.setSelfInfo()
     }
 }
