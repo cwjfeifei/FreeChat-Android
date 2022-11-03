@@ -9,6 +9,7 @@ import com.ti4n.freechat.db.UserBaseInfoDao
 import com.ti4n.freechat.model.response.UserToken
 import com.ti4n.freechat.model.response.freechat.SelfInfo
 import io.openim.android.sdk.OpenIMClient
+import io.openim.android.sdk.enums.Platform
 import io.openim.android.sdk.listener.OnAdvanceMsgListener
 import io.openim.android.sdk.listener.OnBase
 import io.openim.android.sdk.listener.OnConnListener
@@ -46,11 +47,11 @@ object IM {
     val showNewFriendApplication = MutableStateFlow(false)
 
     fun init(context: Context) {
-        imClient.initSDK(7,
+        imClient.initSDK(Platform.ANDROID,
             "http://47.57.185.242:10002",
             "ws://47.57.185.242:10001",
             context.cacheDir.absolutePath,
-            6,
+            Log.DEBUG,
             "aws",
             null,
             object : OnConnListener {

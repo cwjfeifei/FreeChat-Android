@@ -1,8 +1,5 @@
 package com.ti4n.freechat.login
 
-import android.util.Log
-import androidx.activity.compose.rememberLauncherForActivityResult
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.StringRes
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -10,7 +7,6 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.material.Divider
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -32,9 +28,6 @@ import com.google.android.material.datepicker.MaterialDatePicker
 import com.ti4n.freechat.widget.Image
 import com.ti4n.freechat.R
 import com.ti4n.freechat.Route
-import com.ti4n.freechat.util.EthUtil
-import com.ti4n.freechat.util.IM
-import com.ti4n.freechat.util.Minio
 import com.ti4n.freechat.widget.ImageButton
 import com.ti4n.freechat.util.getActivity
 import kotlinx.coroutines.launch
@@ -48,10 +41,10 @@ fun CompleteProfileView(controller: NavController, viewModel: ProfileViewModel =
             color = Color.White
         )
     }
-    val avatar by viewModel.avatar.collectAsState()
-    val name by viewModel.name.collectAsState()
+    val faceURL by viewModel.avatar.collectAsState()
+    val nickname by viewModel.name.collectAsState()
     val gender by viewModel.gender.collectAsState()
-    val birthday by viewModel.birthday.collectAsState()
+    val birth by viewModel.birthday.collectAsState()
     val country by viewModel.country.collectAsState()
     val location by viewModel.location.collectAsState()
     val datePicker by lazy { MaterialDatePicker.Builder.datePicker().build() }
@@ -82,7 +75,7 @@ fun CompleteProfileView(controller: NavController, viewModel: ProfileViewModel =
             fontWeight = FontWeight.Medium
         )
         Spacer(modifier = Modifier.height(12.dp))
-        if (avatar != null) AsyncImage(model = avatar,
+        if (faceURL != null) AsyncImage(model = faceURL,
             contentDescription = null,
             modifier = Modifier
                 .size(90.dp)
@@ -94,7 +87,7 @@ fun CompleteProfileView(controller: NavController, viewModel: ProfileViewModel =
         Spacer(modifier = Modifier.height(24.dp))
         Divider(color = Color(0xFFE5E5E5))
         CompleteProfileItem(R.string.name, click = { controller.navigate(Route.SetName.route) }) {
-            ProfileValueText(name)
+            ProfileValueText(nickname)
         }
         Divider(color = Color(0xFFE5E5E5))
         CompleteProfileItem(R.string.gender, false) {
@@ -121,7 +114,7 @@ fun CompleteProfileView(controller: NavController, viewModel: ProfileViewModel =
                 }
             }
         }) {
-            ProfileValueText(SimpleDateFormat("yyyy.MM.dd").format(birthday))
+            ProfileValueText(SimpleDateFormat("yyyy.MM.dd").format(birth))
         }
         Divider(color = Color(0xFFE5E5E5))
         CompleteProfileItem(R.string.country) {
@@ -137,14 +130,16 @@ fun CompleteProfileView(controller: NavController, viewModel: ProfileViewModel =
             title = R.string.complete_setting, mipmap = R.mipmap.login_btn, textColor = Color.White
         ) {
             scope.launch {
-                viewModel.avatar.value?.let {
-                    Minio.uploadFile(context, it)?.let {
-                        val credentials = EthUtil.loadCredentials(context, "")
-                        viewModel.register(
-                            credentials.address, it, ""
-                        ) { controller.navigate(Route.Home.route) }
-                    }
-                }
+                // TODO reset email and ex property
+                viewModel.setSelfInfo(nickname,faceURL.toString(), gender, birth, "", "")
+//                viewModel.avatar.value?.let {
+//                    Minio.uploadFile(context, it)?.let {
+//                        val credentials = EthUtil.loadCredentials(context, "")
+//                        viewModel.register(
+//                            credentials.address, it, ""
+//                        ) { controller.navigate(Route.Home.route) }
+//                    }
+//                }
             }
         }
         Spacer(modifier = Modifier.height(20.dp))
