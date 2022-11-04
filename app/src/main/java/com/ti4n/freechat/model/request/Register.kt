@@ -1,5 +1,6 @@
 package com.ti4n.freechat.model.request
 
+import io.openim.android.sdk.enums.Platform
 import java.util.UUID
 
 data class Register(
@@ -10,7 +11,7 @@ data class Register(
     val nickname: String = "",
     val secret: String = "tuoyun",
     val phoneNumber: String = "",
-    val platform: Int = 2, // iOS 1, Android 2, Windows 3, OSX 4, WEB 5, 小程序 6，linux 7
+    val platform: Int = Platform.ANDROID, // iOS 1, Android 2, Windows 3, OSX 4, WEB 5, 小程序 6，linux 7
     val operationID: String = UUID.randomUUID().toString(),
     val email: String = "",
     val ex: String = ""

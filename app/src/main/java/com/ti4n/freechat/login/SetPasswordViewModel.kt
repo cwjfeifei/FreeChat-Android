@@ -1,5 +1,6 @@
 package com.ti4n.freechat.login
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ti4n.freechat.Route
@@ -23,36 +24,37 @@ class SetPasswordViewModel @Inject constructor(
 
     fun login(address: String) {
         viewModelScope.launch {
-            val token = imService.getToken(GetToken(address)).data
-            token?.let {
-                val response = imService.getSelfInfo(GetSelfInfo(it.userID), it.token)
-                if (response.errCode == 0 && response.data != null) {
-                    val selfInfo = response.data
-//                    "data": {
-//                        "appMangerLevel": 1,
-//                        "birth": 1640692941,
-//                        "email": "6e7123@qq.com",
-//                        "faceURL": "https://oss.com.cn/head",
-//                        "gender": 1,
-//                        "nickname": "dk111223",
-//                        "userID": "kh12312"
-//                    }
-                    db.userBaseInfoDao().insert(
-                        UserBaseInfo(
-                            userID = address,
-                            nickname = selfInfo.nickname,
-                            faceURL = selfInfo.faceURL,
-                            birth = selfInfo.birth,
-                            gender = selfInfo.gender,
-                            email = selfInfo.email,
-                            token =   token.token,
-                            expiredTime = token.expiredTime
+            try {
+                val token = imService.getToken(GetToken(address)).data
+                token?.let {
+                    val response = imService.getSelfInfo(GetSelfInfo(it.userID), it.token)
+                    Log.w("Login", "resp-getselfuserinfo " + response)
+                    if (response.errCode == 0 && response.data != null) {
+                        val selfInfo = response.data
+                        db.userBaseInfoDao().insert(
+                            UserBaseInfo(
+                                userID = address,
+                                nickname = selfInfo.nickname,
+                                faceURL = selfInfo.faceURL,
+                                birth = selfInfo.birth,
+                                gender = selfInfo.gender,
+                                email = selfInfo.email,
+                                token = token.token,
+                                expiredTime = token.expiredTime
+                            )
                         )
-                    )
-                    navigationRoute.emit(Route.Home.route)
-                } else {
-                    navigationRoute.emit(Route.SetEmail.route)
+                        if (selfInfo.faceURL == "") {
+                            // registered but not set faceURL
+                            navigationRoute.emit(Route.CompleteProfile.route)
+                        } else {
+                            navigationRoute.emit(Route.Home.route)
+                        }
+                    } else {
+                        navigationRoute.emit(Route.SetEmail.route)
+                    }
                 }
+            } catch (e: Exception) {
+                Log.w("Login", "Error :  ",  e)
             }
         }
     }

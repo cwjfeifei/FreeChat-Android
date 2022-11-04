@@ -112,7 +112,8 @@ class RegisterViewModel @Inject constructor(
                             expiredTime= response.data.expiredTime
                         )
                     )
-                    navController.navigate(Route.Home.route)
+                    // set profile info first
+                    navController.navigate(Route.CompleteProfile.route)
                 } else {
                     Toast.makeText(context, response.errMsg, Toast.LENGTH_SHORT).show()
                 }

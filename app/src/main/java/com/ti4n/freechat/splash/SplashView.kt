@@ -70,6 +70,7 @@ fun SplashView(navController: NavController, userBaseInfoDao: UserBaseInfoDao) {
         val agree = context.dataStore.data.map { it[booleanPreferencesKey("agreePermission")] }
             .firstOrNull() ?: false
         if (agree) {
+
             val isLogin =
                 !context.dataStore.data.map { it[stringPreferencesKey("address")] }.firstOrNull()
                     .isNullOrEmpty()
