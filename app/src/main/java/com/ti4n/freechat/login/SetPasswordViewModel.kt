@@ -38,7 +38,7 @@ class SetPasswordViewModel @Inject constructor(
                                 faceURL = selfInfo.faceURL,
                                 birth = selfInfo.birth,
                                 gender = selfInfo.gender,
-                                email = selfInfo.email,
+//                                email = selfInfo.email,
                                 token = token.token,
                                 expiredTime = token.expiredTime
                             )

@@ -213,7 +213,14 @@ object IM {
      * gender : 1-male, 2-female
      * appManagerLevel : 1-normal user, 2-admin user
      */
-    suspend fun setUserInfo(nickname: String?, faceURL: String?, gender: Int, birth: Long, email: String?, ex: String?) =
+    suspend fun setUserInfo(
+        nickname: String?,
+        faceURL: String?,
+        gender: Int,
+        birth: Long,
+        email: String?,
+        ex: String?
+    ) =
         suspendCoroutine {
             imClient.userInfoManager.setSelfInfo(
                 object : OnBase<String> {
@@ -224,7 +231,8 @@ object IM {
                     override fun onSuccess(data: String?) {
                         it.resume(Unit)
                     }
-                }, nickname, faceURL, gender, 1, "", birth, email, ex)
+                }, nickname, faceURL, gender, 1, "", birth, email, ex
+            )
         }
 
     suspend fun getHistoryMessages(startMsg: Message?, userId: String, conversationId: String) =
@@ -433,7 +441,7 @@ object IM {
         }, listOf(with))
     }
 
-    suspend fun addFriend(id: String) = suspendCoroutine {
+    suspend fun addFriend(id: String, requestInfo: String) = suspendCoroutine {
         imClient.friendshipManager.addFriend(object : OnBase<String> {
             override fun onError(code: Int, error: String?) {
                 it.resumeWithException(IMError(code, error))
@@ -442,7 +450,7 @@ object IM {
             override fun onSuccess(data: String?) {
                 it.resume(data)
             }
-        }, id, "")
+        }, id, requestInfo)
     }
 
     suspend fun setRemark(id: String, remark: String) = suspendCoroutine {

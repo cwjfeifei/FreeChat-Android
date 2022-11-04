@@ -4,6 +4,7 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ti4n.freechat.db.AppDataBase
+import com.ti4n.freechat.db.UserBaseInfo
 import com.ti4n.freechat.util.IM
 import dagger.hilt.android.lifecycle.HiltViewModel
 import io.openim.android.sdk.models.UserInfo
@@ -23,6 +24,7 @@ class ProfileViewModel @Inject constructor(
     val isFriend = MutableStateFlow(false)
     val isSelf = MutableStateFlow(false)
     val userInfo = MutableStateFlow(UserInfo())
+    val selfInfo = MutableStateFlow(UserBaseInfo("", expiredTime = 0L, token = ""))
 
     init {
         viewModelScope.launch {
@@ -30,6 +32,7 @@ class ProfileViewModel @Inject constructor(
         }
         viewModelScope.launch {
             db.userBaseInfoDao().getUserInfo().filterNotNull().collectLatest {
+                selfInfo.value = it
                 isSelf.value = it.userID == toUserId
                 if (isSelf.value) {
                     userInfo.value = UserInfo().apply {
@@ -46,10 +49,15 @@ class ProfileViewModel @Inject constructor(
         }
     }
 
-    fun addFriend() {
+    fun addFriend(requestInfo: String) {
         viewModelScope.launch {
-            IM.addFriend(toUserId)
+            IM.addFriend(toUserId,requestInfo)
         }
     }
 
+    fun setRemark(remark: String) {
+        viewModelScope.launch {
+            IM.setRemark(toUserId, remark)
+        }
+    }
 }

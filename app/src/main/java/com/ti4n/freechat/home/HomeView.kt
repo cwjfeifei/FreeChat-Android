@@ -30,6 +30,8 @@ import com.ti4n.freechat.db.UserBaseInfoDao
 import com.ti4n.freechat.di.dataStore
 import com.ti4n.freechat.im.PrivateChatView
 import com.ti4n.freechat.profile.ProfileView
+import com.ti4n.freechat.profile.SendFriendApplicationView
+import com.ti4n.freechat.profile.SetRemarkView
 import com.ti4n.freechat.swap.SwapView
 import com.ti4n.freechat.util.IM
 import com.ti4n.freechat.util.aniComposable
@@ -209,6 +211,25 @@ fun HomeView(userBaseInfoDao: UserBaseInfoDao) {
                 route = Route.Profile.route
             ) {
                 ProfileView(navController = navController)
+            }
+            aniComposable(
+                route = Route.SetRemark.route
+            ) {
+                val backStackEntry = remember {
+                    navController.getBackStackEntry(Route.Profile.route)
+                }
+                SetRemarkView(navController = navController, hiltViewModel(backStackEntry))
+            }
+            aniComposable(
+                route = Route.SendFriendApplication.route
+            ) {
+                val backStackEntry = remember {
+                    navController.getBackStackEntry(Route.Profile.route)
+                }
+                SendFriendApplicationView(
+                    navController = navController,
+                    hiltViewModel(backStackEntry)
+                )
             }
             aniComposable(Route.NewContact.route) {
                 NewContactView(navController = navController)

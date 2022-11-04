@@ -129,4 +129,9 @@
     <string name="register_tip">FreeChat为去中心化的社交应用，你的安全措施由助记词进行保护，如果助记词遗失或泄漏，您的账户及财产将会失去保护，请妥善保管。</string>
     <string name="email_tip">电子邮箱是确认您Freechat社交身份的唯一方式，保护您的社交信息，只能设置一次，不允许进行更改。</string>
     <string name="password_tip">账户密码并不能找回您的账户，您依然需要助记词进行账户重置。再次提醒您请保护好您的助记词，助记词是唯一恢复您账户及资产的方式。</string>
+
+    <string name="add_friend">添加好友</string>
+    <string name="set_remark">设置备注</string>
+    <string name="request_info">申请说明</string>
+    <string name="send_request">发送申请</string>
 </resources>

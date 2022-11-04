@@ -61,10 +61,9 @@ fun SetPasswordView(
         }
     }
     LoginCommonView(R.string.set_password, backClick = { navController.navigateUp() }, nextClick = {
-        if (password1 == password2 && password1.length >= 8) {
+        if (password1 == password2) {
             scope.launch {
                 EthUtil.createWalletFile(context, password1, words)
-
                 viewModel.login(MnemonicWords(words).address().hex)
             }
         }

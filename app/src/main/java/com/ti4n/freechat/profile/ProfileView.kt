@@ -46,7 +46,7 @@ fun ProfileView(navController: NavController, viewModel: ProfileViewModel = hilt
     Scaffold(bottomBar = {
         if (!isSelf)
             BottomNavigation(
-                backgroundColor = Color.White, elevation = 8.dp
+                backgroundColor = Color(0xFF3879FD), elevation = 0.dp
             ) {
                 if (isFriend) {
                     Box(
@@ -94,7 +94,8 @@ fun ProfileView(navController: NavController, viewModel: ProfileViewModel = hilt
                     Box(
                         Modifier
                             .fillMaxSize()
-                            .clickable { viewModel.addFriend() }, contentAlignment = Center
+                            .clickable { navController.navigate(Route.SendFriendApplication.route) },
+                        contentAlignment = Center
                     ) {
                         Text(
                             text = "申请加为好友",
@@ -197,9 +198,12 @@ fun ProfileView(navController: NavController, viewModel: ProfileViewModel = hilt
 //                    ProfileItem("评论Ta")
 //                    Divider(color = Color(0xFFE6E6E6), thickness = 1.dp)
 //                }
-                if (!isSelf)
+                if (!isSelf && isFriend)
                     item {
-                        ProfileItem("备注")
+                        Divider(color = Color(0xFFE6E6E6), thickness = 1.dp)
+                        ProfileItem("备注") {
+                            navController.navigate(Route.SetRemark.route)
+                        }
                         Divider(color = Color(0xFFE6E6E6), thickness = 1.dp)
                     }
 //                item {
@@ -255,10 +259,11 @@ fun ProfileInfoItem(
 }
 
 @Composable
-fun ProfileItem(title: String, route: String = "") {
+fun ProfileItem(title: String, click: () -> Unit) {
     Row(
         Modifier
             .fillMaxWidth()
+            .clickable { click() }
             .padding(16.dp), verticalAlignment = CenterVertically
     ) {
         Text(text = title, fontSize = 14.sp, color = Color(0xFF1A1A1A))
