@@ -18,10 +18,10 @@ import com.ti4n.freechat.model.request.GetToken
 import com.ti4n.freechat.model.request.Register
 import com.ti4n.freechat.network.FreeChatIMService
 import com.ti4n.freechat.util.EthUtil
+import com.ti4n.freechat.util.IM
 import com.ti4n.freechat.util.address
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import org.kethereum.bip39.model.MnemonicWords
 import javax.inject.Inject
@@ -45,9 +45,29 @@ class RegisterViewModel @Inject constructor(
     val faceURL = MutableStateFlow("")
     val name = MutableStateFlow("")
     val birth = MutableStateFlow(0L)
-    val gender = MutableStateFlow(1)  // 1 male 2 female
+    val gender = MutableStateFlow(2)  // 1 male 2 female
     val email = MutableStateFlow("")
     val password = MutableStateFlow("")
+    init  {
+        viewModelScope.launch {
+            var selfInfo = IM.currentUserInfo.value
+            if (selfInfo.userID != null) {
+                var dbInfo = db.userBaseInfoDao().getUserInfo(selfInfo.userID).firstOrNull()
+                if (dbInfo != null) {
+                    faceURL.value = if (dbInfo.faceURL.isEmpty()) {
+                        "https://freechat.world/images/face.apng"
+                    } else {
+                        dbInfo.faceURL
+                    }
+                    name.value = if (dbInfo.nickname.isEmpty())  "" else dbInfo.nickname
+                    birth.value = dbInfo.birth
+                    gender.value = if (dbInfo.gender >2 || dbInfo.gender<1) 2 else dbInfo.gender
+                    email.value = if (dbInfo.email.isEmpty())  "" else dbInfo.email
+                }
+            }
+        }
+    }
+
 
     fun setFaceURL(faceURL: String) {
         this.faceURL.value = faceURL
@@ -91,6 +111,7 @@ class RegisterViewModel @Inject constructor(
         email: String,
     ) {
         var userID = MnemonicWords(words).address().hex // wallet address
+        userID = "Test_"+System.currentTimeMillis().toString()
         viewModelScope.launch {
             try {
                 val response = imService.register(
@@ -100,11 +121,11 @@ class RegisterViewModel @Inject constructor(
                     )
                 )
                 if (response.errCode == 0 && response.data != null) {
-                    context.dataStore.edit {
-                        it[stringPreferencesKey("userId")] = response.data.userID
-                        it[stringPreferencesKey("token")] = response.data.token
-                        it[stringPreferencesKey("expiredTime")] = response.data.expiredTime.toString()
-                    }
+//                    context.dataStore.edit {
+//                        it[stringPreferencesKey("userId")] = response.data.userID
+//                        it[stringPreferencesKey("token")] = response.data.token
+//                        it[stringPreferencesKey("expiredTime")] = response.data.expiredTime.toString()
+//                    }
                     db.userBaseInfoDao().insert(
                         UserBaseInfo(
                             userID = response.data.userID,
@@ -113,7 +134,9 @@ class RegisterViewModel @Inject constructor(
                             expiredTime= response.data.expiredTime
                         )
                     )
+                    Log.w(TAG, "xxx registerFreeChat: insert DB " + response.data.userID +" " + email )
 
+                    IM.login(userID, response.data.token)
                     setEmailRoute.emit(Route.CompleteProfile.route)
                 } else {
                     Toast.makeText(context, R.string.set_email_failed, Toast.LENGTH_SHORT).show()
