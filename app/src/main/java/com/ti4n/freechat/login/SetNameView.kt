@@ -20,7 +20,7 @@ import com.ti4n.freechat.R
 import com.ti4n.freechat.widget.Image
 
 @Composable
-fun SetNameView(navController: NavController, viewModel: ProfileViewModel) {
+fun SetNameView(navController: NavController, viewModel: RegisterViewModel) {
     val systemUiController = rememberSystemUiController()
     SideEffect {
         systemUiController.setSystemBarsColor(

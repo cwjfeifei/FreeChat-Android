@@ -47,7 +47,7 @@ import java.io.File
 fun SetPasswordView(
     navController: NavController,
     words: String,
-    viewModel: RegisterViewModel = hiltViewModel()
+    viewModel: SetPasswordViewModel = hiltViewModel()
 ) {
     var password1 by remember {
         mutableStateOf("")
@@ -57,11 +57,11 @@ fun SetPasswordView(
     }
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
-//    LaunchedEffect(Unit) {
-//        viewModel.navigationRoute.filter { it.isNotEmpty() }.collectLatest {
-//            navController.navigate(it)
-//        }
-//    }
+    LaunchedEffect(Unit) {
+        viewModel.navigationRoute.filter { it.isNotEmpty() }.collectLatest {
+            navController.navigate(it)
+        }
+    }
     LoginCommonView(R.string.set_password) {
         Spacer(Modifier.height(60.dp))
         TextField(
@@ -163,12 +163,11 @@ fun SetPasswordView(
                 textColor = Color.White
             ) {
                 if (password1 == password2 && password1.length >=8) {
-                    navController.navigate(Route.SetEmail.jump(words, password1))
-//                    scope.launch {
-//                        EthUtil.createWalletFile(context, password1, words)
-//
-//                        viewModel.login(MnemonicWords(words).address().hex)
-//                    }
+                    scope.launch {
+                        EthUtil.createWalletFile(context, password1, words)
+
+                        viewModel.login(MnemonicWords(words).address().hex)
+                    }
                 }
             }
         }

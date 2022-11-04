@@ -4,10 +4,6 @@ import android.content.Context
 import android.net.Uri
 import android.util.Log
 import androidx.compose.runtime.mutableStateListOf
-import com.ti4n.freechat.db.UserBaseInfo
-import com.ti4n.freechat.db.UserBaseInfoDao
-import com.ti4n.freechat.model.response.UserToken
-import com.ti4n.freechat.model.response.freechat.SelfInfo
 import io.openim.android.sdk.OpenIMClient
 import io.openim.android.sdk.enums.Platform
 import io.openim.android.sdk.listener.OnAdvanceMsgListener
@@ -26,12 +22,8 @@ import io.openim.android.sdk.models.Message
 import io.openim.android.sdk.models.OfflinePushInfo
 import io.openim.android.sdk.models.ReadReceiptInfo
 import io.openim.android.sdk.models.RevokedInfo
-import io.openim.android.sdk.models.SoundElem
 import io.openim.android.sdk.models.UserInfo
-import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
-import open_im_sdk.Open_im_sdk
-import java.io.File
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
 import kotlin.coroutines.suspendCoroutine
@@ -217,7 +209,11 @@ object IM {
         }, imagePath)
     }
 
-    suspend fun setUserInfo(nickname: String, faceURL: String, gender: Int, birth: Long) =
+    /**
+     * gender : 1-male, 2-female
+     * appManagerLevel : 1-normal user, 2-admin user
+     */
+    suspend fun setUserInfo(nickname: String?, faceURL: String?, gender: Int, birth: Long, email: String?, ex: String?) =
         suspendCoroutine {
             imClient.userInfoManager.setSelfInfo(
                 object : OnBase<String> {
@@ -228,8 +224,7 @@ object IM {
                     override fun onSuccess(data: String?) {
                         it.resume(Unit)
                     }
-                }, nickname, faceURL, gender, 0, "", birth, "", ""
-            )
+                }, nickname, faceURL, gender, 1, "", birth, email, ex)
         }
 
     suspend fun getHistoryMessages(startMsg: Message?, userId: String) = suspendCoroutine {

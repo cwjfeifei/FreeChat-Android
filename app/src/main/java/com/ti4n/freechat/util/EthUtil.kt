@@ -71,7 +71,7 @@ object EthUtil {
             words
         )
 
-    suspend fun createWalletFile(context: Context, email: String, password: String, mnemonicWords: String) {
+    suspend fun createWalletFile(context: Context, password: String, mnemonicWords: String) {
         val file = WalletUtils.generateWalletFile(
             password,
             MnemonicWords(mnemonicWords).toKeyPair().toWeb3ECKeyPair(),
@@ -80,7 +80,6 @@ object EthUtil {
         )
         context.dataStore.edit {
             it[stringPreferencesKey("account")] = mnemonicWords
-            it[stringPreferencesKey("email")] = email
             it[stringPreferencesKey("file")] = file
             it[stringPreferencesKey("address")] = MnemonicWords(mnemonicWords).address().hex
         }

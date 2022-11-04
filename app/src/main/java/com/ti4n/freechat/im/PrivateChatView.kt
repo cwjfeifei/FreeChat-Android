@@ -160,7 +160,7 @@ fun PrivateChatView(
         ) {
             items(IM.newMessages.filter { it.recvID == viewModel.toUserId || it.sendID == viewModel.toUserId }
                 .reversed()) {
-                if (it.sendID == meInfo?.userId) {
+                if (it.sendID == meInfo?.userID) {
                     MineMessage(message = it, navController = navController)
                 } else {
                     ToUserMessage(message = it, navController = navController)
@@ -169,7 +169,7 @@ fun PrivateChatView(
             }
             items(messages.itemSnapshotList.reversed()) {
                 it?.let {
-                    if (it.sendID == meInfo?.userId) {
+                    if (it.sendID == meInfo?.userID) {
                         MineMessage(message = it, navController = navController)
                     } else {
                         ToUserMessage(message = it, navController = navController)

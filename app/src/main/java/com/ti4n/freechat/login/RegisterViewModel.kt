@@ -13,17 +13,11 @@ import com.ti4n.freechat.Route
 import com.ti4n.freechat.db.AppDataBase
 import com.ti4n.freechat.db.UserBaseInfo
 import com.ti4n.freechat.di.dataStore
-import com.ti4n.freechat.model.request.GetSelfInfo
-import com.ti4n.freechat.model.request.GetToken
 import com.ti4n.freechat.model.request.Register
 import com.ti4n.freechat.network.FreeChatIMService
-import com.ti4n.freechat.network.bage.Parameter
 import com.ti4n.freechat.util.EthUtil
 import com.ti4n.freechat.util.address
-import com.ti4n.freechat.util.md5
 import dagger.hilt.android.lifecycle.HiltViewModel
-import io.openim.android.sdk.OpenIMClient
-import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 import org.kethereum.bip39.model.MnemonicWords
@@ -37,10 +31,40 @@ class RegisterViewModel @Inject constructor(
 ) : ViewModel() {
     private val TAG = "RegisterViewModel"
 
-//    val navigationRoute = MutableSharedFlow<String>(replay = 0, extraBufferCapacity = 1)
+    //    val navigationRoute = MutableSharedFlow<String>(replay = 0, extraBufferCapacity = 1)
+    // wallet
     val words = MutableStateFlow(EthUtil.getMnemonicCode().words)
     val shuffledWord = MutableStateFlow(emptyList<String>())
     val clickedWords = MutableStateFlow(emptyList<String>())
+
+    // FreeChat
+    //    val avatar = MutableStateFlow<Uri?>(null)
+    val faceURL = MutableStateFlow("")
+    val name = MutableStateFlow("")
+    val birth = MutableStateFlow(0L)
+    val gender = MutableStateFlow(1)  // 1 male 2 female
+    val email = MutableStateFlow("")
+    val password = MutableStateFlow("")
+
+    fun setFaceURL(faceURL: String) {
+        this.faceURL.value = faceURL
+    }
+
+    fun setName(name: String) {
+        this.name.value = name
+    }
+
+    fun setBirthday(birthday: Long) {
+        this.birth.value = birthday
+    }
+
+    fun setGender(gender: Int) {
+        this.gender.value = gender
+    }
+
+    fun setEmail(email: String) {
+        this.email.value = email
+    }
 
     fun addWord(word: String) {
         clickedWords.value = clickedWords.value + word
@@ -58,37 +82,21 @@ class RegisterViewModel @Inject constructor(
 
     fun canRegister() = words.value == clickedWords.value
 
-    private fun getParameter(email: String, password: String): Parameter {
-        val parameter: Parameter = Parameter()
-            .add("password", md5(password)!!)
-            .add("platform", 2)
-            .add("operationID", System.currentTimeMillis().toString() + "")
-            .add("email", email)
-        // No verificationCode and phone
-//            .add("verificationCode", verificationCode)
-//        if (isPhone.getValue()) {
-//            parameter.add("phoneNumber", account.getValue())
-//            parameter.add("areaCode", "+86")
-//        } else
-//            parameter.add("email", email)
-        return parameter
-    }
 
-    fun registerFreeChat(context: Context, navController: NavController, words:String, email: String, password: String ) {
+    fun registerFreeChat(
+        context: Context,
+        navController: NavController,
+        words: String,
+        email: String,
+    ) {
         var userID = MnemonicWords(words).address().hex // wallet address
-        Log.d(TAG, "registerFreeChat: " + userID+", " + email)
-        val parameter = getParameter(email, password)
+        Log.d(TAG, "register FreeChat: " + userID + ", " + email)
         viewModelScope.launch {
             try {
                 val response = imService.register(
                     Register(
-                        userID,
-                        0,
-                        "",
-                        1,
-                        "",
-                        password,
-                        email= email,
+                        userID = userID,
+                        email = email,
                     )
                 )
                 if (response.errCode == 0 && response.data != null) {
@@ -102,13 +110,12 @@ class RegisterViewModel @Inject constructor(
                             "",
                             response.data.token,
                             "",
-                            0
+                            0,
+                            email,
+                            expiredTime= response.data.expiredTime
                         )
                     )
-                    // register success
-                    EthUtil.createWalletFile(context, email, password, words)
-//                    navigationRoute.emit(Route.Home.route)
-                    navController.navigate(Route.CompleteProfile.route)
+                    navController.navigate(Route.Home.route)
                 } else {
                     Toast.makeText(context, response.errMsg, Toast.LENGTH_SHORT).show()
                 }

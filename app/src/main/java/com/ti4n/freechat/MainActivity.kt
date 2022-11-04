@@ -67,7 +67,7 @@ class MainActivity : AppCompatActivity() {
                             startDestination = Route.Splash.route
                         ) {
                             aniComposable(route = Route.Splash.route) {
-                                SplashView(navController)
+                                SplashView(navController, db.userBaseInfoDao())
                             }
                             aniComposable(route = Route.MainLogin.route) {
                                 MainLoginView(navController)
@@ -84,8 +84,7 @@ class MainActivity : AppCompatActivity() {
                             aniComposable(route = Route.SetEmail.route) {
                                 SetEmailView(
                                     navController,
-                                    it.arguments?.getString("words", "") ?: "",
-                                    it.arguments?.getString("password", "") ?: ""
+                                    it.arguments?.getString("words", "") ?: ""
                                 )
                             }
                             aniComposable(route = Route.Register1.route) {

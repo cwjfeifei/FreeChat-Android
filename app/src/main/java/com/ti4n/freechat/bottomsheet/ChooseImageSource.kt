@@ -16,13 +16,13 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import com.ti4n.freechat.login.ProfileViewModel
+import com.ti4n.freechat.login.RegisterViewModel
 
 
 @Composable
-fun ChooseImageSource(navController: NavController, viewModel: ProfileViewModel) {
+fun ChooseImageSource(navController: NavController, viewModel: RegisterViewModel) {
     val pickImage = rememberLauncherForActivityResult(ActivityResultContracts.PickVisualMedia()) {
-        viewModel.avatar.value = it
+        viewModel.faceURL.value = it.toString()
         navController.navigateUp()
     }
     Column(

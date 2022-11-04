@@ -82,7 +82,7 @@ fun MeView(
         LazyColumn(modifier = Modifier.background(Color.White)) {
             me?.let {
                 item {
-                    MeInfoItem(avatar = it.avatar, nickname = it.nickname, id = it.userId) {
+                    MeInfoItem(avatar = it.avatar, nickname = it.nickname, id = it.userID) {
                     }
                     MeDividerItem()
                 }

@@ -65,7 +65,7 @@ fun HomeView(userBaseInfoDao: UserBaseInfoDao) {
             .distinctUntilChanged().collectLatest {
                 IM.logout()
                 val token = userBaseInfoDao.getUserInfo(it).filterNotNull().first()
-                IM.login(token.userId, token.token)
+                IM.login(token.userID, token.token)
             }
     }
     Scaffold(bottomBar = {

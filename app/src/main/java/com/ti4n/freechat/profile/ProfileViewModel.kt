@@ -30,11 +30,11 @@ class ProfileViewModel @Inject constructor(
         }
         viewModelScope.launch {
             db.userBaseInfoDao().getUserInfo().filterNotNull().collectLatest {
-                isSelf.value = it.userId == toUserId
+                isSelf.value = it.userID == toUserId
                 if (isSelf.value) {
                     userInfo.value = UserInfo().apply {
                         birth = it.birthday
-                        userID = it.userId
+                        userID = it.userID
                         faceURL = it.avatar
                         nickname = it.nickname
                         remark = ""

@@ -28,25 +28,24 @@ import com.google.android.material.datepicker.MaterialDatePicker
 import com.ti4n.freechat.widget.Image
 import com.ti4n.freechat.R
 import com.ti4n.freechat.Route
+import com.ti4n.freechat.util.IM
 import com.ti4n.freechat.widget.ImageButton
 import com.ti4n.freechat.util.getActivity
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 
 @Composable
-fun CompleteProfileView(controller: NavController, viewModel: ProfileViewModel = hiltViewModel()) {
+fun CompleteProfileView(controller: NavController, viewModel: RegisterViewModel = hiltViewModel()) {
     val systemUiController = rememberSystemUiController()
     SideEffect {
         systemUiController.setSystemBarsColor(
             color = Color.White
         )
     }
-    val faceURL by viewModel.avatar.collectAsState()
+    val faceURL by viewModel.faceURL.collectAsState()
     val nickname by viewModel.name.collectAsState()
     val gender by viewModel.gender.collectAsState()
-    val birth by viewModel.birthday.collectAsState()
-    val country by viewModel.country.collectAsState()
-    val location by viewModel.location.collectAsState()
+    val birth by viewModel.birth.collectAsState()
     val datePicker by lazy { MaterialDatePicker.Builder.datePicker().build() }
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
@@ -131,7 +130,12 @@ fun CompleteProfileView(controller: NavController, viewModel: ProfileViewModel =
         ) {
             scope.launch {
                 // TODO reset email and ex property
-                viewModel.setSelfInfo(nickname,faceURL.toString(), gender, birth, "", "")
+                var result = IM.setUserInfo(nickname, faceURL, gender, birth, null, null)
+                if (result is Unit) {
+                    // success
+                    controller.navigate(Route.Home.route)
+                } else {
+                }
 //                viewModel.avatar.value?.let {
 //                    Minio.uploadFile(context, it)?.let {
 //                        val credentials = EthUtil.loadCredentials(context, "")

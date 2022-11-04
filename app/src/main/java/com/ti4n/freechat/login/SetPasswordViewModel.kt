@@ -8,13 +8,8 @@ import com.ti4n.freechat.db.UserBaseInfo
 import com.ti4n.freechat.model.request.GetSelfInfo
 import com.ti4n.freechat.model.request.GetToken
 import com.ti4n.freechat.network.FreeChatIMService
-import com.ti4n.freechat.util.IM
 import dagger.hilt.android.lifecycle.HiltViewModel
-import io.openim.android.sdk.OpenIMClient
 import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.distinctUntilChanged
-import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -30,7 +25,7 @@ class SetPasswordViewModel @Inject constructor(
         viewModelScope.launch {
             val token = imService.getToken(GetToken(address)).data
             token?.let {
-                val response = imService.getInfo(GetSelfInfo(it.userID), it.token)
+                val response = imService.getSelfInfo(GetSelfInfo(it.userID), it.token)
                 if (response.errCode == 0 && response.data != null) {
                     val selfInfo = response.data
                     db.userBaseInfoDao().insert(
@@ -39,20 +34,17 @@ class SetPasswordViewModel @Inject constructor(
                             selfInfo.nickname,
                             token.token,
                             selfInfo.faceURL,
-                            selfInfo.birth
+                            selfInfo.birth,
+                            "",
+                            token.expiredTime
                         )
                     )
                     navigationRoute.emit(Route.Home.route)
                 } else {
-                    navigationRoute.emit(Route.CompleteProfile.route)
+                    navigationRoute.emit(Route.SetEmail.route)
                 }
             }
         }
     }
-//
-//    fun registerNew(address : String, password : String) {
-//        viewModelScope.launch {
-//            OpenIMClient.getInstance().userInfoManager.
-//        }
-//    }
+
 }

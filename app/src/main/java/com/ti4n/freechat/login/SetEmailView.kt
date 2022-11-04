@@ -29,7 +29,6 @@ import org.kethereum.bip39.model.MnemonicWords
 fun SetEmailView(
     navController: NavController,
     words: String,
-    password: String,
     viewModel: RegisterViewModel = hiltViewModel()
 ) {
     var email1 by remember {
@@ -156,7 +155,6 @@ fun SetEmailView(
                             navController,
                             words = words,
                             email = email1,
-                            password = password
                         )
                     }
                 } else {

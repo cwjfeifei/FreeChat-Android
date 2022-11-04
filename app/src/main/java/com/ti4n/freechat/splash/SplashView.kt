@@ -27,6 +27,7 @@ import androidx.navigation.NavController
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.ti4n.freechat.R
 import com.ti4n.freechat.Route
+import com.ti4n.freechat.db.UserBaseInfoDao
 import com.ti4n.freechat.di.dataStore
 import com.ti4n.freechat.widget.Image
 import kotlinx.coroutines.delay
@@ -40,7 +41,7 @@ import kotlin.time.Duration.Companion.seconds
 import kotlin.time.ExperimentalTime
 
 @Composable
-fun SplashView(navController: NavController) {
+fun SplashView(navController: NavController, userBaseInfoDao: UserBaseInfoDao) {
     val systemUiController = rememberSystemUiController()
     val context = LocalContext.current
     SideEffect {
@@ -70,7 +71,7 @@ fun SplashView(navController: NavController) {
             .firstOrNull() ?: false
         if (agree) {
             val isLogin =
-                !context.dataStore.data.map { it[stringPreferencesKey("email")] }.firstOrNull()
+                !context.dataStore.data.map { it[stringPreferencesKey("address")] }.firstOrNull()
                     .isNullOrEmpty()
             delay(1.seconds)
             if (isLogin) {
