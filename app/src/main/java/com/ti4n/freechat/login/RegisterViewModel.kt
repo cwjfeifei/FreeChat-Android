@@ -13,6 +13,8 @@ import com.ti4n.freechat.Route
 import com.ti4n.freechat.db.AppDataBase
 import com.ti4n.freechat.db.UserBaseInfo
 import com.ti4n.freechat.di.dataStore
+import com.ti4n.freechat.model.request.GetSelfInfo
+import com.ti4n.freechat.model.request.GetToken
 import com.ti4n.freechat.model.request.Register
 import com.ti4n.freechat.network.FreeChatIMService
 import com.ti4n.freechat.util.EthUtil
@@ -83,14 +85,12 @@ class RegisterViewModel @Inject constructor(
 
     fun canRegister() = words.value == clickedWords.value
 
-
     fun registerFreeChat(
         context: Context,
         words: String,
         email: String,
     ) {
         var userID = MnemonicWords(words).address().hex // wallet address
-        Log.d(TAG, "register FreeChat: " + userID + ", " + email)
         viewModelScope.launch {
             try {
                 val response = imService.register(
@@ -101,26 +101,57 @@ class RegisterViewModel @Inject constructor(
                 )
                 if (response.errCode == 0 && response.data != null) {
                     context.dataStore.edit {
-                        it[stringPreferencesKey("token")] = response.data.token
                         it[stringPreferencesKey("userId")] = response.data.userID
+                        it[stringPreferencesKey("token")] = response.data.token
+                        it[stringPreferencesKey("expiredTime")] = response.data.expiredTime.toString()
                     }
-
                     db.userBaseInfoDao().insert(
                         UserBaseInfo(
                             userID = response.data.userID,
                             token = response.data.token,
+                            email = email,
                             expiredTime= response.data.expiredTime
                         )
                     )
 
                     setEmailRoute.emit(Route.CompleteProfile.route)
-                    // set profile info first
                 } else {
-                    Toast.makeText(context, response.errMsg, Toast.LENGTH_SHORT).show()
+                    Toast.makeText(context, R.string.set_email_failed, Toast.LENGTH_SHORT).show()
                 }
             } catch (e: Exception) {
-                Toast.makeText(context, R.string.use_vpn_to_access, Toast.LENGTH_SHORT).show()
+                // network error or userID registered
+                Toast.makeText(context, R.string.set_email_failed, Toast.LENGTH_SHORT).show()
                 Log.w(TAG, "registerFreeChat: ", e)
+            }
+        }
+    }
+
+
+    fun login(address: String) {
+        viewModelScope.launch {
+            try {
+                val token = imService.getToken(GetToken(address)).data
+                token?.let {
+                    val response = imService.getSelfInfo(GetSelfInfo(it.userID), it.token)
+                    Log.w("Login", "resp-getselfuserinfo " + response)
+                    if (response.errCode == 0 && response.data != null) {
+                        val selfInfo = response.data
+                        db.userBaseInfoDao().insert(
+                            UserBaseInfo(
+                                userID = address,
+                                nickname = selfInfo.nickname,
+                                faceURL = selfInfo.faceURL,
+                                birth = selfInfo.birth,
+                                gender = selfInfo.gender,
+                                email = selfInfo.email,
+                                token = token.token,
+                                expiredTime = token.expiredTime
+                            )
+                        )
+                    }
+                }
+            } catch (e: Exception) {
+                Log.w("Login", "Error :  ",  e)
             }
         }
     }

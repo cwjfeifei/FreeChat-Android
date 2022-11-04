@@ -26,6 +26,7 @@
     <string name="title_set_email">请设置账户保护电子邮箱</string>
     <string name="set_email">请输入您的电子邮箱</string>
     <string name="set_email2">再次确认您的电子邮箱</string>
+    <string name="set_email_failed">设置电子邮箱失败，请检查网络!</string>
     <string name="cancel">取消</string>
     <string name="set_name">设置名字</string>
     <string name="done">完成</string>
