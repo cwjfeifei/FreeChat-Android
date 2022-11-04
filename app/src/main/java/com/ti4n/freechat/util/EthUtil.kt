@@ -12,7 +12,6 @@ import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
@@ -31,7 +30,6 @@ import org.kethereum.model.PrivateKey
 import org.kethereum.model.PublicKey
 import org.kethereum.rpc.HttpEthereumRPC
 import org.komputing.kethereum.erc20.ERC20RPCConnector
-import org.komputing.kethereum.erc20.ERC20TransactionGenerator
 import org.web3j.contracts.eip20.generated.ERC20
 import org.web3j.crypto.Credentials
 import org.web3j.crypto.ECKeyPair
@@ -42,7 +40,6 @@ import org.web3j.protocol.Web3j
 import org.web3j.protocol.core.methods.request.Transaction
 import org.web3j.protocol.core.methods.response.EthEstimateGas
 import org.web3j.protocol.core.methods.response.EthGasPrice
-import org.web3j.protocol.core.methods.response.EthGetTransactionReceipt
 import org.web3j.protocol.core.methods.response.EthSendTransaction
 import org.web3j.protocol.http.HttpService
 import org.web3j.tx.gas.DefaultGasProvider
@@ -79,7 +76,6 @@ object EthUtil {
             false
         )
         context.dataStore.edit {
-            it[stringPreferencesKey("account")] = mnemonicWords
             it[stringPreferencesKey("file")] = file
             it[stringPreferencesKey("address")] = MnemonicWords(mnemonicWords).address().hex
         }
@@ -116,16 +112,7 @@ object EthUtil {
         to,
         BigInteger((amount.toDouble() * (10.0.pow(decimal))).toBigDecimal().toPlainString())
     )
-        .flowable().asFlow().catch { it.printStackTrace() }.onStart {
-            Log.e(
-                "TAG",
-                "transfer: ${tokenAddress} ${
-                    BigInteger(
-                        (amount.toDouble() * (10.0.pow(decimal))).toBigDecimal().toPlainString()
-                    )
-                } ${to}"
-            )
-        }.onEach {
+        .flowable().asFlow().catch { it.printStackTrace() }.onEach {
             Log.e("transfer", "transfer: ${it.transactionHash}")
             Log.e("transfer", "transfer: ${it.status}")
         }.flowOn(Dispatchers.IO)
@@ -163,7 +150,7 @@ object EthUtil {
         rpc.getBalance(Address(address))?.toWei(18)
     }
 
-    suspend fun gasPrice(from: String, to: String): Flow<Pair<String, String>?> =
+    fun gasPrice(from: String, to: String): Flow<Pair<String, String>?> =
         web3.ethGasPrice().flowable().asFlow().combine(
             web3.ethEstimateGas(
                 Transaction.createEthCallTransaction(
@@ -172,17 +159,18 @@ object EthUtil {
             ).flowable().asFlow()
         ) { a: EthGasPrice?, b: EthEstimateGas? ->
             return@combine if (a != null && b != null) {
-                "${((b.amountUsed.toDouble() + 2000) * a.gasPrice.toDouble()).toWei(18)}" to (b.amountUsed.toDouble() * a.gasPrice.toDouble()).toWei(18)
+                "${((b.amountUsed.toDouble() + 2000) * a.gasPrice.toDouble()).toWei(18)}" to (b.amountUsed.toDouble() * a.gasPrice.toDouble()).toWei(
+                    18
+                )
             } else null
         }.flowOn(Dispatchers.IO)
 
 }
 
-fun MnemonicWords.toKeyPair(walletIndex: Int = 0) =
-    toSeed().toKey(DEFAULT_ETHEREUM_BIP44_PATH).keyPair
+fun MnemonicWords.toKeyPair() = toSeed().toKey(DEFAULT_ETHEREUM_BIP44_PATH).keyPair
 
-fun MnemonicWords.privateKey(walletIndex: Int = 0) = toKeyPair(walletIndex).privateKey
-fun MnemonicWords.address(walletIndex: Int = 0) = toKeyPair().toAddress()
+fun MnemonicWords.privateKey() = toKeyPair().privateKey
+fun MnemonicWords.address() = toKeyPair().toAddress()
 
 fun BigInteger.toWei(decimal: Int) =
     (toDouble() / (10.0.pow(decimal))).toBigDecimal().toPlainString()

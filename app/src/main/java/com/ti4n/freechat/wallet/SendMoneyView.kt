@@ -4,6 +4,7 @@ import android.icu.text.SimpleDateFormat
 import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.ActivityResultLauncher
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -22,11 +23,14 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.Card
 import androidx.compose.material.Divider
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
+import androidx.compose.material.OutlinedButton
 import androidx.compose.material.Text
+import androidx.compose.material.TextButton
 import androidx.compose.material.TextField
 import androidx.compose.material.TextFieldDefaults
 import androidx.compose.material.TopAppBar
@@ -219,23 +223,48 @@ fun SendMoneyView(navController: NavController, viewModel: SendMoneyViewModel = 
             }
             Spacer(modifier = Modifier.weight(1f))
             Row(
-                Modifier
+                modifier = Modifier
                     .fillMaxWidth()
-                    .padding(bottom = 20.dp)
-                    .padding(horizontal = 20.dp), Arrangement.SpaceBetween
+                    .padding(20.dp),
+                horizontalArrangement = Arrangement.spacedBy(16.dp)
             ) {
-                ImageButton(title = R.string.close, mipmap = R.mipmap.return_btn) {
-                    navController.navigateUp()
-                }
-                ImageButton(
-                    title = R.string.next,
-                    mipmap = R.mipmap.next_btn,
-                    textColor = Color.White
+                OutlinedButton(
+                    onClick = { navController.navigateUp() },
+                    border = BorderStroke(2.dp, Color(0xFF3879FD)),
+                    shape = RoundedCornerShape(4.dp),
+                    modifier = Modifier
+                        .weight(1f)
+                        .height(44.dp),
+                    colors = ButtonDefaults.buttonColors(
+                        backgroundColor = Color.White, contentColor = Color(0xFF3879FD)
+                    )
                 ) {
-                    if (EthUtil.addressExist(address)) {
-                        viewModel.addressDone()
-                        navController.navigate(Route.SendMoneyInputDetail.route)
-                    }
+                    Text(
+                        text = stringResource(id = R.string.back),
+                        fontSize = 14.sp,
+                        fontWeight = FontWeight.Medium
+                    )
+                }
+                TextButton(
+                    onClick = {
+                        if (EthUtil.addressExist(address)) {
+                            viewModel.addressDone()
+                            navController.navigate(Route.SendMoneyInputDetail.route)
+                        }
+                    },
+                    shape = RoundedCornerShape(4.dp),
+                    modifier = Modifier
+                        .weight(1f)
+                        .height(44.dp),
+                    colors = ButtonDefaults.buttonColors(
+                        backgroundColor = Color(0xFF3879FD), contentColor = Color.White
+                    )
+                ) {
+                    Text(
+                        text = stringResource(id = R.string.next),
+                        fontSize = 14.sp,
+                        fontWeight = FontWeight.Medium
+                    )
                 }
             }
         }

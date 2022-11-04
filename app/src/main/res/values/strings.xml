@@ -13,11 +13,11 @@
     <string name="etc_term">等协议。</string>
     <string name="and">和</string>
     <string name="agree_app_terms_tip">请阅读并同意相关协议才能进行注册或登录。</string>
-    <string name="input_mnemonic">请输入您的助记词\n登录您的FreeChat</string>
+    <string name="input_mnemonic">请输入您的助记词 登录您的FreeChat</string>
     <string name="back">返回</string>
     <string name="login_freechat">登录FreeChat</string>
     <string name="wrong_mnemonic">助记词不正确</string>
-    <string name="keep_mnemonic_to_find_account">请妥善保管您的助记词\n便于您找回账户</string>
+    <string name="keep_mnemonic_to_find_account">请妥善保管您的助记词 便于您找回账户</string>
     <string name="next">下一步</string>
     <string name="input_mnemonic_by_order">请按顺序验证助记词</string>
     <string name="title_set_password">请确认您的账户密码</string>
@@ -74,7 +74,10 @@
     <string name="data_permission_detail">该权限用于您使用Freechat的习惯与爱好，为您推荐相关内容，满足个性化的推荐，这项功能默认为关闭状态，您可以随时通过Freechat设置功能来开启这项功能。</string>
     <string name="vpn_permission">加密网络</string>
     <string name="vpn_permission_detail">该权限用于因为网络限制无法使用Freechat时，您将通过加密网络进行Freechat的使用。</string>
-    <string name="i_know">我知道啦</string>
+    <string name="location_permission">地理位置</string>
+    <string name="location_permission_detail">该权限用于使用附近的人，查看您附近的好友发的动态。</string>
+    <string name="agree">同意</string>
+    <string name="reject">拒绝</string>
 
     <string name="no_internet">检测到您的网络存在问题，可能是因为屏蔽、通讯欠费、网络错误等因素造成无法访问。</string>
     <string name="use_vpn_to_access">您可以使用Freechat加密网络或者其他网络加速工具来保证Freechat的正常使用。</string>
@@ -114,6 +117,15 @@
     <string name="picture">照片</string>
 
     <string name="please_input_your_name">请输入您的名字</string>
-    
+
+    <string name="create_freechat">创建FreeChat</string>
+
     <string name="new_friend">新的朋友</string>
+    <string name="copy">复制</string>
+    <string name="save_to_gallery">保存为图片</string>
+    <string name="tip">注意</string>
+    <string name="login_tip">FreeChat并不保存您的任何私钥及助记词，在您输入密钥等敏感关键信息时，请注意安全，也请您妥善保管好您的助记词及密钥相关安全信息，否则将会造成资产遗失或被盗。</string>
+    <string name="register_tip">FreeChat为去中心化的社交应用，你的安全措施由助记词进行保护，如果助记词遗失或泄漏，您的账户及财产将会失去保护，请妥善保管。</string>
+    <string name="email_tip">电子邮箱是确认您Freechat社交身份的唯一方式，保护您的社交信息，只能设置一次，不允许进行更改。</string>
+    <string name="password_tip">账户密码并不能找回您的账户，您依然需要助记词进行账户重置。再次提醒您请保护好您的助记词，助记词是唯一恢复您账户及资产的方式。</string>
 </resources>

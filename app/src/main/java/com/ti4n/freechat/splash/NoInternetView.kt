@@ -37,71 +37,71 @@ import kotlinx.coroutines.launch
 
 @Composable
 fun NoInternetView(navController: NavController) {
-    val systemUiController = rememberSystemUiController()
-    val scope = rememberCoroutineScope()
-    SideEffect {
-        systemUiController.setSystemBarsColor(Color.White)
-    }
-    Column(
-        horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = Modifier
-            .fillMaxSize()
-            .systemBarsPadding()
-            .padding(horizontal = 20.dp)
-    ) {
-        Spacer(modifier = Modifier.weight(1f))
-        Image(mipmap = R.mipmap.no_internet)
-        Spacer(modifier = Modifier.height(20.dp))
-        Text(
-            text = stringResource(id = R.string.no_internet),
-            color = Color(0xFF4D4D4D),
-            fontSize = 12.sp
-        )
-        Spacer(modifier = Modifier.height(8.dp))
-        Text(
-            text = stringResource(id = R.string.use_vpn_to_access),
-            color = Color(0xFF4D4D4D),
-            fontSize = 12.sp
-        )
-        Spacer(modifier = Modifier.weight(1f))
-        Row(
-            Modifier
-                .fillMaxWidth()
-                .padding(bottom = 20.dp)
-                .height(44.dp)
-        ) {
-            OutlinedButton(
-                onClick = {
-                    scope.launch {
-                        Log.e("NoInternet", "NoInternetView: ${pingFreeChat()}")
-                    }
-                },
-                shape = RoundedCornerShape(4.dp),
-                border = BorderStroke(
-                    2.dp,
-                    Color(0xFF4B6AF7)
-                ),
-                colors = ButtonDefaults.outlinedButtonColors(
-                    backgroundColor = Color.White,
-                    contentColor = Color(0xFF4B6AF7)
-                ),
-                modifier = Modifier.weight(1f)
-            ) {
-                Text(
-                    text = stringResource(id = R.string.re_test),
-                    fontSize = 16.sp,
-                    fontWeight = FontWeight.Medium
-                )
-            }
-            Spacer(modifier = Modifier.width(7.dp))
-            ImageButton(
-                title = R.string.use_vpn,
-                mipmap = R.mipmap.next_btn,
-                modifier = Modifier.weight(1f),
-                Color.White
-            ) {
-
-            }
-        }
-    }
+//    val systemUiController = rememberSystemUiController()
+//    val scope = rememberCoroutineScope()
+//    SideEffect {
+//        systemUiController.setSystemBarsColor(Color.White)
+//    }
+//    Column(
+//        horizontalAlignment = Alignment.CenterHorizontally,
+//        modifier = Modifier
+//            .fillMaxSize()
+//            .systemBarsPadding()
+//            .padding(horizontal = 20.dp)
+//    ) {
+//        Spacer(modifier = Modifier.weight(1f))
+//        Image(mipmap = R.mipmap.no_internet)
+//        Spacer(modifier = Modifier.height(20.dp))
+//        Text(
+//            text = stringResource(id = R.string.no_internet),
+//            color = Color(0xFF4D4D4D),
+//            fontSize = 12.sp
+//        )
+//        Spacer(modifier = Modifier.height(8.dp))
+//        Text(
+//            text = stringResource(id = R.string.use_vpn_to_access),
+//            color = Color(0xFF4D4D4D),
+//            fontSize = 12.sp
+//        )
+//        Spacer(modifier = Modifier.weight(1f))
+//        Row(
+//            Modifier
+//                .fillMaxWidth()
+//                .padding(bottom = 20.dp)
+//                .height(44.dp)
+//        ) {
+//            OutlinedButton(
+//                onClick = {
+//                    scope.launch {
+//                        Log.e("NoInternet", "NoInternetView: ${pingFreeChat()}")
+//                    }
+//                },
+//                shape = RoundedCornerShape(4.dp),
+//                border = BorderStroke(
+//                    2.dp,
+//                    Color(0xFF4B6AF7)
+//                ),
+//                colors = ButtonDefaults.outlinedButtonColors(
+//                    backgroundColor = Color.White,
+//                    contentColor = Color(0xFF4B6AF7)
+//                ),
+//                modifier = Modifier.weight(1f)
+//            ) {
+//                Text(
+//                    text = stringResource(id = R.string.re_test),
+//                    fontSize = 16.sp,
+//                    fontWeight = FontWeight.Medium
+//                )
+//            }
+//            Spacer(modifier = Modifier.width(7.dp))
+//            ImageButton(
+//                title = R.string.use_vpn,
+//                mipmap = R.mipmap.next_btn,
+//                modifier = Modifier.weight(1f),
+//                Color.White
+//            ) {
+//
+//            }
+//        }
+//    }
 }

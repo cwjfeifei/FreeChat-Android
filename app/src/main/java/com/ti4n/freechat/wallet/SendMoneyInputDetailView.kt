@@ -17,12 +17,15 @@ import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.Card
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.ExposedDropdownMenuBox
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
+import androidx.compose.material.OutlinedButton
 import androidx.compose.material.Text
+import androidx.compose.material.TextButton
 import androidx.compose.material.TextField
 import androidx.compose.material.TextFieldDefaults
 import androidx.compose.material.TopAppBar
@@ -172,21 +175,46 @@ fun SendMoneyInputDetailView(
         }
         Spacer(modifier = Modifier.weight(1f))
         Row(
-            Modifier
+            modifier = Modifier
                 .fillMaxWidth()
-                .padding(bottom = 20.dp)
-                .padding(horizontal = 20.dp), Arrangement.SpaceBetween
+                .padding(20.dp),
+            horizontalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            ImageButton(title = R.string.back, mipmap = R.mipmap.return_btn) {
-                navController.navigateUp()
-            }
-            ImageButton(
-                title = R.string.transfer,
-                mipmap = R.mipmap.next_btn,
-                textColor = Color.White
+            OutlinedButton(
+                onClick = { navController.navigateUp() },
+                border = BorderStroke(2.dp, Color(0xFF3879FD)),
+                shape = RoundedCornerShape(4.dp),
+                modifier = Modifier
+                    .weight(1f)
+                    .height(44.dp),
+                colors = ButtonDefaults.buttonColors(
+                    backgroundColor = Color.White, contentColor = Color(0xFF3879FD)
+                )
             ) {
-                if (amount <= remainAmount)
-                    navController.navigate(Route.ConfirmTransaction.route)
+                Text(
+                    text = stringResource(id = R.string.back),
+                    fontSize = 14.sp,
+                    fontWeight = FontWeight.Medium
+                )
+            }
+            TextButton(
+                onClick = {
+                    if (amount <= remainAmount)
+                        navController.navigate(Route.ConfirmTransaction.route)
+                },
+                shape = RoundedCornerShape(4.dp),
+                modifier = Modifier
+                    .weight(1f)
+                    .height(44.dp),
+                colors = ButtonDefaults.buttonColors(
+                    backgroundColor = Color(0xFF3879FD), contentColor = Color.White
+                )
+            ) {
+                Text(
+                    text = stringResource(id = R.string.transfer),
+                    fontSize = 14.sp,
+                    fontWeight = FontWeight.Medium
+                )
             }
         }
     }

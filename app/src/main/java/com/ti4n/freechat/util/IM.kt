@@ -44,7 +44,7 @@ object IM {
             "ws://47.57.185.242:10001",
             context.cacheDir.absolutePath,
             Log.DEBUG,
-            "aws",
+            "minio",
             null,
             object : OnConnListener {
                 override fun onConnectFailed(code: Long, error: String?) {
@@ -96,7 +96,7 @@ object IM {
         })
     }
 
-    fun setListener() {
+    private fun setListener() {
         imClient.userInfoManager.setOnUserListener {
             currentUserInfo.value = it
         }
@@ -227,20 +227,21 @@ object IM {
                 }, nickname, faceURL, gender, 1, "", birth, email, ex)
         }
 
-    suspend fun getHistoryMessages(startMsg: Message?, userId: String) = suspendCoroutine {
-        imClient.messageManager.getHistoryMessageListReverse(
-            object : OnBase<List<Message>> {
-                override fun onError(code: Int, error: String?) {
-                    it.resume(listOf<Message>())
-                }
+    suspend fun getHistoryMessages(startMsg: Message?, userId: String, conversationId: String) =
+        suspendCoroutine {
+            imClient.messageManager.getHistoryMessageList(
+                object : OnBase<List<Message>> {
+                    override fun onError(code: Int, error: String?) {
+                        it.resume(listOf<Message>())
+                    }
 
-                override fun onSuccess(data: List<Message>?) {
-                    it.resume(data ?: listOf())
-                }
+                    override fun onSuccess(data: List<Message>?) {
+                        it.resume(data ?: listOf())
+                    }
 
-            }, userId, null, "single_$userId", startMsg, 20
-        )
-    }
+                }, userId, null, conversationId, startMsg, 20
+            )
+        }
 
     fun getAllConversations() {
         imClient.conversationManager.getAllConversationList(object :
@@ -258,6 +259,21 @@ object IM {
 
         })
     }
+
+    suspend fun markMessagesRead(userId: String, messages: List<String>) = suspendCoroutine {
+        imClient.messageManager.markC2CMessageAsRead(object : OnBase<String> {
+            override fun onError(code: Int, error: String?) {
+                it.resumeWithException(IMError(code, error))
+            }
+
+            override fun onSuccess(data: String?) {
+                it.resume(data)
+            }
+        }, userId, messages)
+    }
+
+    fun getConversationId(toUserId: String) =
+        imClient.conversationManager.getConversationIDBySessionType(toUserId, 0)
 
     suspend fun sendTextMessage(address: String, content: String) = suspendCoroutine {
         imClient.conversationManager.getOneConversation(object : OnBase<ConversationInfo> {
@@ -452,6 +468,30 @@ object IM {
                 it.resume(data)
             }
         })
+    }
+
+    suspend fun acceptFriendApplication(id: String) = suspendCoroutine {
+        imClient.friendshipManager.acceptFriendApplication(object : OnBase<String> {
+            override fun onError(code: Int, error: String?) {
+                it.resumeWithException(IMError(code, error))
+            }
+
+            override fun onSuccess(data: String?) {
+                it.resume(data)
+            }
+        }, id, "")
+    }
+
+    suspend fun rejectFriendApplication(id: String) = suspendCoroutine {
+        imClient.friendshipManager.refuseFriendApplication(object : OnBase<String> {
+            override fun onError(code: Int, error: String?) {
+                it.resumeWithException(IMError(code, error))
+            }
+
+            override fun onSuccess(data: String?) {
+                it.resume(data)
+            }
+        }, id, "")
     }
 }
 

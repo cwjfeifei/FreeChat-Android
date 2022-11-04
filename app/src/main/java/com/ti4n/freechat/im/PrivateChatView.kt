@@ -167,7 +167,7 @@ fun PrivateChatView(
                 }
                 Spacer(modifier = Modifier.height(16.dp))
             }
-            items(messages.itemSnapshotList.reversed()) {
+            items(messages.itemSnapshotList) {
                 it?.let {
                     if (it.sendID == meInfo?.userID) {
                         MineMessage(message = it, navController = navController)

@@ -32,9 +32,7 @@ import kotlinx.coroutines.launch
 
 @Composable
 fun Register2View(
-    navController: NavController,
-    type: LoginType,
-    viewModel: RegisterViewModel = hiltViewModel()
+    navController: NavController, type: LoginType, viewModel: RegisterViewModel = hiltViewModel()
 ) {
     val scrollState = rememberScrollState()
     val randomWords by viewModel.shuffledWord.collectAsState()
@@ -44,18 +42,30 @@ fun Register2View(
     LaunchedEffect(Unit) {
         viewModel.shuffleWord()
     }
-    LoginCommonView(
-        when (type) {
-            LoginType.Login -> R.string.input_mnemonic
-            LoginType.Register -> R.string.input_mnemonic_by_order
+    LoginCommonView(when (type) {
+        LoginType.Login -> R.string.input_mnemonic
+        LoginType.Register -> R.string.input_mnemonic_by_order
+    }, backClick = { navController.navigateUp() }, next = when (type) {
+        LoginType.Login -> R.string.login_freechat
+        LoginType.Register -> R.string.next
+    }, nextClick = {
+        if (viewModel.canRegister()) {
+            navController.navigate(
+                Route.SetPassword.jump(
+                    viewModel.words.value.joinToString(
+                        " "
+                    )
+                )
+            )
+        } else {
+            Toast.makeText(context, "顺序不对", Toast.LENGTH_SHORT).show()
         }
-    ) {
+    }) {
         Column(Modifier.verticalScroll(scrollState)) {
             Spacer(Modifier.height(20.dp))
             Card(
                 shape = RoundedCornerShape(8.dp),
-                modifier = Modifier
-                    .fillMaxWidth(),
+                modifier = Modifier.fillMaxWidth(),
                 elevation = 4.dp
             ) {
                 LazyVerticalGrid(
@@ -75,12 +85,10 @@ fun Register2View(
                             elevation = 0.dp,
                             border = BorderStroke(1.dp, Color(0xFFE6E6E6))
                         ) {
-                            Box(
-                                contentAlignment = Alignment.Center,
+                            Box(contentAlignment = Alignment.Center,
                                 modifier = Modifier
                                     .height(30.dp)
-                                    .clickable { viewModel.deleteWord(it) }
-                            ) {
+                                    .clickable { viewModel.deleteWord(it) }) {
                                 Text(
                                     text = it,
                                     color = Color(0xFF4B6AF7),
@@ -108,12 +116,10 @@ fun Register2View(
                         shape = RoundedCornerShape(8.dp),
                         elevation = 0.dp,
                     ) {
-                        Box(
-                            contentAlignment = Alignment.Center,
+                        Box(contentAlignment = Alignment.Center,
                             modifier = Modifier
                                 .height(30.dp)
-                                .clickable { viewModel.addWord(it) }
-                        ) {
+                                .clickable { viewModel.addWord(it) }) {
                             Text(
                                 text = it,
                                 color = Color(0xFF4D4D4D),
@@ -122,36 +128,6 @@ fun Register2View(
                             )
                         }
                     }
-                }
-            }
-            Spacer(Modifier.height(16.dp))
-        }
-        Spacer(Modifier.weight(1f))
-        Row(
-            Modifier
-                .fillMaxWidth()
-                .padding(bottom = 20.dp), Arrangement.SpaceBetween
-        ) {
-            ImageButton(title = R.string.back, mipmap = R.mipmap.return_btn) {
-                navController.navigateUp()
-            }
-            Spacer(Modifier.width(4.dp))
-            ImageButton(
-                title = when (type) {
-                    LoginType.Login -> R.string.login_freechat
-                    LoginType.Register -> R.string.next
-                }, mipmap = R.mipmap.next_btn, textColor = Color.White
-            ) {
-                if (viewModel.canRegister()) {
-                    navController.navigate(
-                        Route.SetPassword.jump(
-                            viewModel.words.value.joinToString(
-                                " "
-                            )
-                        )
-                    )
-                } else {
-                    Toast.makeText(context, "顺序不对", Toast.LENGTH_SHORT).show()
                 }
             }
         }

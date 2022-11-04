@@ -43,7 +43,9 @@ sealed class Route(val route: String) {
 
     object ConfirmTransaction : Route("ConfirmTransaction")
 
-    object PrivateChat : Route("privateChat/{id}") {
-        fun jump(id: String) = "privateChat/$id"
+    object PrivateChat : Route("privateChat/{id}/{conversationId}") {
+        fun jump(id: String, conversationId: String) = "privateChat/$id/$conversationId"
     }
+
+    object NewContact : Route("newContact")
 }

@@ -45,9 +45,7 @@ import java.io.File
 
 @Composable
 fun SetPasswordView(
-    navController: NavController,
-    words: String,
-    viewModel: SetPasswordViewModel = hiltViewModel()
+    navController: NavController, words: String, viewModel: SetPasswordViewModel = hiltViewModel()
 ) {
     var password1 by remember {
         mutableStateOf("")
@@ -62,13 +60,18 @@ fun SetPasswordView(
             navController.navigate(it)
         }
     }
-    LoginCommonView(R.string.set_password) {
-        Spacer(Modifier.height(60.dp))
-        TextField(
-            value = password1,
+    LoginCommonView(R.string.set_password, backClick = { navController.navigateUp() }, nextClick = {
+        if (password1 == password2 && password1.length >= 8) {
+            scope.launch {
+                EthUtil.createWalletFile(context, password1, words)
+
+                viewModel.login(MnemonicWords(words).address().hex)
+            }
+        }
+    }, tip = R.string.password_tip) {
+        TextField(value = password1,
             onValueChange = { password1 = it },
-            modifier = Modifier
-                .fillMaxWidth(),
+            modifier = Modifier.fillMaxWidth(),
             maxLines = 1,
             colors = TextFieldDefaults.textFieldColors(
                 focusedIndicatorColor = Color.Transparent,
@@ -77,26 +80,21 @@ fun SetPasswordView(
             ),
             shape = RoundedCornerShape(4.dp),
             textStyle = TextStyle(
-                fontSize = 14.sp,
-                color = Color.Black,
-                textAlign = TextAlign.Center
+                fontSize = 14.sp, color = Color.Black, textAlign = TextAlign.Center
             ),
             placeholder = {
                 Text(
-                    text = stringResource(id=R.string.set_password),
+                    text = stringResource(id = R.string.set_password),
                     color = Color(0xFF999999),
                     fontSize = 14.sp,
                     textAlign = TextAlign.Center,
                     modifier = Modifier.fillMaxWidth()
                 )
-            }
-        )
+            })
         Spacer(Modifier.height(20.dp))
-        TextField(
-            value = password2,
+        TextField(value = password2,
             onValueChange = { password2 = it },
-            modifier = Modifier
-                .fillMaxWidth(),
+            modifier = Modifier.fillMaxWidth(),
             maxLines = 1,
             colors = TextFieldDefaults.textFieldColors(
                 focusedIndicatorColor = Color.Transparent,
@@ -105,71 +103,22 @@ fun SetPasswordView(
             ),
             shape = RoundedCornerShape(4.dp),
             textStyle = TextStyle(
-                fontSize = 16.sp,
-                color = Color.Black,
-                textAlign = TextAlign.Center
+                fontSize = 16.sp, color = Color.Black, textAlign = TextAlign.Center
             ),
             placeholder = {
                 Text(
-                    text = stringResource(id=R.string.set_password2),
+                    text = stringResource(id = R.string.set_password2),
                     color = Color(0xFF999999),
                     fontSize = 14.sp,
                     textAlign = TextAlign.Center,
                     modifier = Modifier.fillMaxWidth()
                 )
-            }
-        )
+            })
         Spacer(Modifier.height(12.dp))
         Text(
             text = "确保您的密码有大写字母、小写字母等，位数大于8位。",
             color = Color(0xFF808080),
             fontSize = 12.sp
         )
-        Spacer(Modifier.height(20.dp))
-        Card(
-            shape = RoundedCornerShape(8.dp),
-            modifier = Modifier
-                .fillMaxWidth(),
-            elevation = 4.dp
-        ) {
-            Column(
-                Modifier
-                    .fillMaxWidth()
-                    .padding(vertical = 12.dp, horizontal = 20.dp),
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                Text(text = "注意", color = Color(0xFF4D4D4D), fontSize = 12.sp)
-                Spacer(Modifier.height(8.dp))
-                Text(
-                    text = "临时密码并不能找回您的账户，您依然需要助记词进行账户重置。再次提醒您请保护好您的助记词，助记词是唯一恢复您账户及资产的方式。",
-                    color = Color(0xFF666666),
-                    fontSize = 10.sp
-                )
-            }
-        }
-        Spacer(Modifier.weight(1f))
-        Row(
-            Modifier
-                .fillMaxWidth()
-                .padding(bottom = 20.dp), Arrangement.SpaceBetween
-        ) {
-            ImageButton(title = R.string.back, mipmap = R.mipmap.return_btn) {
-                navController.navigateUp()
-            }
-            Spacer(Modifier.width(4.dp))
-            ImageButton(
-                title = R.string.next,
-                mipmap = R.mipmap.next_btn,
-                textColor = Color.White
-            ) {
-                if (password1 == password2 && password1.length >=8) {
-                    scope.launch {
-                        EthUtil.createWalletFile(context, password1, words)
-
-                        viewModel.login(MnemonicWords(words).address().hex)
-                    }
-                }
-            }
-        }
     }
 }

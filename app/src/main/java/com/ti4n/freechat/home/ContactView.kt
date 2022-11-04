@@ -48,6 +48,7 @@ import coil.compose.AsyncImage
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.ti4n.freechat.R
 import com.ti4n.freechat.Route
+import com.ti4n.freechat.contact.NewContactView
 import com.ti4n.freechat.util.IM
 import com.ti4n.freechat.widget.HomeTitle
 import com.ti4n.freechat.widget.Image
@@ -84,7 +85,7 @@ fun ContactView(
             LazyColumn(modifier = Modifier.background(Color.White)) {
                 item {
                     ItemNewFriend {
-
+                        navController.navigate(Route.NewContact.route)
                     }
                 }
                 items.forEach {

@@ -134,7 +134,7 @@ fun ChatListView(
                         pin = { viewModel.pinConversation(it.conversationID, !it.isPinned) },
                         delete = { viewModel.deleteConversation(it.conversationID) }
                     ) {
-                        navController.navigate(Route.PrivateChat.jump(it.userID))
+                        navController.navigate(Route.PrivateChat.jump(it.userID, it.conversationID))
                     }
                     Box(
                         Modifier
@@ -166,7 +166,7 @@ fun ChatListView(
                         pin = { viewModel.pinConversation(it.conversationID, !it.isPinned) },
                         delete = { viewModel.deleteConversation(it.conversationID) }
                     ) {
-                        navController.navigate(Route.PrivateChat.jump(it.userID))
+                        navController.navigate(Route.PrivateChat.jump(it.userID, it.conversationID))
                     }
                     Box(
                         Modifier

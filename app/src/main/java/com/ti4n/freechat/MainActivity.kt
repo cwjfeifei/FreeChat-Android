@@ -119,7 +119,7 @@ class MainActivity : AppCompatActivity() {
                                 BigImageView(navController = navController, it.requiredArg("url"))
                             }
                             aniComposable(Route.PermissionIntro.route) {
-                                PermissionView(navController)
+                                PermissionView(navController) { finish() }
                             }
                             aniComposable(Route.NoInternet.route) {
                                 NoInternetView(navController)

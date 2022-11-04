@@ -59,8 +59,23 @@ fun LoginView(
 //    LaunchedEffect(key1 = word) {
 //        preWords = if (word.isNotEmpty()) WORDLIST_ENGLISH.filter { it.startsWith(word) } else emptyList()
 //    }
-    LoginCommonView(R.string.input_mnemonic) {
-        Spacer(Modifier.height(20.dp))
+    LoginCommonView(
+        R.string.input_mnemonic,
+        next = R.string.login_freechat,
+        tip = R.string.login_tip,
+        backClick = { navController.navigateUp() },
+        nextClick = {
+            if (viewModel.wordsIsCorrect()) {
+                navController.navigate(Route.SetPassword.jump(words.joinToString(" ") { it.value }))
+            } else {
+                Toast.makeText(
+                    context,
+                    R.string.wrong_mnemonic,
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
+        }
+    ) {
         LazyVerticalGrid(
             columns = GridCells.Fixed(3),
             verticalArrangement = Arrangement.spacedBy(12.dp),
@@ -78,32 +93,6 @@ fun LoginView(
                     preWords,
                     wordChange
                 )
-            }
-        }
-        Spacer(Modifier.weight(1f))
-        Row(
-            Modifier
-                .fillMaxWidth()
-                .padding(bottom = 20.dp), Arrangement.SpaceBetween
-        ) {
-            ImageButton(title = R.string.back, mipmap = R.mipmap.return_btn) {
-                navController.navigateUp()
-            }
-            val tip = stringResource(id = R.string.wrong_mnemonic)
-            ImageButton(
-                title = R.string.login_freechat,
-                mipmap = R.mipmap.next_btn,
-                textColor = Color.White
-            ) {
-                if (viewModel.wordsIsCorrect()) {
-                    navController.navigate(Route.SetPassword.jump(words.joinToString(" ") { it.value }))
-                } else {
-                    Toast.makeText(
-                        context,
-                        tip,
-                        Toast.LENGTH_SHORT
-                    ).show()
-                }
             }
         }
     }

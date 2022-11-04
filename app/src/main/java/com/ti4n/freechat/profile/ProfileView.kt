@@ -26,6 +26,7 @@ import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.ti4n.freechat.R
 import com.ti4n.freechat.Route
 import com.ti4n.freechat.home.*
+import com.ti4n.freechat.util.IM
 import com.ti4n.freechat.widget.CommentGrade
 import com.ti4n.freechat.widget.CommentItem
 import com.ti4n.freechat.widget.Image
@@ -52,7 +53,14 @@ fun ProfileView(navController: NavController, viewModel: ProfileViewModel = hilt
                         modifier = Modifier
                             .fillMaxHeight()
                             .weight(1f)
-                            .clickable { navController.navigate(Route.PrivateChat.jump(viewModel.toUserId)) },
+                            .clickable {
+                                navController.navigate(
+                                    Route.PrivateChat.jump(
+                                        viewModel.toUserId,
+                                        IM.getConversationId(viewModel.toUserId)
+                                    )
+                                )
+                            },
                         contentAlignment = Center
                     ) {
                         Text(
@@ -113,7 +121,7 @@ fun ProfileView(navController: NavController, viewModel: ProfileViewModel = hilt
                     mipmap = R.mipmap.mine_bg,
                     modifier = Modifier
                         .fillMaxWidth()
-                        .aspectRatio(375 / 260f),
+                        .aspectRatio(700 / 428f),
                     contentScale = ContentScale.FillBounds
                 )
                 TopAppBar(
@@ -218,6 +226,7 @@ fun ProfileInfoItem(
     Row(
         modifier = Modifier
             .fillMaxWidth()
+            .aspectRatio(108 / 428f)
             .padding(horizontal = 16.dp, vertical = 20.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
