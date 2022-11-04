@@ -18,6 +18,7 @@ import com.ti4n.freechat.network.FreeChatIMService
 import com.ti4n.freechat.util.EthUtil
 import com.ti4n.freechat.util.address
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 import org.kethereum.bip39.model.MnemonicWords
@@ -31,7 +32,7 @@ class RegisterViewModel @Inject constructor(
 ) : ViewModel() {
     private val TAG = "RegisterViewModel"
 
-    //    val navigationRoute = MutableSharedFlow<String>(replay = 0, extraBufferCapacity = 1)
+    val setEmailRoute = MutableSharedFlow<String>(replay = 0, extraBufferCapacity = 1)
     // wallet
     val words = MutableStateFlow(EthUtil.getMnemonicCode().words)
     val shuffledWord = MutableStateFlow(emptyList<String>())
@@ -85,7 +86,6 @@ class RegisterViewModel @Inject constructor(
 
     fun registerFreeChat(
         context: Context,
-        navController: NavController,
         words: String,
         email: String,
     ) {
@@ -112,8 +112,9 @@ class RegisterViewModel @Inject constructor(
                             expiredTime= response.data.expiredTime
                         )
                     )
+
+                    setEmailRoute.emit(Route.CompleteProfile.route)
                     // set profile info first
-                    navController.navigate(Route.CompleteProfile.route)
                 } else {
                     Toast.makeText(context, response.errMsg, Toast.LENGTH_SHORT).show()
                 }

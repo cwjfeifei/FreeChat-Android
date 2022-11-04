@@ -41,9 +41,9 @@ fun SetEmailView(
     val scope = rememberCoroutineScope()
     var emailCheck = ""
     LaunchedEffect(Unit) {
-//        viewModel.navigationRoute.filter { it.isNotEmpty() }.collectLatest {
-//            navController.navigate(it)
-//        }
+        viewModel.setEmailRoute.filter { it.isNotEmpty() }.collectLatest {
+            navController.navigate(it)
+        }
     }
     LoginCommonView(R.string.title_set_email) {
         Spacer(Modifier.height(60.dp))
@@ -131,7 +131,6 @@ fun SetEmailView(
             }
         }
         Spacer(Modifier.weight(1f))
-        var context = LocalContext.current
         Row(
             Modifier
                 .fillMaxWidth()
@@ -152,7 +151,6 @@ fun SetEmailView(
                         // TODO register FreeChat account
                         viewModel.registerFreeChat(
                             context,
-                            navController,
                             words = words,
                             email = email1,
                         )
