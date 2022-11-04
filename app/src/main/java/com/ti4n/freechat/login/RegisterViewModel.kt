@@ -104,14 +104,11 @@ class RegisterViewModel @Inject constructor(
                         it[stringPreferencesKey("token")] = response.data.token
                         it[stringPreferencesKey("userId")] = response.data.userID
                     }
+
                     db.userBaseInfoDao().insert(
                         UserBaseInfo(
-                            response.data.userID,
-                            "",
-                            response.data.token,
-                            "",
-                            0,
-                            email,
+                            userID = response.data.userID,
+                            token = response.data.token,
                             expiredTime= response.data.expiredTime
                         )
                     )

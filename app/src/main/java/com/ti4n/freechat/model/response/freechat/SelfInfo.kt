@@ -5,5 +5,7 @@ data class SelfInfo(
     val birth: Long,
     val faceURL: String,
     val nickname: String,
-    val userID: String
+    val userID: String,
+    val email:String,
+    val gender: Int
 )

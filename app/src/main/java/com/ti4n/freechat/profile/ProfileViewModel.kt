@@ -33,9 +33,9 @@ class ProfileViewModel @Inject constructor(
                 isSelf.value = it.userID == toUserId
                 if (isSelf.value) {
                     userInfo.value = UserInfo().apply {
-                        birth = it.birthday
+                        birth = it.birth
                         userID = it.userID
-                        faceURL = it.avatar
+                        faceURL = it.faceURL
                         nickname = it.nickname
                         remark = ""
                     }

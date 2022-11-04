@@ -28,15 +28,25 @@ class SetPasswordViewModel @Inject constructor(
                 val response = imService.getSelfInfo(GetSelfInfo(it.userID), it.token)
                 if (response.errCode == 0 && response.data != null) {
                     val selfInfo = response.data
+//                    "data": {
+//                        "appMangerLevel": 1,
+//                        "birth": 1640692941,
+//                        "email": "6e7123@qq.com",
+//                        "faceURL": "https://oss.com.cn/head",
+//                        "gender": 1,
+//                        "nickname": "dk111223",
+//                        "userID": "kh12312"
+//                    }
                     db.userBaseInfoDao().insert(
                         UserBaseInfo(
-                            selfInfo.userID,
-                            selfInfo.nickname,
-                            token.token,
-                            selfInfo.faceURL,
-                            selfInfo.birth,
-                            "",
-                            token.expiredTime
+                            userID = address,
+                            nickname = selfInfo.nickname,
+                            faceURL = selfInfo.faceURL,
+                            birth = selfInfo.birth,
+                            gender = selfInfo.gender,
+                            email = selfInfo.email,
+                            token =   token.token,
+                            expiredTime = token.expiredTime
                         )
                     )
                     navigationRoute.emit(Route.Home.route)
