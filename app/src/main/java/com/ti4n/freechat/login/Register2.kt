@@ -20,15 +20,10 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.datastore.preferences.core.edit
-import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.ti4n.freechat.R
 import com.ti4n.freechat.Route
-import com.ti4n.freechat.di.dataStore
-import com.ti4n.freechat.widget.ImageButton
-import kotlinx.coroutines.launch
 
 @Composable
 fun Register2View(

@@ -64,12 +64,10 @@ fun HomeView(userBaseInfoDao: UserBaseInfoDao) {
         )
     }
     LaunchedEffect(Unit) {
-        context.dataStore.data.map { it[stringPreferencesKey("address")] ?: "" }
-            .distinctUntilChanged().collectLatest {
-                IM.logout()
-                val token = userBaseInfoDao.getUserInfo(it).filterNotNull().first()
-                IM.login(token.userID, token.token)
-            }
+        userBaseInfoDao.getUserInfo().filterNotNull().collectLatest {
+            IM.logout()
+            IM.login(it.userID, it.token)
+        }
     }
     Scaffold(bottomBar = {
         AnimatedVisibility(visible = currentRoute == HomeTab.Chat.route || currentRoute == HomeTab.Contact.route || currentRoute == HomeTab.Me.route,

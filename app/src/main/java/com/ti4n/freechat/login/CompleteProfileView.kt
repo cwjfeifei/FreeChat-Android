@@ -3,6 +3,7 @@ package com.ti4n.freechat.login
 import android.os.Build
 import android.util.Log
 import androidx.annotation.StringRes
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -29,19 +30,13 @@ import coil.decode.GifDecoder
 import coil.decode.ImageDecoderDecoder
 import coil.request.ImageRequest
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
-import com.google.android.material.datepicker.MaterialDatePicker
 import com.ti4n.freechat.widget.Image
 import com.ti4n.freechat.R
 import com.ti4n.freechat.Route
 import com.ti4n.freechat.util.AnimatedPngDecoder
 import com.ti4n.freechat.util.IM
 import com.ti4n.freechat.util.IMError
-import com.ti4n.freechat.widget.ImageButton
-import com.ti4n.freechat.util.getActivity
-import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.launch
-import java.text.SimpleDateFormat
 
 @Composable
 fun CompleteProfileView(controller: NavController, viewModel: RegisterViewModel = hiltViewModel()) {
@@ -60,16 +55,14 @@ fun CompleteProfileView(controller: NavController, viewModel: RegisterViewModel 
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
 
-    val imageLoader = ImageLoader.Builder(context)
-        .components {
-            if (Build.VERSION.SDK_INT >= 28) {
-                add(ImageDecoderDecoder.Factory())
-            } else {
-                add(GifDecoder.Factory())
-            }
-            add(AnimatedPngDecoder.Factory())
+    val imageLoader = ImageLoader.Builder(context).components {
+        if (Build.VERSION.SDK_INT >= 28) {
+            add(ImageDecoderDecoder.Factory())
+        } else {
+            add(GifDecoder.Factory())
         }
-        .build()
+        add(AnimatedPngDecoder.Factory())
+    }.build()
 
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -78,44 +71,57 @@ fun CompleteProfileView(controller: NavController, viewModel: RegisterViewModel 
             .background(
                 Color.White
             )
-            .padding(horizontal = 16.dp)
             .systemBarsPadding()
     ) {
         Spacer(modifier = Modifier.height(40.dp))
         Text(
             text = stringResource(id = R.string.complete_profile_tip),
             fontSize = 14.sp,
-            color = Color(0xFF333333),
-            textAlign = TextAlign.Center
+            color = Color(0xFF1A1A1A),
+            textAlign = TextAlign.Center,
+            fontWeight = FontWeight.SemiBold
         )
-        Spacer(modifier = Modifier.height(20.dp))
+        Spacer(modifier = Modifier.height(16.dp))
+        Text(
+            text = stringResource(id = R.string.complete_profile_tip_1),
+            fontSize = 14.sp,
+            color = Color(0xFF1A1A1A),
+            textAlign = TextAlign.Center,
+        )
+        Spacer(modifier = Modifier.height(4.dp))
+        Text(
+            text = stringResource(id = R.string.complete_profile_tip_2),
+            fontSize = 14.sp,
+            color = Color(0xFF666666),
+            textAlign = TextAlign.Center,
+        )
+        Spacer(modifier = Modifier.height(30.dp))
         Text(
             text = stringResource(id = R.string.set_avatar),
-            fontSize = 20.sp,
-            color = Color(0xFF333333),
+            fontSize = 14.sp,
+            color = Color(0xFF1A1A1A),
             fontWeight = FontWeight.Medium
         )
-        Spacer(modifier = Modifier.height(12.dp))
+        Spacer(modifier = Modifier.height(16.dp))
         androidx.compose.foundation.Image(
             painter = rememberAsyncImagePainter(
                 ImageRequest.Builder(context).data(data = faceURL).build(),
                 imageLoader = imageLoader
             ),
             contentDescription = null,
-            modifier = Modifier
-                .size(200.dp)
-                .aspectRatio(1f),
+            modifier = Modifier.size(160.dp),
             contentScale = ContentScale.FillBounds
         )
-        Spacer(modifier = Modifier.height(12.dp))
-        TextButton(
-            onClick = { controller.navigate(Route.ChooseImageSourceBottom.route) },
+        Spacer(modifier = Modifier.height(16.dp))
+        OutlinedButton(
+            onClick = { },
+            border = BorderStroke(1.dp, Color(0xFFE6E6E6)),
             shape = RoundedCornerShape(4.dp),
             modifier = Modifier
-                .width(100.dp)
-                .height(50.dp),
+                .width(92.dp)
+                .height(36.dp),
             colors = ButtonDefaults.buttonColors(
-                backgroundColor = Color(0xFF799AF9), contentColor = Color.White
+                backgroundColor = Color.White, contentColor = Color(0xFF1A1A1A)
             )
         ) {
             Text(
@@ -124,40 +130,23 @@ fun CompleteProfileView(controller: NavController, viewModel: RegisterViewModel 
                 fontWeight = FontWeight.Medium
             )
         }
-        Spacer(modifier = Modifier.height(24.dp))
-        Divider(color = Color(0xFFE5E5E5))
-
-        CompleteProfileItem(R.string.name, false) {
-            TextField(
-                value = nickname,
-                onValueChange = { viewModel.setName(it) },
-
-                maxLines = 1,
-                colors = TextFieldDefaults.textFieldColors(
-                    focusedIndicatorColor = Color.Transparent,
-                    unfocusedIndicatorColor = Color.Transparent,
-                    backgroundColor = Color(0xFFF5F5F5)
-                ),
-                shape = RoundedCornerShape(4.dp),
-                textStyle = TextStyle(
-                    fontSize = 14.sp,
-                    color = Color.Black,
-                    textAlign = TextAlign.Center
-                ),
-                placeholder = {
-                    Text(
-                        text = nickname,
-                        color = Color(0xFF999999),
-                        fontSize = 14.sp,
-                        textAlign = TextAlign.Center,
-                    )
-                }
+        Spacer(modifier = Modifier.weight(1f))
+        Divider(color = Color(0xFFEBEBEB), thickness = 0.5.dp, startIndent = 16.dp)
+        CompleteProfileItem(R.string.name, true, click = {
+            controller.navigate(Route.SetName.route)
+        }) {
+            Text(
+                text = nickname,
+                modifier = Modifier.weight(1f),
+                fontSize = 16.sp,
+                color = Color.Black,
+                fontWeight = FontWeight.Medium,
+                textAlign = TextAlign.Center
             )
         }
-
-        Divider(color = Color(0xFFE5E5E5))
+        Divider(color = Color(0xFFEBEBEB), thickness = 0.5.dp, startIndent = 16.dp)
         CompleteProfileItem(R.string.gender, false) {
-            Row {
+            Row(modifier = Modifier.weight(1f)) {
                 GenderItem(
                     title = stringResource(id = R.string.male), isSelected = gender == 1
                 ) {
@@ -171,40 +160,20 @@ fun CompleteProfileView(controller: NavController, viewModel: RegisterViewModel 
                 }
             }
         }
-//        Divider(color = Color(0xFFE5E5E5))
-//        CompleteProfileItem(R.string.birthday, click = {
-//            context.getActivity()?.supportFragmentManager?.let {
-//                datePicker.show(it, datePicker.toString())
-//                datePicker.addOnPositiveButtonClickListener {
-//                    viewModel.setBirthday(it)
-//                }
-//            }
-//        }) {
-//            ProfileValueText(SimpleDateFormat("yyyy.MM.dd").format(birth))
-//        }
-//        Divider(color = Color(0xFFE5E5E5))
-//        CompleteProfileItem(R.string.country) {
-//            ProfileValueText("中国")
-//        }
-//        Divider(color = Color(0xFFE5E5E5))
-//        CompleteProfileItem(R.string.region) {
-//            ProfileValueText("四川成都高新区")
-//        }
-        Divider(color = Color(0xFFE5E5E5))
-        Spacer(modifier = Modifier.weight(1f))
-        ImageButton(
-            title = R.string.complete_setting, mipmap = R.mipmap.login_btn, textColor = Color.White
-        ) {
-            scope.launch {
-                // must be IM.login
-                var result = IM.setUserInfo(nickname, faceURL, gender, 0, null, null)
-                if (result is Unit) {
-                    // success
-                    Log.d("XXX", "CompleteProfileView: unit")
-                    controller.navigate(Route.Home.route)
-                } else {
-                    Log.d("XXX", "CompleteProfileView: " + result +" "+ ( result is IMError))
-                }
+        Divider(color = Color(0xFFEBEBEB), thickness = 0.5.dp, startIndent = 16.dp)
+        Spacer(modifier = Modifier.height(40.dp))
+        TextButton(
+            onClick = {
+                scope.launch {
+                    // must be IM.login
+                    val result = IM.setUserInfo(nickname, faceURL, gender, 0, null, null)
+                    if (result is Unit) {
+                        // success
+                        Log.d("XXX", "CompleteProfileView: unit")
+                        controller.navigate(Route.Home.route)
+                    } else {
+                        Log.d("XXX", "CompleteProfileView: " + result + " " + (result is IMError))
+                    }
 //                viewModel.avatar.value?.let {
 //                    Minio.uploadFile(context, it)?.let {
 //                        val credentials = EthUtil.loadCredentials(context, "")
@@ -213,9 +182,20 @@ fun CompleteProfileView(controller: NavController, viewModel: RegisterViewModel 
 //                        ) { controller.navigate(Route.Home.route) }
 //                    }
 //                }
-            }
+                }
+            },
+            Modifier
+                .height(42.dp)
+                .fillMaxWidth(), colors = ButtonDefaults.buttonColors(
+                backgroundColor = Color(0xFF3879FD), contentColor = Color.White
+            ), shape = RoundedCornerShape(0.dp)
+        ) {
+            Text(
+                text = stringResource(id = R.string.complete_setting),
+                fontSize = 16.sp,
+                fontWeight = FontWeight.Medium
+            )
         }
-        Spacer(modifier = Modifier.height(20.dp))
     }
 }
 
@@ -226,19 +206,18 @@ fun CompleteProfileItem(
     click: () -> Unit = {},
     content: @Composable () -> Unit
 ) {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .height(50.dp)
-            .clickable { click() },
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        Text(text = stringResource(id = title), color = Color(0xFF333333), fontSize = 16.sp)
-        Spacer(modifier = Modifier.weight(1f))
+    Row(modifier = Modifier
+        .fillMaxWidth()
+        .height(50.dp)
+        .clickable { click() }
+        .padding(start = 16.dp), verticalAlignment = Alignment.CenterVertically) {
+        Text(text = stringResource(id = title), color = Color(0xFF1A1A1A), fontSize = 16.sp)
+        Spacer(modifier = Modifier.width(24.dp))
         content()
         if (showArrow) {
             Spacer(modifier = Modifier.width(8.dp))
             Image(mipmap = R.mipmap.right_arrow)
+            Spacer(modifier = Modifier.width(16.dp))
         }
     }
 }
@@ -249,17 +228,17 @@ fun ProfileValueText(value: String) {
 }
 
 @Composable
-fun GenderItem(title: String, isSelected: Boolean, click: (String) -> Unit) {
+fun RowScope.GenderItem(title: String, isSelected: Boolean, click: (String) -> Unit) {
     Box(contentAlignment = Alignment.Center,
         modifier = Modifier
             .fillMaxHeight()
-            .width(140.dp)
-            .background(if (isSelected) Color(0xFF799AF9) else Color(0xFFF5F5F5))
+            .weight(1f)
+            .background(if (isSelected) Color(0xFFE8F3FF) else Color(0xFFF5F5F5))
             .clickable { click(title) }) {
         Text(
             text = title,
             textAlign = TextAlign.Center,
-            color = if (isSelected) Color.White else Color(0xFF666666)
+            color = if (isSelected) Color(0xFF3879FD) else Color(0xFF1A1A1A)
         )
     }
 }

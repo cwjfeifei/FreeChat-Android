@@ -2,15 +2,10 @@ package com.ti4n.freechat.login
 
 import androidx.compose.foundation.lazy.grid.itemsIndexed
 import android.widget.Toast
-import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -26,15 +21,12 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.ti4n.freechat.R
 import com.ti4n.freechat.Route
-import com.ti4n.freechat.widget.ImageButton
-import org.kethereum.bip39.wordlists.WORDLIST_ENGLISH
 
 @Composable
 fun LoginView(
     navController: NavController,
     viewModel: LoginViewModel = hiltViewModel()
 ) {
-    val scrollState = rememberScrollState()
     val words = listOf(
         viewModel.word1,
         viewModel.word2,

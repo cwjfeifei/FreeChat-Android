@@ -24,24 +24,12 @@ import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.ti4n.freechat.R
-import com.ti4n.freechat.Route
-import com.ti4n.freechat.di.dataStore
 import com.ti4n.freechat.util.EthUtil
 import com.ti4n.freechat.util.address
-import com.ti4n.freechat.widget.Image
-import com.ti4n.freechat.widget.ImageButton
-import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.filter
-import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.stateIn
-import kotlinx.coroutines.flow.take
 import kotlinx.coroutines.launch
 import org.kethereum.bip39.model.MnemonicWords
-import org.web3j.crypto.MnemonicUtils
-import org.web3j.crypto.WalletUtils
-import java.io.File
 
 @Composable
 fun SetPasswordView(

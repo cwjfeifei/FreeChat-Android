@@ -30,10 +30,12 @@
     <string name="cancel">取消</string>
     <string name="set_name">设置名字</string>
     <string name="done">完成</string>
-    <string name="complete_profile_tip">恭喜您\n已成功创建FreeChat账户 自由的世界还需一步\n下一步将会设置您的社交资料\n预计将耗时1分钟时间</string>
-    <string name="set_avatar">请设置您的头像</string>
+    <string name="complete_profile_tip">恭喜您! 已成功创建FreeChat账户</string>
+    <string name="complete_profile_tip_1">自由的世界还需一步，下一步将会设置您的社交资料</string>
+    <string name="complete_profile_tip_2">预计将耗时1分钟时间</string>
+    <string name="set_avatar">请选择您的头像</string>
     <string name="set_faceurl">选择头像</string>
-    <string name="name">名字</string>
+    <string name="name">昵称</string>
     <string name="gender">性别</string>
     <string name="male">男</string>
     <string name="female">女</string>

@@ -35,6 +35,7 @@ class RegisterViewModel @Inject constructor(
     private val TAG = "RegisterViewModel"
 
     val setEmailRoute = MutableSharedFlow<String>(replay = 0, extraBufferCapacity = 1)
+
     // wallet
     val words = MutableStateFlow(EthUtil.getMnemonicCode().words)
     val shuffledWord = MutableStateFlow(emptyList<String>())
@@ -42,13 +43,14 @@ class RegisterViewModel @Inject constructor(
 
     // FreeChat
     //    val avatar = MutableStateFlow<Uri?>(null)
-    val faceURL = MutableStateFlow("")
+    val faceURL = MutableStateFlow("https://freechat.world/images/face.apng")
     val name = MutableStateFlow("")
     val birth = MutableStateFlow(0L)
     val gender = MutableStateFlow(2)  // 1 male 2 female
     val email = MutableStateFlow("")
     val password = MutableStateFlow("")
-    init  {
+
+    init {
         viewModelScope.launch {
             var selfInfo = IM.currentUserInfo.value
             if (selfInfo.userID != null) {
@@ -59,10 +61,10 @@ class RegisterViewModel @Inject constructor(
                     } else {
                         dbInfo.faceURL
                     }
-                    name.value = if (dbInfo.nickname.isEmpty())  "" else dbInfo.nickname
+                    name.value = if (dbInfo.nickname.isEmpty()) "" else dbInfo.nickname
                     birth.value = dbInfo.birth
-                    gender.value = if (dbInfo.gender >2 || dbInfo.gender<1) 2 else dbInfo.gender
-                    email.value = if (dbInfo.email.isEmpty())  "" else dbInfo.email
+                    gender.value = if (dbInfo.gender > 2 || dbInfo.gender < 1) 2 else dbInfo.gender
+                    email.value = if (dbInfo.email.isEmpty()) "" else dbInfo.email
                 }
             }
         }
@@ -110,8 +112,7 @@ class RegisterViewModel @Inject constructor(
         words: String,
         email: String,
     ) {
-        var userID = MnemonicWords(words).address().hex // wallet address
-        userID = "Test_"+System.currentTimeMillis().toString()
+        val userID = MnemonicWords(words).address().hex // wallet address
         viewModelScope.launch {
             try {
                 val response = imService.register(
@@ -131,10 +132,13 @@ class RegisterViewModel @Inject constructor(
                             userID = response.data.userID,
                             token = response.data.token,
                             email = email,
-                            expiredTime= response.data.expiredTime
+                            expiredTime = response.data.expiredTime
                         )
                     )
-                    Log.w(TAG, "xxx registerFreeChat: insert DB " + response.data.userID +" " + email )
+                    Log.w(
+                        TAG,
+                        "xxx registerFreeChat: insert DB " + response.data.userID + " " + email
+                    )
 
                     IM.login(userID, response.data.token)
                     setEmailRoute.emit(Route.CompleteProfile.route)
@@ -174,7 +178,7 @@ class RegisterViewModel @Inject constructor(
                     }
                 }
             } catch (e: Exception) {
-                Log.w("Login", "Error :  ",  e)
+                Log.w("Login", "Error :  ", e)
             }
         }
     }

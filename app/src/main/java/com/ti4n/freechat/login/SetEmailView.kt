@@ -16,13 +16,9 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.ti4n.freechat.R
-import com.ti4n.freechat.util.EthUtil
-import com.ti4n.freechat.util.address
-import com.ti4n.freechat.widget.ImageButton
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.launch
-import org.kethereum.bip39.model.MnemonicWords
 
 // 邮箱注册Freechat
 @Composable

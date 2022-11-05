@@ -68,8 +68,6 @@ import com.ti4n.freechat.db.RecentTransfer
 import com.ti4n.freechat.util.EthUtil
 import com.ti4n.freechat.widget.HomeTitle
 import com.ti4n.freechat.widget.Image
-import com.ti4n.freechat.widget.ImageButton
-import org.web3j.crypto.MnemonicUtils
 
 
 @Composable

@@ -1,6 +1,7 @@
 package com.ti4n.freechat.home
 
 import android.os.Build.VERSION.SDK_INT
+import android.util.Log
 import androidx.annotation.DrawableRes
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -15,6 +16,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -36,7 +38,9 @@ import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.ti4n.freechat.R
 import com.ti4n.freechat.Route
 import com.ti4n.freechat.util.AnimatedPngDecoder
+import com.ti4n.freechat.util.IM
 import com.ti4n.freechat.widget.Image
+import kotlinx.coroutines.launch
 
 @Composable
 fun MeView(
@@ -44,7 +48,7 @@ fun MeView(
     navController: NavController,
     viewModel: MeViewModel = hiltViewModel()
 ) {
-    val me by viewModel.me.collectAsState()
+    val me by IM.currentUserInfo.collectAsState()
     val systemUiController = rememberSystemUiController()
     val context = LocalContext.current
     val imageLoader = ImageLoader.Builder(context)
@@ -70,7 +74,8 @@ fun MeView(
     ) {
         androidx.compose.foundation.Image(
             painter = rememberAsyncImagePainter(
-                ImageRequest.Builder(context).data(data = "file:///android_asset/face.apng").build(),
+                ImageRequest.Builder(context).data(data = "file:///android_asset/face.apng")
+                    .build(),
                 imageLoader = imageLoader
             ),
             contentDescription = null,
@@ -81,8 +86,10 @@ fun MeView(
         )
         LazyColumn(modifier = Modifier.background(Color.White)) {
             me?.let {
+                Log.e("TAG", "MeView: ${me.userID} ${me.faceURL} ${me.nickname}")
                 item {
                     MeInfoItem(avatar = it.faceURL, nickname = it.nickname, id = it.userID) {
+
                     }
                     MeDividerItem()
                 }
@@ -120,6 +127,16 @@ fun MeItem(@DrawableRes icon: Int, title: String, click: () -> Unit = {}) {
 
 @Composable
 fun MeInfoItem(avatar: String, nickname: String, id: String, click: () -> Unit) {
+    val imageLoader = ImageLoader.Builder(LocalContext.current)
+        .components {
+            if (SDK_INT >= 28) {
+                add(ImageDecoderDecoder.Factory())
+            } else {
+                add(GifDecoder.Factory())
+            }
+            add(AnimatedPngDecoder.Factory())
+        }
+        .build()
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -127,6 +144,17 @@ fun MeInfoItem(avatar: String, nickname: String, id: String, click: () -> Unit) 
             .padding(horizontal = 16.dp, vertical = 20.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
+//        androidx.compose.foundation.Image(
+//            painter = rememberAsyncImagePainter(
+//                avatar,
+//                imageLoader = imageLoader
+//            ),
+//            contentDescription = null,
+//            modifier = Modifier
+//                .size(58.dp)
+//                .clip(RoundedCornerShape(6.dp)),
+//            contentScale = ContentScale.Crop
+//        )
         AsyncImage(
             model = avatar,
             contentDescription = null,

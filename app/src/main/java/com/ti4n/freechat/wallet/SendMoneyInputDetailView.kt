@@ -58,8 +58,6 @@ import com.ti4n.freechat.R
 import com.ti4n.freechat.Route
 import com.ti4n.freechat.erc20.ERC20Token
 import com.ti4n.freechat.widget.HomeTitle
-import com.ti4n.freechat.widget.Image
-import com.ti4n.freechat.widget.ImageButton
 
 @Composable
 fun SendMoneyInputDetailView(

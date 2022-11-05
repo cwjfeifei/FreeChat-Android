@@ -17,6 +17,7 @@ import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.Card
 import androidx.compose.material.Divider
 import androidx.compose.material.DropdownMenu
@@ -25,6 +26,7 @@ import androidx.compose.material.ExposedDropdownMenuBox
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.Text
+import androidx.compose.material.TextButton
 import androidx.compose.material.TextFieldDefaults
 import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
@@ -59,10 +61,10 @@ import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.ti4n.freechat.R
+import com.ti4n.freechat.Route
 import com.ti4n.freechat.erc20.ERC20Token
 import com.ti4n.freechat.widget.HomeTitle
 import com.ti4n.freechat.widget.Image
-import com.ti4n.freechat.widget.ImageButton
 import com.ti4n.freechat.widget.CustomPaddingTextField
 
 @Composable
@@ -341,13 +343,23 @@ fun SwapView(navController: NavController, viewModel: SwapViewModel = hiltViewMo
             )
             ItemInfo(title = "网络费用", value = "$$gasUSD")
             Spacer(modifier = Modifier.height(8.dp))
-            ImageButton(
-                title = R.string.swap,
-                mipmap = R.mipmap.exchange_btn_nor,
-                textColor = Color.White,
-                modifier = Modifier.align(CenterHorizontally)
+            TextButton(
+                onClick = {
+                    viewModel.swap("")
+                },
+                Modifier
+                    .height(44.dp)
+                    .fillMaxWidth(), shape = RoundedCornerShape(4.dp),
+                colors = ButtonDefaults.buttonColors(
+                    backgroundColor = Color(0xFF3879FD),
+                    contentColor = Color.White
+                )
             ) {
-                viewModel.swap("")
+                Text(
+                    text = stringResource(id = R.string.swap),
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.SemiBold
+                )
             }
         }
     }

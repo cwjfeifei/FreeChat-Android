@@ -54,25 +54,6 @@ fun Image(
 }
 
 @Composable
-fun ImageButton(
-    @StringRes title: Int,
-    @DrawableRes mipmap: Int,
-    modifier: Modifier = Modifier,
-    textColor: Color = Color(0xFF4B6AF7),
-    onClick: () -> Unit
-) {
-    Box(contentAlignment = Alignment.Center, modifier = modifier.clickable { onClick() }) {
-        Image(mipmap = mipmap)
-        Text(
-            text = stringResource(id = title),
-            color = textColor,
-            fontSize = 16.sp,
-            fontWeight = FontWeight.Medium
-        )
-    }
-}
-
-@Composable
 fun CustomPaddingTextField(
     value: String,
     onValueChange: (String) -> Unit,

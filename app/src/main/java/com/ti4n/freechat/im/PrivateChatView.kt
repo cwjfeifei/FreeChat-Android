@@ -152,7 +152,7 @@ fun PrivateChatView(
             IconButton(onClick = { navController.navigateUp() }) {
                 Icon(imageVector = Icons.Default.ArrowBack, contentDescription = null)
             }
-        }, modifier = Modifier.statusBarsPadding())
+        }, modifier = Modifier.statusBarsPadding(), elevation = 0.dp)
         LazyColumn(
             Modifier
                 .weight(1f)

@@ -29,6 +29,7 @@ import kotlin.coroutines.resumeWithException
 import kotlin.coroutines.suspendCoroutine
 
 private const val TAG = "IM"
+
 object IM {
 
     val imClient = OpenIMClient.getInstance()
@@ -78,8 +79,10 @@ object IM {
 
             override fun onSuccess(data: String?) {
                 it.resume(data)
+                getSelfInfo()
                 getAllConversations()
                 getFriend()
+
             }
         }, userId, token)
     }
@@ -94,6 +97,19 @@ object IM {
                 it.resume(Unit)
             }
 
+        })
+    }
+
+    fun getSelfInfo() {
+        imClient.userInfoManager.getSelfUserInfo(object : OnBase<UserInfo> {
+            override fun onError(code: Int, error: String?) {
+            }
+
+            override fun onSuccess(data: UserInfo?) {
+                data?.let {
+                    currentUserInfo.value = it
+                }
+            }
         })
     }
 

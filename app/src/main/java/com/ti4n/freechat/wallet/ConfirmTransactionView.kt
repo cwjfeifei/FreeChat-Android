@@ -50,10 +50,8 @@ import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.ti4n.freechat.R
-import com.ti4n.freechat.Route
 import com.ti4n.freechat.widget.HomeTitle
 import com.ti4n.freechat.widget.Image
-import com.ti4n.freechat.widget.ImageButton
 
 @Composable
 fun ConfirmTransactionView(navController: NavController, viewModel: SendMoneyViewModel) {

@@ -27,22 +27,11 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.datastore.preferences.core.booleanPreferencesKey
-import androidx.datastore.preferences.core.edit
-import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.navigation.NavController
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.ti4n.freechat.R
 import com.ti4n.freechat.Route
-import com.ti4n.freechat.di.dataStore
-import com.ti4n.freechat.util.EthUtil
-import com.ti4n.freechat.util.address
 import com.ti4n.freechat.widget.Image
-import com.ti4n.freechat.widget.ImageButton
-import kotlinx.coroutines.flow.firstOrNull
-import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.launch
-import org.kethereum.bip39.model.MnemonicWords
 
 @Composable
 fun MainLoginView(navController: NavController) {
@@ -77,22 +66,53 @@ fun MainLoginView(navController: NavController) {
             textAlign = TextAlign.Center
         )
         Spacer(modifier = Modifier.height(20.dp))
-        ImageButton(R.string.login, R.mipmap.login_btn, textColor = Color.White) {
-            if (isAgree) {
-                navController.navigate(Route.Login.route)
-            } else {
-                showTip = true
-            }
+        TextButton(
+            onClick = {
+                if (isAgree) {
+                    navController.navigate(Route.Login.route)
+                } else {
+                    showTip = true
+                }
+            },
+            Modifier
+                .height(44.dp)
+                .fillMaxWidth(), shape = RoundedCornerShape(4.dp),
+            colors = ButtonDefaults.buttonColors(
+                backgroundColor = Color(0xFF3879FD),
+                contentColor = Color.White
+            )
+        ) {
+            Text(
+                text = stringResource(id = R.string.login),
+                fontSize = 16.sp,
+                fontWeight = FontWeight.SemiBold
+            )
         }
         Spacer(modifier = Modifier.height(20.dp))
-        ImageButton(R.string.create_account, R.mipmap.signin_btn) {
-            if (isAgree) {
-                navController.navigate(Route.Register1.route)
-            } else {
-                showTip = true
-            }
+        OutlinedButton(
+            onClick = {
+                if (isAgree) {
+                    navController.navigate(Route.Register1.route)
+                } else {
+                    showTip = true
+                }
+            },
+            Modifier
+                .height(44.dp)
+                .fillMaxWidth(), shape = RoundedCornerShape(4.dp),
+            colors = ButtonDefaults.buttonColors(
+                backgroundColor = Color.White,
+                contentColor = Color(0xFF3879FD)
+            ),
+            border = BorderStroke(2.dp, Color(0xFF3879FD))
+        ) {
+            Text(
+                text = stringResource(id = R.string.create_account),
+                fontSize = 16.sp,
+                fontWeight = FontWeight.Medium
+            )
         }
-        Spacer(modifier = Modifier.height(16.dp))
+        Spacer(modifier = Modifier.height(12.dp))
         Row(Modifier.fillMaxWidth()) {
             Checkbox(checked = isAgree, onCheckedChange = {
                 isAgree = !isAgree
@@ -107,7 +127,7 @@ fun MainLoginView(navController: NavController) {
                     "user term",
                     "https://docs.freechat.world/yong-hu-yu-fa-lv-tiao-kuan/freechat-yong-hu-xie-yi"
                 )
-                withStyle(SpanStyle(color = Color(0xFF4B6AF7))) {
+                withStyle(SpanStyle(color = Color(0xFF3879FD))) {
                     append(stringResource(id = R.string.user_term))
                 }
                 pop()
@@ -116,7 +136,7 @@ fun MainLoginView(navController: NavController) {
                     "privacy",
                     "https://docs.freechat.world/yong-hu-yu-fa-lv-tiao-kuan/yin-si-zheng-ce"
                 )
-                withStyle(SpanStyle(color = Color(0xFF4B6AF7))) {
+                withStyle(SpanStyle(color = Color(0xFF3879FD))) {
                     append(stringResource(id = R.string.privacy))
                 }
                 pop()
@@ -125,7 +145,7 @@ fun MainLoginView(navController: NavController) {
                     "permission list",
                     "https://docs.freechat.world/yong-hu-yu-fa-lv-tiao-kuan/she-bei-quan-xian-shi-yong-qing-dan"
                 )
-                withStyle(SpanStyle(color = Color(0xFF4B6AF7))) {
+                withStyle(SpanStyle(color = Color(0xFF3879FD))) {
                     append(stringResource(id = R.string.permission_list))
                 }
                 pop()
@@ -134,7 +154,7 @@ fun MainLoginView(navController: NavController) {
                     "avoid abuse",
                     "https://docs.freechat.world/yong-hu-yu-fa-lv-tiao-kuan/fang-zhi-lan-yong-zheng-ce"
                 )
-                withStyle(SpanStyle(color = Color(0xFF4B6AF7))) {
+                withStyle(SpanStyle(color = Color(0xFF3879FD))) {
                     append(stringResource(id = R.string.avoid_abuse))
                 }
                 pop()
@@ -145,7 +165,7 @@ fun MainLoginView(navController: NavController) {
                     "child protect",
                     "https://docs.freechat.world/yong-hu-yu-fa-lv-tiao-kuan/er-tong-bao-hu-xie-yi"
                 )
-                withStyle(SpanStyle(color = Color(0xFF4B6AF7))) {
+                withStyle(SpanStyle(color = Color(0xFF3879FD))) {
                     append(stringResource(id = R.string.child_protect))
                 }
                 pop()

@@ -23,22 +23,10 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 private const val TAG = "MeViewModel"
+
 @HiltViewModel
 class MeViewModel @Inject constructor(val db: AppDataBase, @ApplicationContext context: Context) :
     ViewModel() {
-
-    private val account = context.dataStore.data.map { it[stringPreferencesKey("address")] ?: "" }
-    val address = MutableStateFlow("")
-    val me = MutableStateFlow<UserBaseInfo?>(null)
-
-    init {
-        viewModelScope.launch {
-            address.value = account.filterNotNull().first()
-            db.userBaseInfoDao().getUserInfo(address.value).collectLatest {
-                me.value = it
-            }
-        }
-    }
 
 
     /**
@@ -55,7 +43,7 @@ class MeViewModel @Inject constructor(val db: AppDataBase, @ApplicationContext c
     ) {
         val callBack: OnBase<String> = object : OnBase<String> {
             override fun onError(code: Int, error: String) {
-                Log.w(TAG, "setSelfInfo onError: " + error +" " + code )
+                Log.w(TAG, "setSelfInfo onError: " + error + " " + code)
             }
 
             override fun onSuccess(data: String?) {
