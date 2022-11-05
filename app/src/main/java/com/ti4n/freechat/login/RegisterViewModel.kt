@@ -79,10 +79,6 @@ class RegisterViewModel @Inject constructor(
         this.name.value = name
     }
 
-    fun setBirthday(birthday: Long) {
-        this.birth.value = birthday
-    }
-
     fun setGender(gender: Int) {
         this.gender.value = gender
     }
@@ -112,7 +108,8 @@ class RegisterViewModel @Inject constructor(
         words: String,
         email: String,
     ) {
-        val userID = MnemonicWords(words).address().hex // wallet address
+//        val userID = MnemonicWords(words).address().hex // wallet address
+        val userID = "Test"+System.currentTimeMillis().toString()
         viewModelScope.launch {
             try {
                 val response = imService.register(
@@ -134,10 +131,6 @@ class RegisterViewModel @Inject constructor(
                             email = email,
                             expiredTime = response.data.expiredTime
                         )
-                    )
-                    Log.w(
-                        TAG,
-                        "xxx registerFreeChat: insert DB " + response.data.userID + " " + email
                     )
 
                     IM.login(userID, response.data.token)

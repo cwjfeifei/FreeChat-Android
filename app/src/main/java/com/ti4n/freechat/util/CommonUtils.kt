@@ -44,6 +44,19 @@ fun md5(content: String): String? {
     return hex.toString()
 }
 
+/**
+ * Email address pattern, same as [android.util.Patterns.EMAIL_ADDRESS]
+ * Call: email.matches(EmailAddressRegex)
+ */
+val EmailAddressRegex = Regex(
+    "[a-zA-Z0-9\\+\\.\\_\\%\\-\\+]{1,256}" +
+            "\\@" +
+            "[a-zA-Z0-9][a-zA-Z0-9\\-]{0,64}" +
+            "(" +
+            "\\." +
+            "[a-zA-Z0-9][a-zA-Z0-9\\-]{0,25}" +
+            ")+"
+)
 
 fun Modifier.coloredShadow(
     color: Color = Color.Black,

@@ -47,8 +47,6 @@ fun CompleteProfileView(controller: NavController, viewModel: RegisterViewModel 
         )
     }
 
-    // For Test
-    val defaultFaceURL = "https://freechat.world/images/face.apng"
     val faceURL by viewModel.faceURL.collectAsState()
     val nickname by viewModel.name.collectAsState()
     val gender by viewModel.gender.collectAsState()

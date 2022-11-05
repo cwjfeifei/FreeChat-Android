@@ -16,6 +16,7 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.ti4n.freechat.R
+import com.ti4n.freechat.util.EmailAddressRegex
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.launch
@@ -35,7 +36,7 @@ fun SetEmailView(
     }
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
-    var emailCheck = ""
+    var emailCheck by remember { mutableStateOf("") }
     LaunchedEffect(Unit) {
         viewModel.setEmailRoute.filter { it.isNotEmpty() }.collectLatest {
             navController.navigate(it)
@@ -46,7 +47,9 @@ fun SetEmailView(
         backClick = { navController.navigateUp() },
         next = R.string.create_freechat,
         nextClick = {
-            if (email1 == email2) {
+            if (!email1.matches(EmailAddressRegex)) {
+                emailCheck = "请输入有效的邮箱地址"
+            } else if (email1 == email2) {
                 scope.launch {
 //                        EthUtil.createWalletFile(context, password1, words)
                     // TODO register FreeChat account
