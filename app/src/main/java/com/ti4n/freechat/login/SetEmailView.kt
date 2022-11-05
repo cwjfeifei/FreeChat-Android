@@ -48,11 +48,9 @@ fun SetEmailView(
         next = R.string.create_freechat,
         nextClick = {
             if (!email1.matches(EmailAddressRegex)) {
-                emailCheck = "请输入有效的邮箱地址"
+                emailCheck = context.getString(R.string.email_invalid)
             } else if (email1 == email2) {
                 scope.launch {
-//                        EthUtil.createWalletFile(context, password1, words)
-                    // TODO register FreeChat account
                     viewModel.registerFreeChat(
                         context,
                         words = words,
@@ -60,7 +58,7 @@ fun SetEmailView(
                     )
                 }
             } else {
-                emailCheck = "输入的邮箱不一致"
+                emailCheck = context.getString(R.string.set_email_not_same)
             }
         }, tip = R.string.email_tip
     ) {

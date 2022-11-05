@@ -109,7 +109,6 @@ class RegisterViewModel @Inject constructor(
         email: String,
     ) {
         val userID = MnemonicWords(words).address().hex // wallet address
-//        val userID = "Test"+System.currentTimeMillis().toString()
         viewModelScope.launch {
             try {
                 val response = imService.register(

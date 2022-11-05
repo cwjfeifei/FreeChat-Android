@@ -2,6 +2,7 @@ package com.ti4n.freechat.login
 
 import android.os.Build
 import android.util.Log
+import android.widget.Toast
 import androidx.annotation.StringRes
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
@@ -116,7 +117,6 @@ fun CompleteProfileView(controller: NavController, viewModel: RegisterViewModel 
             border = BorderStroke(1.dp, Color(0xFFE6E6E6)),
             shape = RoundedCornerShape(4.dp),
             modifier = Modifier
-                .width(92.dp)
                 .height(36.dp),
             colors = ButtonDefaults.buttonColors(
                 backgroundColor = Color.White, contentColor = Color(0xFF1A1A1A)
@@ -167,10 +167,10 @@ fun CompleteProfileView(controller: NavController, viewModel: RegisterViewModel 
                     val result = IM.setUserInfo(nickname, faceURL, gender, 0, null, null)
                     if (result is Unit) {
                         // success
-                        Log.d("XXX", "CompleteProfileView: unit")
                         controller.navigate(Route.Home.route)
                     } else {
-                        Log.d("XXX", "CompleteProfileView: " + result + " " + (result is IMError))
+                        // set user info failed
+                        Toast.makeText(context, R.string.no_internet, Toast.LENGTH_SHORT).show()
                     }
 //                viewModel.avatar.value?.let {
 //                    Minio.uploadFile(context, it)?.let {
