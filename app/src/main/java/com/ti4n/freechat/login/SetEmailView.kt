@@ -64,7 +64,7 @@ fun SetEmailView(
     ) {
         TextField(
             value = email1,
-            onValueChange = { email1 = it },
+            onValueChange = { email1 = it.trim() },
             modifier = Modifier
                 .fillMaxWidth(),
             maxLines = 1,
@@ -92,7 +92,7 @@ fun SetEmailView(
         Spacer(Modifier.height(20.dp))
         TextField(
             value = email2,
-            onValueChange = { email2 = it },
+            onValueChange = { email2 = it.trim() },
             modifier = Modifier
                 .fillMaxWidth(),
             maxLines = 1,

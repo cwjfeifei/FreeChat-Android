@@ -88,10 +88,16 @@ class MainActivity : AppCompatActivity() {
                                 )
                             }
                             aniComposable(route = Route.PickFaceImage.route) {
-                                PickFaceImageView(navController)
+                                val backStackEntry = remember {
+                                    navController.getBackStackEntry(Route.CompleteProfile.route)
+                                }
+                                PickFaceImageView(navController, hiltViewModel(backStackEntry))
                             }
                             aniComposable(route = Route.ProfilePreview.route) {
-                                ProfilePreview(navController, it.arguments?.getString("userID", "") ?: "" )
+                                val backStackEntry = remember {
+                                    navController.getBackStackEntry(Route.CompleteProfile.route)
+                                }
+                                ProfilePreview(navController, hiltViewModel(backStackEntry))
                             }
                             aniComposable(route = Route.Register1.route) {
                                 Register1View(navController)

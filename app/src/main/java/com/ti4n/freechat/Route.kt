@@ -13,9 +13,7 @@ sealed class Route(val route: String) {
         fun jump(words: String) = "setEmail/$words"
     }
     object PickFaceImage : Route("pickFaceImage")
-    object ProfilePreview : Route("profilePreview/{userID}") {
-        fun jump(userID: String) = "profilePreview/$userID"
-    }
+    object ProfilePreview : Route("profilePreview")
     object Register1 : Route("register1")
     object Register2 : Route("register2")
     object CompleteProfile : Route("completeProfile")

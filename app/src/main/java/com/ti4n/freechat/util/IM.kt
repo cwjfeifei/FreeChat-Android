@@ -40,6 +40,8 @@ object IM {
     val totalUnreadCount = MutableStateFlow(0)
     val showNewFriendApplication = MutableStateFlow(false)
 
+    val DEFAULT_FACEURL = "https://freechat.world/images/face.apng" // TODO
+
     fun init(context: Context) {
         imClient.initSDK(Platform.ANDROID,
             "http://47.57.185.242:10002",
@@ -247,6 +249,7 @@ object IM {
 
                     override fun onSuccess(data: String?) {
                         it.resume(Unit)
+                        getSelfInfo()
                     }
                 }, nickname, faceURL, gender, 1, "", birth, email, ex
             )

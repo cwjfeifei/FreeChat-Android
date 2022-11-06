@@ -1,6 +1,7 @@
 package com.ti4n.freechat.login
 
 import android.os.Build
+import android.text.TextUtils
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -9,10 +10,10 @@ import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.Divider
 import androidx.compose.material.Text
 import androidx.compose.material.TextButton
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
@@ -20,24 +21,41 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.navigation.NavController
 import coil.ImageLoader
+import coil.compose.AsyncImage
 import coil.compose.rememberAsyncImagePainter
 import coil.decode.GifDecoder
 import coil.decode.ImageDecoderDecoder
 import coil.request.ImageRequest
 import com.ti4n.freechat.R
 import com.ti4n.freechat.util.AnimatedPngDecoder
+import com.ti4n.freechat.util.IM
 import com.ti4n.freechat.widget.Image
 
 // Self Preview
 @Composable
 fun ProfilePreview(
     navController: NavController,
-    userID: String
+    viewModel: RegisterViewModel
 ) {
-    val context = LocalContext.current
 
+    val userID by lazy {
+        IM.currentUserInfo.value.userID
+    }
+    var faceURL by remember {
+        mutableStateOf(viewModel.faceURL.value)
+    }
+    var gender by remember {
+        mutableStateOf(viewModel.gender.value)
+    }
+
+    var nickname by remember {
+        mutableStateOf(viewModel.name.value)
+    }
+
+    val context = LocalContext.current
     val imageLoader = ImageLoader.Builder(context).components {
         if (Build.VERSION.SDK_INT >= 28) {
             add(ImageDecoderDecoder.Factory())
@@ -82,7 +100,7 @@ fun ProfilePreview(
             androidx.compose.foundation.Image(
                 painter = rememberAsyncImagePainter(
                     ImageRequest.Builder(context)
-                        .data(data = "https://freechat.world/images/face.apng")
+                        .data(data = faceURL)
                         .build(),
                     imageLoader = imageLoader,
                 ),
@@ -90,20 +108,22 @@ fun ProfilePreview(
                 modifier = Modifier
                     .fillMaxWidth()
                     .weight(1f),
-                contentScale = ContentScale.FillBounds
+                contentScale = ContentScale.Crop
             )
-
             Divider(color = Color(0xFFEBEBEB), thickness = 0.5.dp, startIndent = 16.dp)
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(80.dp)
-                    .background(color = Color.LightGray)
+
+            ProfileInfoItem(
+                userID = userID,
+                faceURL = faceURL,
+                nickname = nickname,
+                gender = gender
             ) {
             }
+
             Divider(color = Color(0xFFEBEBEB), thickness = 0.5.dp, startIndent = 16.dp)
             TextButton(
-                onClick = {},
+                onClick = {
+                },
                 Modifier
                     .height(42.dp)
                     .fillMaxWidth(), colors = ButtonDefaults.buttonColors(
@@ -117,5 +137,69 @@ fun ProfilePreview(
                 )
             }
         }
+    }
+}
+
+@Composable
+fun ProfileInfoItem(
+    userID: String,
+    faceURL: String,
+    nickname: String,
+    gender: Int, click: () -> Unit
+) {
+    ConstraintLayout(modifier = Modifier
+        .fillMaxWidth()
+        .height(104.dp)
+        .clickable {
+            click()
+        }) {
+
+        val (faceView, nicknameView, genderView, uidView) = createRefs()
+        AsyncImage(
+            model = faceURL,
+            contentDescription = null,
+            modifier = Modifier
+                .constrainAs(faceView) {
+                    top.linkTo(parent.top, margin = 20.dp)
+                    bottom.linkTo(parent.bottom, margin = 20.dp)
+                    start.linkTo(parent.start, margin = 16.dp)
+                }
+                .size(64.dp)
+                .clip(
+                    RoundedCornerShape(4.dp)
+                )
+        )
+
+        Text(
+            text = if (TextUtils.isEmpty(nickname)) "未设置昵称" else nickname,
+            modifier = Modifier.constrainAs(nicknameView) {
+                top.linkTo(faceView.top)
+                start.linkTo(faceView.end, margin = 12.dp)
+            },
+            fontSize = 16.sp,
+            color = Color.Black
+        )
+
+        Image(
+            mipmap = if (gender == 1) R.mipmap.male else R.mipmap.female,
+            modifier = Modifier
+                .constrainAs(genderView) {
+                    top.linkTo(faceView.top)
+                    start.linkTo(nicknameView.end, margin = 6.dp)
+                }
+                .size(16.dp)
+        )
+
+        // Assign reference "text" to the Text composable
+        // and constrain it to the bottom of the Button composable
+        Text(
+            text = "FCCID: " + userID,
+            modifier = Modifier.constrainAs(uidView) {
+                bottom.linkTo(faceView.bottom)
+                start.linkTo(nicknameView.start)
+            },
+            fontSize = 12.sp,
+            color = Color(0xFF808080)
+        )
     }
 }
