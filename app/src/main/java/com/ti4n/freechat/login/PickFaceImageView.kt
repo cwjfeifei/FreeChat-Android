@@ -1,14 +1,19 @@
 package com.ti4n.freechat.login
 
 import android.os.Build
+import android.util.Log
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
@@ -20,12 +25,14 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import coil.ImageLoader
+import coil.compose.AsyncImage
 import coil.compose.rememberAsyncImagePainter
 import coil.decode.GifDecoder
 import coil.decode.ImageDecoderDecoder
 import coil.request.ImageRequest
 import com.ti4n.freechat.R
 import com.ti4n.freechat.Route
+import com.ti4n.freechat.model.request.FaceImageInfo
 import com.ti4n.freechat.util.AnimatedPngDecoder
 import com.ti4n.freechat.widget.Image
 
@@ -38,6 +45,7 @@ fun PickFaceImageView(
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
     val gender by viewModel.gender.collectAsState()
+
 
     val imageLoader = ImageLoader.Builder(context).components {
         if (Build.VERSION.SDK_INT >= 28) {
@@ -114,7 +122,6 @@ fun PickFaceImageView(
             contentScale = ContentScale.Crop
         )
 
-//        Divider(color = Color(0xFFEBEBEB), thickness = 0.5.dp, startIndent = 16.dp)
         Row(
             modifier = Modifier
                 .fillMaxWidth()
@@ -132,16 +139,70 @@ fun PickFaceImageView(
                 viewModel.setGender(2)
             }
         }
-        Divider(color = Color(0xFFEBEBEB), thickness = 0.5.dp, startIndent = 16.dp)
-        Spacer(modifier = Modifier.height(8.dp))
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(80.dp)
-        ) {
-            // TODO face images list
+//        Divider(color = Color(0xFFEBEBEB), thickness = 0.5.dp, startIndent = 2.dp)
+        Box(modifier = Modifier
+            .fillMaxWidth()
+            .height(96.dp)) {
+            val items by viewModel.faceImagesData.collectAsState()
+            LazyRow(modifier = Modifier.background(Color.White)) {
+                item(10) {
+                    // FIXME show list
+//                    items.forEach {
+                    ItemFaceImage() {
+                    }
+                    ItemFaceImage() {
+                    }
+                    ItemFaceImage() {
+                    }
+                    ItemFaceImage() {
+                    }
+                    ItemFaceImage() {
+                    }
+//                    }
+                }
+            }
         }
-        Spacer(modifier = Modifier.height(8.dp))
+        Spacer(modifier = Modifier.height(2.dp))
     }
+}
 
+@Composable
+fun ItemFaceImage(click: () -> Unit) {
+    Column(
+        Modifier
+            .fillMaxSize()
+            .clickable { click() }
+            .padding(horizontal = 2.dp),
+        horizontalAlignment = Alignment.CenterHorizontally) {
+        AsyncImage(
+            model = "https://freechat.world/images/face.apng", contentDescription = null,
+            Modifier
+                .size(96.dp)
+                .clip(
+                    RoundedCornerShape(4.dp)
+                )
+        )
+    }
+}
+
+
+@Composable
+fun MItemFriend(click: () -> Unit) {
+    Row(
+        Modifier
+            .fillMaxWidth()
+            .height(50.dp)
+            .clickable { click() }
+            .padding(horizontal = 16.dp),
+        verticalAlignment = Alignment.CenterVertically) {
+        AsyncImage(
+            model = "", contentDescription = null,
+            Modifier
+                .size(36.dp)
+                .clip(
+                    RoundedCornerShape(4.dp)
+                )
+        )
+        Spacer(modifier = Modifier.width(10.dp))
+    }
 }

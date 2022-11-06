@@ -3,6 +3,7 @@ package com.ti4n.freechat.login
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ti4n.freechat.db.AppDataBase
+import com.ti4n.freechat.model.request.FaceImageInfo
 import com.ti4n.freechat.network.FreeChatIMService
 import com.ti4n.freechat.util.IM
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -18,7 +19,7 @@ class PickFaceImageViewModel @Inject constructor(
 ) : ViewModel() {
     private val TAG = "RegisterViewModel"
 
-    val faceData = MutableStateFlow(emptyList<String>())
+    val faceImagesData = MutableStateFlow(emptyList<FaceImageInfo>())
     val gender = MutableStateFlow(2)  // 1 male 2 female
     val faceURL = MutableStateFlow("https://freechat.world/images/face.apng")
 
