@@ -1,7 +1,6 @@
 package com.ti4n.freechat.login
 
 import android.os.Build
-import android.util.Log
 import android.widget.Toast
 import androidx.annotation.StringRes
 import androidx.compose.foundation.BorderStroke
@@ -17,7 +16,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -25,7 +23,6 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import coil.ImageLoader
-import coil.compose.AsyncImage
 import coil.compose.rememberAsyncImagePainter
 import coil.decode.GifDecoder
 import coil.decode.ImageDecoderDecoder
@@ -36,7 +33,6 @@ import com.ti4n.freechat.R
 import com.ti4n.freechat.Route
 import com.ti4n.freechat.util.AnimatedPngDecoder
 import com.ti4n.freechat.util.IM
-import com.ti4n.freechat.util.IMError
 import kotlinx.coroutines.launch
 
 @Composable
@@ -113,7 +109,7 @@ fun CompleteProfileView(controller: NavController, viewModel: RegisterViewModel 
         )
         Spacer(modifier = Modifier.height(16.dp))
         OutlinedButton(
-            onClick = { },
+            onClick = { controller.navigate(Route.PickFaceImage.route)},
             border = BorderStroke(1.dp, Color(0xFFE6E6E6)),
             shape = RoundedCornerShape(4.dp),
             modifier = Modifier

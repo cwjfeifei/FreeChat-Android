@@ -25,9 +25,9 @@ import com.google.accompanist.navigation.material.rememberBottomSheetNavigator
 import com.ti4n.freechat.bottomsheet.ChooseImageSource
 import com.ti4n.freechat.bottomsheet.VideoVoiceChat
 import com.ti4n.freechat.db.AppDataBase
+import com.ti4n.freechat.db.UserBaseInfo
 import com.ti4n.freechat.home.HomeView
 import com.ti4n.freechat.login.*
-import com.ti4n.freechat.profile.ProfileView
 import com.ti4n.freechat.splash.NoInternetView
 import com.ti4n.freechat.splash.PermissionView
 import com.ti4n.freechat.splash.SplashView
@@ -86,6 +86,12 @@ class MainActivity : AppCompatActivity() {
                                     navController,
                                     it.arguments?.getString("words", "") ?: ""
                                 )
+                            }
+                            aniComposable(route = Route.PickFaceImage.route) {
+                                PickFaceImageView(navController)
+                            }
+                            aniComposable(route = Route.ProfilePreview.route) {
+                                ProfilePreview(navController, it.arguments?.getString("userID", "") ?: "" )
                             }
                             aniComposable(route = Route.Register1.route) {
                                 Register1View(navController)
