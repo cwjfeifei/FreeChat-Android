@@ -30,6 +30,7 @@ sealed class Route(val route: String) {
 
     object ChooseImageSourceBottom : Route("chooseImageSource")
     object VideoVoiceChatBottom : Route("videoVoiceChat")
+    object MeDetails : Route("meDetails")
     object Wallet : Route("Wallet")
     object SendMoney : Route("sendMoney")
     object ReceiveMoney : Route("receiveMoney")
@@ -54,4 +55,5 @@ sealed class Route(val route: String) {
     }
 
     object NewContact : Route("newContact")
+
 }

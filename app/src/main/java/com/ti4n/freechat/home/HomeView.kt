@@ -151,10 +151,11 @@ fun HomeView(userBaseInfoDao: UserBaseInfoDao) {
 //            ) { _ ->
 //                DiscoverView(Modifier.padding(it), navController = navController)
 //            }
-            noAniComposable(
-                HomeTab.Me.route
-            ) { _ ->
+            noAniComposable(HomeTab.Me.route) { _ ->
                 MeView(Modifier.padding(it), navController = navController)
+            }
+            aniComposable(Route.MeDetails.route) { _ ->
+                MeDetailsView(navController = navController)
             }
             aniComposable(Route.Wallet.route) { _ ->
                 WalletView(navController)

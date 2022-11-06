@@ -156,7 +156,7 @@ fun ProfileInfoItem(
 
         val (faceView, nicknameView, genderView, uidView) = createRefs()
         AsyncImage(
-            model = faceURL,
+            model =  if (TextUtils.isEmpty(faceURL)) IM.DEFAULT_FACEURL else faceURL,
             contentDescription = null,
             modifier = Modifier
                 .constrainAs(faceView) {
