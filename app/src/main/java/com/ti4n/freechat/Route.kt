@@ -1,7 +1,5 @@
 package com.ti4n.freechat
 
-import com.ti4n.freechat.db.UserBaseInfo
-
 sealed class Route(val route: String) {
     object Splash : Route("splash")
     object MainLogin : Route("mainLogin")
@@ -10,8 +8,8 @@ sealed class Route(val route: String) {
         fun jump(words: String) = "setPassword/$words"
     }
 
-    object SetEmail : Route("setEmail/{words}") {
-        fun jump(words: String) = "setEmail/$words"
+    object SetEmail : Route("setEmail/{userID}") {
+        fun jump(userID: String) = "setEmail/$userID"
     }
 
     object PickFaceImage : Route("pickFaceImage")
@@ -38,7 +36,10 @@ sealed class Route(val route: String) {
 
     object ChooseImageSourceBottom : Route("chooseImageSource")
     object VideoVoiceChatBottom : Route("videoVoiceChat")
-    object MeDetails : Route("meDetails")
+    object MeEdit : Route("meEdit")
+    object EditPickFaceImage : Route("editPickFaceImage")
+    object EditEmail : Route("editEmail")
+    object EditNickName : Route("editNickName")
     object Wallet : Route("Wallet")
     object SendMoney : Route("sendMoney")
     object ReceiveMoney : Route("receiveMoney")

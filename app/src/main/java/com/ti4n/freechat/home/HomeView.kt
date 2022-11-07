@@ -26,6 +26,7 @@ import com.ti4n.freechat.addfriend.AddFriendView
 import com.ti4n.freechat.contact.NewContactView
 import com.ti4n.freechat.db.UserBaseInfoDao
 import com.ti4n.freechat.im.PrivateChatView
+import com.ti4n.freechat.login.EditEmailView
 import com.ti4n.freechat.profile.ApproveFriendApplicationView
 import com.ti4n.freechat.profile.ProfileView
 import com.ti4n.freechat.profile.SendFriendApplicationView
@@ -148,8 +149,26 @@ fun HomeView(userBaseInfoDao: UserBaseInfoDao) {
             noAniComposable(HomeTab.Me.route) { _ ->
                 MeView(Modifier.padding(it), navController = navController)
             }
-            aniComposable(Route.MeDetails.route) { _ ->
-                MeEditView(navController = navController)
+            aniComposable(Route.MeEdit.route) { _ ->
+                MeEditView(navController = navController )
+            }
+            aniComposable(Route.EditPickFaceImage.route) { _ ->
+                val backStackEntry = remember {
+                    navController.getBackStackEntry(Route.MeEdit.route)
+                }
+                EditPickFaceImageView(navController = navController, hiltViewModel(backStackEntry))
+            }
+            aniComposable(Route.EditEmail.route) { _ ->
+                val backStackEntry = remember {
+                    navController.getBackStackEntry(Route.MeEdit.route)
+                }
+                EditEmailView(navController = navController, hiltViewModel(backStackEntry))
+            }
+            aniComposable(Route.EditNickName.route) { _ ->
+                val backStackEntry = remember {
+                    navController.getBackStackEntry(Route.MeEdit.route)
+                }
+                EditNameView(navController = navController, hiltViewModel(backStackEntry))
             }
             aniComposable(Route.Wallet.route) { _ ->
                 WalletView(navController)

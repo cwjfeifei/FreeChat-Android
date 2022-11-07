@@ -49,9 +49,6 @@ fun SetEmailView(
             if (!email1.matches(EmailAddressRegex)) {
                 emailCheck = context.getString(R.string.email_invalid)
             } else if (email1 == email2) {
-                if (userID == "") {
-
-                }
                 scope.launch {
                     viewModel.registerFreeChat(
                         context,

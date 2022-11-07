@@ -51,15 +51,12 @@ class RegisterViewModel @Inject constructor(
     init {
         viewModelScope.launch {
             var selfInfo = IM.currentUserInfo.value
-            selfInfo.userID?.let {
-                var dbInfo = db.userBaseInfoDao().getUserInfo(it).firstOrNull()
-                dbInfo?.let {
-                    faceURL.value = if (it.faceURL.isEmpty())  DEFAULT_FACEURL else it.faceURL
-                    name.value = if (it.nickname.isEmpty()) "" else it.nickname
-                    birth.value = it.birth
-                    gender.value = if (it.gender > 2 || it.gender < 1) 2 else it.gender
-                    email.value = if (it.email.isEmpty()) "" else it.email
-                }
+            selfInfo?.let {
+                faceURL.value = if (it.faceURL == null) IM.DEFAULT_FACEURL else it.faceURL
+                name.value = if (it.nickname == null) "" else it.nickname
+                gender.value = it.gender
+                birth.value = it.birth
+                email.value = if (it.email == null) "" else it.email
             }
         }
     }

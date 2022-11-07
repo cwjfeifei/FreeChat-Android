@@ -25,7 +25,6 @@ import com.google.accompanist.navigation.material.rememberBottomSheetNavigator
 import com.ti4n.freechat.bottomsheet.ChooseImageSource
 import com.ti4n.freechat.bottomsheet.VideoVoiceChat
 import com.ti4n.freechat.db.AppDataBase
-import com.ti4n.freechat.db.UserBaseInfo
 import com.ti4n.freechat.home.HomeView
 import com.ti4n.freechat.login.*
 import com.ti4n.freechat.splash.NoInternetView

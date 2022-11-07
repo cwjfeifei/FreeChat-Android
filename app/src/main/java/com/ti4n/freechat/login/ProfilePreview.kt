@@ -148,12 +148,14 @@ fun ProfileInfoItem(
     nickname: String,
     gender: Int, click: () -> Unit
 ) {
-    ConstraintLayout(modifier = Modifier
-        .fillMaxWidth()
-        .height(104.dp)
-        .clickable {
-            click()
-        }) {
+    ConstraintLayout(
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(104.dp)
+            .background(color = Color.White)
+            .clickable {
+                click()
+            }) {
 
         val (faceView, nicknameView, genderView, uidView) = createRefs()
         AsyncImage(
