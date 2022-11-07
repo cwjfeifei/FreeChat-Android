@@ -140,6 +140,8 @@
     <string name="add_friend">添加好友</string>
     <string name="set_remark">设置备注</string>
     <string name="request_info">申请说明</string>
+    <string name="set_friend_remark">设置好友备注</string>
+    <string name="default_display_nickname">默认显示好友昵称</string>
     <string name="send_request">发送申请</string>
 
     <string name="search">搜索</string>
