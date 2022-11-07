@@ -28,6 +28,7 @@ object IM {
     val DEFAULT_FACEURL = "https://freechat.world/images/face.apng" // TODO
 
     fun init(context: Context) {
+        Log.w(TAG, "init")
         imClient.initSDK(Platform.ANDROID,
             "http://47.57.185.242:10002",
             "ws://47.57.185.242:10001",
@@ -59,7 +60,7 @@ object IM {
     }
 
     suspend fun login(userId: String, token: String) = suspendCoroutine {
-        Log.d(TAG, "login: " + userId)
+        Log.d(TAG, "login: " + userId + " / " + token)
         imClient.login(object : OnBase<String> {
             override fun onError(code: Int, error: String?) {
                 it.resumeWithException(IMError(code, error))
@@ -67,6 +68,7 @@ object IM {
 
             override fun onSuccess(data: String?) {
                 it.resume(data)
+                getSelfInfo()
                 getAllConversations()
                 getFriend()
             }
@@ -109,6 +111,11 @@ object IM {
             // why assert twice? if value is not null, MutableStateFlow will not update state
             currentUserInfo.value = UserInfo()
             currentUserInfo.value = it
+            Log.d(
+                TAG,
+                "User Listener: " + currentUserInfo.value.userID + "/" + currentUserInfo.value.faceURL + "/"
+                        + currentUserInfo.value.nickname +"/"+currentUserInfo.value.gender+"/"+currentUserInfo.value.email
+            )
         }
         imClient.conversationManager.setOnConversationListener(object : OnConversationListener {
             override fun onConversationChanged(list: MutableList<ConversationInfo>?) {
