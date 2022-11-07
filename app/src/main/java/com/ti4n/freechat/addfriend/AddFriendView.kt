@@ -50,13 +50,6 @@ import com.ti4n.freechat.widget.SearchView
 @Composable
 fun AddFriendView(navController: NavController) {
     val meInfo by IM.currentUserInfo.collectAsState()
-    val barcodeLauncher = rememberLauncherForActivityResult(ScanContract()) { result ->
-        if (result.contents == null) {
-
-        } else {
-
-        }
-    }
     val systemUiController = rememberSystemUiController()
     SideEffect {
         systemUiController.setSystemBarsColor(
@@ -68,6 +61,12 @@ fun AddFriendView(navController: NavController) {
     }
     val searchText = remember {
         mutableStateOf("")
+    }
+    val barcodeLauncher = rememberLauncherForActivityResult(ScanContract()) { result ->
+        result.contents?.let {
+            showSearchView.component2()(true)
+            searchText.component2()(it)
+        }
     }
     Column(
         modifier = Modifier
