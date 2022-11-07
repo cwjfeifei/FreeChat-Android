@@ -67,7 +67,7 @@ class MainActivity : AppCompatActivity() {
                             startDestination = Route.Splash.route
                         ) {
                             aniComposable(route = Route.Splash.route) {
-                                SplashView(navController, db.userBaseInfoDao())
+                                SplashView(navController)
                             }
                             aniComposable(route = Route.MainLogin.route) {
                                 MainLoginView(navController)

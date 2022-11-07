@@ -1,6 +1,7 @@
 package com.ti4n.freechat.login
 
 import android.content.Context
+import android.text.TextUtils
 import android.util.Log
 import android.widget.Toast
 import androidx.lifecycle.ViewModel
@@ -25,13 +26,13 @@ import kotlinx.coroutines.launch
 import org.kethereum.bip39.model.MnemonicWords
 import javax.inject.Inject
 
+private const val TAG = "RegisterViewModel"
 
 @HiltViewModel
 class RegisterViewModel @Inject constructor(
     val imService: FreeChatIMService,
     val db: AppDataBase
 ) : ViewModel() {
-    private val TAG = "RegisterViewModel"
 
     val setEmailRoute = MutableSharedFlow<String>(replay = 0, extraBufferCapacity = 1)
 
@@ -97,11 +98,9 @@ class RegisterViewModel @Inject constructor(
 
     fun registerFreeChat(
         context: Context,
-        words: String,
+        userID: String,
         email: String,
     ) {
-        val userID = MnemonicWords(words).address().hex // wallet address
-//        val userID = "T" + System.currentTimeMillis().toString()  // For DEBUG
         viewModelScope.launch {
             try {
                 val response = imService.register(
@@ -125,6 +124,7 @@ class RegisterViewModel @Inject constructor(
                         )
                     )
 
+                    IM.logout()
                     IM.login(userID, response.data.token)
                     setEmailRoute.emit(Route.CompleteProfile.route)
                 } else {

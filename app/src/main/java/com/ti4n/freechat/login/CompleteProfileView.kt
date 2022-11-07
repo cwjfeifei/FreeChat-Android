@@ -1,6 +1,7 @@
 package com.ti4n.freechat.login
 
 import android.os.Build
+import android.util.Log
 import android.widget.Toast
 import androidx.annotation.StringRes
 import androidx.compose.foundation.BorderStroke
@@ -35,6 +36,8 @@ import com.ti4n.freechat.util.AnimatedPngDecoder
 import com.ti4n.freechat.util.IM
 import kotlinx.coroutines.launch
 
+private const val TAG = "CompleteProfileView"
+
 @Composable
 fun CompleteProfileView(controller: NavController, viewModel: RegisterViewModel = hiltViewModel()) {
     val systemUiController = rememberSystemUiController()
@@ -44,9 +47,15 @@ fun CompleteProfileView(controller: NavController, viewModel: RegisterViewModel 
         )
     }
 
-    val faceURL by viewModel.faceURL.collectAsState()
-    val nickname by viewModel.name.collectAsState()
-    val gender by viewModel.gender.collectAsState()
+    val faceURL by remember {
+        mutableStateOf(viewModel.faceURL.value)
+    }
+    val nickname by remember {
+        mutableStateOf(viewModel.name.value)
+    }
+    val gender by remember {
+        mutableStateOf(viewModel.gender.value)
+    }
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
 
@@ -109,7 +118,7 @@ fun CompleteProfileView(controller: NavController, viewModel: RegisterViewModel 
         )
         Spacer(modifier = Modifier.height(16.dp))
         OutlinedButton(
-            onClick = { controller.navigate(Route.PickFaceImage.route)},
+            onClick = { controller.navigate(Route.PickFaceImage.route) },
             border = BorderStroke(1.dp, Color(0xFFE6E6E6)),
             shape = RoundedCornerShape(4.dp),
             modifier = Modifier
@@ -160,7 +169,7 @@ fun CompleteProfileView(controller: NavController, viewModel: RegisterViewModel 
             onClick = {
                 scope.launch {
                     // must be IM.login
-                    val result = IM.setUserInfo(nickname, faceURL, gender, 0, null, null)
+                    val result = IM.setUserInfo(faceURL, nickname, gender, 0, null, null)
                     if (result is Unit) {
                         // success
                         controller.navigate(Route.Home.route)
@@ -168,14 +177,6 @@ fun CompleteProfileView(controller: NavController, viewModel: RegisterViewModel 
                         // set user info failed
                         Toast.makeText(context, R.string.no_internet, Toast.LENGTH_SHORT).show()
                     }
-//                viewModel.avatar.value?.let {
-//                    Minio.uploadFile(context, it)?.let {
-//                        val credentials = EthUtil.loadCredentials(context, "")
-//                        viewModel.register(
-//                            credentials.address, it, ""
-//                        ) { controller.navigate(Route.Home.route) }
-//                    }
-//                }
                 }
             },
             Modifier

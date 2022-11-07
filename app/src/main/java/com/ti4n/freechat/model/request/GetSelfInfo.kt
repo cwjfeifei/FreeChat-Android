@@ -1,8 +1,8 @@
 package com.ti4n.freechat.model.request
 
-import java.util.UUID
+import io.openim.android.sdk.utils.ParamsUtil
 
 data class GetSelfInfo(
     val userID: String,
-    val operationID: String = UUID.randomUUID().toString(),
+    val operationID: String = ParamsUtil.buildOperationID(),
 )

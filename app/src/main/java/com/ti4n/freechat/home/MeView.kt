@@ -50,8 +50,7 @@ import kotlinx.coroutines.launch
 @Composable
 fun MeView(
     modifier: Modifier = Modifier,
-    navController: NavController,
-    viewModel: MeViewModel = hiltViewModel()
+    navController: NavController
 ) {
     val me by IM.currentUserInfo.collectAsState()
     val systemUiController = rememberSystemUiController()
@@ -79,7 +78,8 @@ fun MeView(
     ) {
         androidx.compose.foundation.Image(
             painter = rememberAsyncImagePainter(
-                ImageRequest.Builder(context).data(data = if (TextUtils.isEmpty(me.faceURL)) DEFAULT_FACEURL else me.faceURL,)
+                ImageRequest.Builder(context)
+                    .data(data = if (TextUtils.isEmpty(me.faceURL)) DEFAULT_FACEURL else me.faceURL)
                     .build(),
                 imageLoader = imageLoader
             ),
@@ -91,9 +91,14 @@ fun MeView(
         )
         LazyColumn(modifier = Modifier.background(Color.White)) {
             me?.let {
-                Log.d("Me", "MeView: " +me.userID+"/" + me.faceURL +"/"+me.nickname+"/" +me.gender)
+                Log.d("Me", "MeView: " + me.userID + "/" + me.faceURL + "/" + me.nickname + "/" + me.gender + "/" + me.email)
                 item {
-                    MeInfoItem(faceURL = it.faceURL, nickname = it.nickname, userID = it.userID, gender = me.gender) {
+                    MeInfoItem(
+                        faceURL = it.faceURL,
+                        nickname = it.nickname,
+                        userID = it.userID,
+                        gender = me.gender
+                    ) {
                         navController.navigate(Route.MeDetails.route)
                     }
                     MeDividerItem()

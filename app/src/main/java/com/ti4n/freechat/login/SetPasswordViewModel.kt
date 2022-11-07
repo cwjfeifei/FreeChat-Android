@@ -9,11 +9,13 @@ import com.ti4n.freechat.db.UserBaseInfo
 import com.ti4n.freechat.model.request.GetSelfInfo
 import com.ti4n.freechat.model.request.GetToken
 import com.ti4n.freechat.network.FreeChatIMService
+import com.ti4n.freechat.util.IM
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+private const val TAG = "SetPasswordViewModel XXX"
 @HiltViewModel
 class SetPasswordViewModel @Inject constructor(
     val imService: FreeChatIMService,
@@ -22,13 +24,14 @@ class SetPasswordViewModel @Inject constructor(
 
     val navigationRoute = MutableSharedFlow<String>(replay = 0, extraBufferCapacity = 1)
 
-    fun login(address: String) {
+    // set wallet password
+    fun onSetPassword(address: String) {
         viewModelScope.launch {
             try {
                 val token = imService.getToken(GetToken(address)).data
                 token?.let {
                     val response = imService.getSelfInfo(GetSelfInfo(it.userID), it.token)
-                    Log.w("Login", "resp-getselfuserinfo " + response)
+                    Log.w(TAG, "Freechat account: " +address+ " resp: "+ response)
                     if (response.errCode == 0 && response.data != null) {
                         val selfInfo = response.data
                         db.userBaseInfoDao().insert(
@@ -48,13 +51,14 @@ class SetPasswordViewModel @Inject constructor(
                             navigationRoute.emit(Route.CompleteProfile.route)
                         } else {
                             navigationRoute.emit(Route.Home.route)
+                            IM.login(address, token.token)
                         }
                     } else {
-                        navigationRoute.emit(Route.SetEmail.route)
+                        navigationRoute.emit(Route.SetEmail.jump(address))
                     }
                 }
             } catch (e: Exception) {
-                Log.w("Login", "Error :  ",  e)
+                Log.w(TAG, "onSetPassword Error : ",  e)
             }
         }
     }

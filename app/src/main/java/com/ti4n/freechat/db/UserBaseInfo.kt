@@ -7,11 +7,11 @@ import androidx.room.PrimaryKey
 @Entity
 data class UserBaseInfo(
     @PrimaryKey val userID: String,
-    val nickname: String = "",
-    val faceURL: String = "",
-    val birth: Long = 0,
-    val gender : Int = 1,
-    val email : String = "",
-    val token: String,
-    val expiredTime: Long  // unit: s
+    var nickname: String = "",
+    var faceURL: String = "",
+    var birth: Long = 0,
+    var gender : Int = 1,
+    var email : String = "",
+    var token: String,
+    var expiredTime: Long  // unit: s
 )

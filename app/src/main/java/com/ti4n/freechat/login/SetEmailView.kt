@@ -4,7 +4,6 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.runtime.*
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
@@ -25,7 +24,7 @@ import kotlinx.coroutines.launch
 @Composable
 fun SetEmailView(
     navController: NavController,
-    words: String,
+    userID: String,
     viewModel: RegisterViewModel = hiltViewModel()
 ) {
     var email1 by remember {
@@ -50,10 +49,13 @@ fun SetEmailView(
             if (!email1.matches(EmailAddressRegex)) {
                 emailCheck = context.getString(R.string.email_invalid)
             } else if (email1 == email2) {
+                if (userID == "") {
+
+                }
                 scope.launch {
                     viewModel.registerFreeChat(
                         context,
-                        words = words,
+                        userID = userID,
                         email = email1,
                     )
                 }

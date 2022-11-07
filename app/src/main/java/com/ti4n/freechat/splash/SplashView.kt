@@ -1,49 +1,40 @@
 package com.ti4n.freechat.splash
 
+import android.util.Log
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.SideEffect
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.datastore.preferences.core.booleanPreferencesKey
-import androidx.datastore.preferences.core.stringPreferencesKey
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.ti4n.freechat.R
 import com.ti4n.freechat.Route
-import com.ti4n.freechat.db.UserBaseInfoDao
 import com.ti4n.freechat.di.dataStore
+import com.ti4n.freechat.login.LoginViewModel
 import com.ti4n.freechat.widget.Image
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.filter
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.stateIn
-import kotlin.time.Duration.Companion.seconds
-import kotlin.time.ExperimentalTime
+import kotlinx.coroutines.launch
 
 @Composable
-fun SplashView(navController: NavController, userBaseInfoDao: UserBaseInfoDao) {
+fun SplashView(navController: NavController, viewModel: LoginViewModel = hiltViewModel()) {
     val systemUiController = rememberSystemUiController()
     val context = LocalContext.current
+    val scope = rememberCoroutineScope()
     SideEffect {
         systemUiController.setSystemBarsColor(Color.Transparent)
     }
@@ -67,27 +58,28 @@ fun SplashView(navController: NavController, userBaseInfoDao: UserBaseInfoDao) {
         }
     }
     LaunchedEffect(Unit) {
+        launch {
+            val launchTime = System.currentTimeMillis()
+            viewModel.autoLoginRoute.filter { it.isNotEmpty() }.collectLatest {
+                var duration = System.currentTimeMillis() - launchTime
+                if (duration < 1000) {
+                    delay(1000 - duration)
+                }
+                navController.navigate(it)
+            }
+        }
+
         val agree = context.dataStore.data.map { it[booleanPreferencesKey("agreePermission")] }
             .firstOrNull() ?: false
         if (agree) {
-
-            val isLogin =
-                !context.dataStore.data.map { it[stringPreferencesKey("address")] }.firstOrNull()
-                    .isNullOrEmpty()
-            delay(1.seconds)
-            if (isLogin) {
-                navController.navigate(Route.Home.route) {
-                    popUpTo(Route.Splash.route) { inclusive = true }
-                }
-            } else {
-                navController.navigate(Route.MainLogin.route) {
-                    popUpTo(Route.Splash.route) { inclusive = true }
-                }
+            scope.launch {
+                viewModel.autoLogin(context)
             }
         } else {
             navController.navigate(Route.PermissionIntro.route) {
                 popUpTo(Route.Splash.route) { inclusive = true }
             }
         }
+
     }
 }

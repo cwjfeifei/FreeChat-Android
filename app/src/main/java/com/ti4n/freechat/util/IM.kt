@@ -28,7 +28,7 @@ import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
 import kotlin.coroutines.suspendCoroutine
 
-private const val TAG = "IM"
+private const val TAG = "IMXXX"
 
 object IM {
 
@@ -84,7 +84,6 @@ object IM {
                 getSelfInfo()
                 getAllConversations()
                 getFriend()
-
             }
         }, userId, token)
     }
@@ -233,8 +232,8 @@ object IM {
      * appManagerLevel : 1-normal user, 2-admin user
      */
     suspend fun setUserInfo(
-        nickname: String?,
         faceURL: String?,
+        nickname: String?,
         gender: Int,
         birth: Long,
         email: String?,
@@ -248,8 +247,8 @@ object IM {
                     }
 
                     override fun onSuccess(data: String?) {
-                        it.resume(Unit)
                         getSelfInfo()
+                        it.resume(Unit)
                     }
                 }, nickname, faceURL, gender, 1, "", birth, email, ex
             )

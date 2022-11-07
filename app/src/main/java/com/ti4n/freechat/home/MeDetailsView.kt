@@ -92,7 +92,6 @@ fun MeDetailsView(
         )
         LazyColumn(modifier = Modifier.background(Color.White)) {
             me?.let {
-                Log.d("Me", "MeView: " +me.userID+"/" + me.faceURL +"/"+me.nickname+"/" +me.gender)
                 item {
                     ProfileInfoItem(faceURL = it.faceURL, nickname = it.nickname, userID = it.userID, gender = me.gender) {
                     }

@@ -64,10 +64,11 @@ fun HomeView(userBaseInfoDao: UserBaseInfoDao) {
         )
     }
     LaunchedEffect(Unit) {
-        userBaseInfoDao.getUserInfo().filterNotNull().collectLatest {
-            IM.logout()
-            IM.login(it.userID, it.token)
-        }
+//        @see LoginViewMode.autoLogin(context)
+//        userBaseInfoDao.getUserInfo().filterNotNull().collectLatest {
+//            IM.logout()
+//            IM.login(it.userID, it.token)
+//        }
     }
     Scaffold(bottomBar = {
         AnimatedVisibility(visible = currentRoute == HomeTab.Chat.route || currentRoute == HomeTab.Contact.route || currentRoute == HomeTab.Me.route,
