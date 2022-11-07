@@ -54,10 +54,10 @@ fun ChatListView(
             color = Color(0xFFF0F0F0)
         )
     }
-    val showSearchView = remember {
+    var showAddView by remember {
         mutableStateOf(false)
     }
-    var showAddView by remember {
+    val showSearchView = remember {
         mutableStateOf(false)
     }
     val searchText = remember {
@@ -85,7 +85,7 @@ fun ChatListView(
                         modifier = Modifier.background(Color(0xFF4B4B4B)),
                         offset = DpOffset(0.dp, 12.dp)
                     ) {
-                        DropdownMenuItem(onClick = { }) {
+                        DropdownMenuItem(onClick = { navController.navigate(Route.AddFriend.route) }) {
                             Text(text = "添加好友", fontSize = 16.sp, color = Color.White)
                         }
 //                        Divider(color = Color(0xFF5F5F5F))

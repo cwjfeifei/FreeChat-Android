@@ -56,4 +56,5 @@ sealed class Route(val route: String) {
 
     object NewContact : Route("newContact")
 
+    object AddFriend : Route("addFriend")
 }

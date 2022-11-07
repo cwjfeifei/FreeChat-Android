@@ -263,17 +263,16 @@ fun LoginCommonView(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(vertical = 20.dp),
-            horizontalArrangement = Arrangement.spacedBy(16.dp)
+            horizontalArrangement = Arrangement.spacedBy(3.dp)
         ) {
-            OutlinedButton(
+            TextButton(
                 onClick = { backClick() },
-                border = BorderStroke(2.dp, Color(0xFF3879FD)),
                 shape = RoundedCornerShape(4.dp),
                 modifier = Modifier
                     .weight(1f)
-                    .height(44.dp),
+                    .height(42.dp),
                 colors = ButtonDefaults.buttonColors(
-                    backgroundColor = Color.White, contentColor = Color(0xFF3879FD)
+                    backgroundColor = Color(0xFF3879FD), contentColor = Color.White
                 )
             ) {
                 Text(
@@ -287,7 +286,7 @@ fun LoginCommonView(
                 shape = RoundedCornerShape(4.dp),
                 modifier = Modifier
                     .weight(1f)
-                    .height(44.dp),
+                    .height(42.dp),
                 colors = ButtonDefaults.buttonColors(
                     backgroundColor = Color(0xFF3879FD), contentColor = Color.White
                 )
