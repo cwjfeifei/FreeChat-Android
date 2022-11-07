@@ -137,6 +137,7 @@
     <string name="email_tip">电子邮箱是确认您Freechat社交身份的唯一方式，保护您的社交信息，只能设置一次，不允许进行更改。</string>
     <string name="password_tip">账户密码并不能找回您的账户，您依然需要助记词进行账户重置。再次提醒您请保护好您的助记词，助记词是唯一恢复您账户及资产的方式。</string>
 
+    <string name="apply_tobe_friend">申请加为好友</string>
     <string name="add_friend">添加好友</string>
     <string name="set_remark">设置备注</string>
     <string name="request_info">申请说明</string>
@@ -145,4 +146,15 @@
     <string name="send_request">发送申请</string>
 
     <string name="search">搜索</string>
+    <string name="three_day">三天内</string>
+    <string name="three_day_before">三天前</string>
+    <string name="already_accept">已添加</string>
+    <string name="already_refuse">已拒绝</string>
+    <string name="have_a_look">查看</string>
+    <string name="accept">同意</string>
+    <string name="refuse">拒绝</string>
+
+    <string name="reply">回复</string>
+    <string name="send">发送</string>
+    <string name="finish">完成</string>
 </resources>

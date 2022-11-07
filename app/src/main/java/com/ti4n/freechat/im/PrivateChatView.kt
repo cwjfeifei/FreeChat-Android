@@ -88,6 +88,7 @@ import com.ti4n.freechat.util.coloredShadow
 import com.ti4n.freechat.widget.Image
 import com.ti4n.freechat.widget.CustomPaddingTextField
 import com.ti4n.freechat.widget.HomeTitle
+import io.openim.android.sdk.enums.MessageType
 import io.openim.android.sdk.models.Message
 import io.openim.android.sdk.models.UserInfo
 import kotlinx.coroutines.launch
@@ -345,16 +346,16 @@ fun ToUserMessage(message: Message, navController: NavController) {
                 .clickable { navController.navigate(Route.Profile.jump(message.sendID)) }
         )
         Spacer(modifier = Modifier.width(6.dp))
-        if (!message.pictureElem.snapshotPicture.url.isNullOrEmpty())
-            AsyncImage(
+        when (message.contentType) {
+            MessageType.PICTURE -> AsyncImage(
                 model = message.pictureElem.snapshotPicture.url,
                 contentDescription = null,
                 modifier = Modifier
                     .clip(RoundedCornerShape(8.dp))
                     .weight(1f)
             )
-        else if (!message.soundElem.soundPath.isNullOrEmpty())
-            Row(verticalAlignment = CenterVertically, modifier = Modifier
+
+            MessageType.VOICE -> Row(verticalAlignment = CenterVertically, modifier = Modifier
                 .drawBehind {
                     bgImg?.updateBounds(0, 0, size.width.toInt(), size.height.toInt())
                     bgImg?.draw(drawContext.canvas.nativeCanvas)
@@ -380,8 +381,8 @@ fun ToUserMessage(message: Message, navController: NavController) {
                 Spacer(modifier = Modifier.width(10.dp))
                 Image(mipmap = R.mipmap.yuyin_r)
             }
-        else
-            Text(text = message.content,
+
+            MessageType.TEXT -> Text(text = message.content,
                 color = Color.Black,
                 fontSize = 16.sp,
                 modifier = Modifier
@@ -390,12 +391,14 @@ fun ToUserMessage(message: Message, navController: NavController) {
                         bgImg?.draw(drawContext.canvas.nativeCanvas)
                     }
                     .padding(horizontal = 12.dp, vertical = 8.dp))
+        }
         Spacer(modifier = Modifier.width(50.dp))
     }
 }
 
 @Composable
 fun MineMessage(message: Message, navController: NavController) {
+    Log.e("TAG", "MineMessage: ${message.contentType}")
     val bgImg = ContextCompat.getDrawable(
         LocalContext.current, R.mipmap.chat_bg_mine
     )
@@ -405,16 +408,16 @@ fun MineMessage(message: Message, navController: NavController) {
             .padding(end = 16.dp), horizontalArrangement = Arrangement.End
     ) {
         Spacer(modifier = Modifier.width(50.dp))
-        if (!message.pictureElem.snapshotPicture.url.isNullOrEmpty())
-            AsyncImage(
+        when (message.contentType) {
+            MessageType.PICTURE -> AsyncImage(
                 model = message.pictureElem.snapshotPicture.url,
                 contentDescription = null,
                 modifier = Modifier
                     .clip(RoundedCornerShape(8.dp))
                     .weight(1f)
             )
-        else if (!message.soundElem.soundPath.isNullOrEmpty())
-            Row(verticalAlignment = CenterVertically, modifier = Modifier
+
+            MessageType.VOICE -> Row(verticalAlignment = CenterVertically, modifier = Modifier
                 .drawBehind {
                     bgImg?.updateBounds(0, 0, size.width.toInt(), size.height.toInt())
                     bgImg?.draw(drawContext.canvas.nativeCanvas)
@@ -440,8 +443,8 @@ fun MineMessage(message: Message, navController: NavController) {
                     fontSize = 16.sp,
                 )
             }
-        else
-            Text(text = message.content,
+
+            MessageType.TEXT -> Text(text = message.content,
                 color = Color.Black,
                 fontSize = 16.sp,
                 modifier = Modifier
@@ -450,6 +453,18 @@ fun MineMessage(message: Message, navController: NavController) {
                         bgImg?.draw(drawContext.canvas.nativeCanvas)
                     }
                     .padding(horizontal = 12.dp, vertical = 8.dp))
+
+            MessageType.FRIEND_ADDED_NOTIFICATION -> Text(text = "成为好友",
+                color = Color.Black,
+                fontSize = 16.sp,
+                modifier = Modifier
+                    .drawBehind {
+                        bgImg?.updateBounds(0, 0, size.width.toInt(), size.height.toInt())
+                        bgImg?.draw(drawContext.canvas.nativeCanvas)
+                    }
+                    .padding(horizontal = 12.dp, vertical = 8.dp))
+        }
+
         Spacer(modifier = Modifier.width(6.dp))
         AsyncImage(
             model = message.senderFaceUrl,

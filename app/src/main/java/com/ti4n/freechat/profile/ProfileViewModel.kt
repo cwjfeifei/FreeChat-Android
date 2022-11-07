@@ -36,7 +36,18 @@ class ProfileViewModel @Inject constructor(
             if (isSelf.value) {
                 userInfo.value = IM.currentUserInfo.value
             } else {
-                userInfo.value = IM.getUserInfo(toUserId)
+                userInfo.value =
+                    IM.friends.find { it.userID == toUserId }?.let {
+                        UserInfo().apply {
+                            userID = it.userID
+                            faceURL = it.faceURL
+                            nickname = it.nickname
+                            gender = it.gender
+                            remark = it.remark
+                        }
+                    } ?: IM.getUserInfo(
+                        toUserId
+                    )
             }
         }
     }
@@ -50,6 +61,18 @@ class ProfileViewModel @Inject constructor(
     fun setRemark(remark: String) {
         viewModelScope.launch {
             IM.setRemark(toUserId, remark)
+        }
+    }
+
+    fun acceptFriendApplication() {
+        viewModelScope.launch {
+            IM.acceptFriendApplication(toUserId)
+        }
+    }
+
+    fun refuseFriendApplication() {
+        viewModelScope.launch {
+            IM.rejectFriendApplication(toUserId)
         }
     }
 }

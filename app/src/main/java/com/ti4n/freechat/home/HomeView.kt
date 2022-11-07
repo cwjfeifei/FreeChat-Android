@@ -1,11 +1,9 @@
 package com.ti4n.freechat.home
 
-import android.util.Log
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.*
@@ -16,7 +14,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.compose.currentBackStackEntryAsState
 import com.google.accompanist.navigation.animation.AnimatedNavHost
@@ -28,8 +25,8 @@ import com.ti4n.freechat.Route
 import com.ti4n.freechat.addfriend.AddFriendView
 import com.ti4n.freechat.contact.NewContactView
 import com.ti4n.freechat.db.UserBaseInfoDao
-import com.ti4n.freechat.di.dataStore
 import com.ti4n.freechat.im.PrivateChatView
+import com.ti4n.freechat.profile.ApproveFriendApplicationView
 import com.ti4n.freechat.profile.ProfileView
 import com.ti4n.freechat.profile.SendFriendApplicationView
 import com.ti4n.freechat.profile.SetRemarkView
@@ -44,11 +41,6 @@ import com.ti4n.freechat.wallet.SendMoneyView
 import com.ti4n.freechat.wallet.TokenDetailSimplyView
 import com.ti4n.freechat.wallet.TokenDetailView
 import com.ti4n.freechat.wallet.WalletView
-import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.flow.distinctUntilChanged
-import kotlinx.coroutines.flow.filterNotNull
-import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.map
 
 @OptIn(ExperimentalAnimationApi::class)
 @Composable
@@ -212,6 +204,22 @@ fun HomeView(userBaseInfoDao: UserBaseInfoDao) {
                 route = Route.Profile.route
             ) {
                 ProfileView(navController = navController)
+            }
+            aniComposable(
+                route = Route.LookFriendApplication.route
+            ) {
+                ProfileView(navController = navController, isFromFriendApplication = true)
+            }
+            aniComposable(
+                route = Route.ApproveFriendApplication.route
+            ) {
+                val backStackEntry = remember {
+                    navController.getBackStackEntry(Route.LookFriendApplication.route)
+                }
+                ApproveFriendApplicationView(
+                    navController = navController,
+                    hiltViewModel(backStackEntry)
+                )
             }
             aniComposable(
                 route = Route.SetRemark.route

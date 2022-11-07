@@ -40,6 +40,7 @@ import com.ti4n.freechat.Route
 import com.ti4n.freechat.util.IM
 import com.ti4n.freechat.widget.Image
 import com.ti4n.freechat.widget.*
+import io.openim.android.sdk.enums.MessageType
 import io.openim.android.sdk.models.Message
 import java.util.Date
 
@@ -116,16 +117,17 @@ fun ChatListView(
                         searchText.value
                     )
                 }
-                    .sortedBy { it.isPinned }) {
+                    .sortedBy { !it.isPinned }) {
                     val message = Gson().fromJson(it.latestMsg, Message::class.java)
                     ChatItem(
                         scrollState,
                         it.faceURL,
                         it.showName,
-                        when {
-                            !message.pictureElem.snapshotPicture.url.isNullOrEmpty() -> "[图片]"
-                            !message.soundElem.soundPath.isNullOrEmpty() -> "[语音]"
-                            else -> message.content
+                        when (message.contentType) {
+                            MessageType.PICTURE -> "[图片]"
+                            MessageType.VOICE -> "[语音]"
+                            MessageType.TEXT -> message.content
+                            else -> "不支持的消息类型"
                         },
                         SimpleDateFormat("yyyy-MM-dd hh:mm").format(
                             Date(it.latestMsgSendTime)
@@ -148,7 +150,7 @@ fun ChatListView(
             }
         } else {
             LazyColumn(state = scrollState, modifier = Modifier.background(Color.White)) {
-                items(IM.conversations.sortedBy { it.isPinned }) {
+                items(IM.conversations.sortedBy { !it.isPinned }) {
                     val message = Gson().fromJson(it.latestMsg, Message::class.java)
                     ChatItem(
                         scrollState,

@@ -9,9 +9,11 @@ sealed class Route(val route: String) {
     object SetPassword : Route("setPassword/{words}") {
         fun jump(words: String) = "setPassword/$words"
     }
+
     object SetEmail : Route("setEmail/{words}") {
         fun jump(words: String) = "setEmail/$words"
     }
+
     object PickFaceImage : Route("pickFaceImage")
     object ProfilePreview : Route("profilePreview")
     object Register1 : Route("register1")
@@ -22,6 +24,12 @@ sealed class Route(val route: String) {
     object Profile : Route("profile/{id}") {
         fun jump(id: String) = "profile/$id"
     }
+
+    object LookFriendApplication : Route("lookFriendApplication/{id}") {
+        fun jump(id: String) = "lookFriendApplication/$id"
+    }
+
+    object ApproveFriendApplication : Route("approveFriendApplication/{id}")
 
     object SetRemark : Route("setRemark")
     object SendFriendApplication : Route("sendFriendApplication")

@@ -207,8 +207,6 @@ fun LoginCommonView(
         modifier = Modifier
             .fillMaxSize()
             .background(Color.White)
-            .padding(horizontal = 24.dp)
-            .systemBarsPadding()
     ) {
         Image(
             mipmap = R.mipmap.nav_back,
@@ -229,12 +227,15 @@ fun LoginCommonView(
             textAlign = TextAlign.Center
         )
         Spacer(modifier = Modifier.height(24.dp))
-        content()
+        Column(Modifier.padding(horizontal = 24.dp)) {
+            content()
+        }
         Spacer(Modifier.weight(1f))
         tip?.let {
             Card(
                 shape = RoundedCornerShape(8.dp),
                 modifier = Modifier
+                    .padding(horizontal = 24.dp)
                     .fillMaxWidth(),
                 elevation = 0.dp,
                 border = BorderStroke(1.dp, Color(0xFFE6E6E6))
@@ -267,7 +268,7 @@ fun LoginCommonView(
         ) {
             TextButton(
                 onClick = { backClick() },
-                shape = RoundedCornerShape(4.dp),
+                shape = RoundedCornerShape(0.dp),
                 modifier = Modifier
                     .weight(1f)
                     .height(42.dp),
@@ -283,7 +284,7 @@ fun LoginCommonView(
             }
             TextButton(
                 onClick = { nextClick() },
-                shape = RoundedCornerShape(4.dp),
+                shape = RoundedCornerShape(0.dp),
                 modifier = Modifier
                     .weight(1f)
                     .height(42.dp),

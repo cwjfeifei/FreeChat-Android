@@ -516,6 +516,7 @@ object IM {
             }
 
             override fun onSuccess(data: String?) {
+                Log.e(TAG, "onSuccess: $id $data", )
                 it.resume(data)
             }
         }, id, "")
