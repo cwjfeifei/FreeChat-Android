@@ -4,7 +4,6 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.runtime.*
@@ -145,7 +144,7 @@ fun ProfileView(navController: NavController, viewModel: ProfileViewModel = hilt
                         userInfo.nickname ?: "",
                         userInfo.remark ?: "",
                         userInfo.userID ?: "",
-                        ""
+                        userInfo.gender ?: 1,
                     )
                     Divider(color = Color(0xFFF0F0F0))
                 }
@@ -200,11 +199,11 @@ fun ProfileView(navController: NavController, viewModel: ProfileViewModel = hilt
 //                }
                 if (!isSelf && isFriend)
                     item {
-                        Divider(color = Color(0xFFE6E6E6), thickness = 1.dp)
+                        Divider(color = Color(0xFFEBEBEB), thickness = 0.5.dp, startIndent = 16.dp)
                         ProfileItem("备注") {
                             navController.navigate(Route.SetRemark.route)
                         }
-                        Divider(color = Color(0xFFE6E6E6), thickness = 1.dp)
+                        Divider(color = Color(0xFFEBEBEB), thickness = 0.5.dp, startIndent = 16.dp)
                     }
 //                item {
 //                    ProfileItem("权限设置")
@@ -225,12 +224,12 @@ fun ProfileInfoItem(
     nickname: String,
     mark: String,
     id: String,
-    location: String
+    gender: Int
+//    location: String
 ) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .aspectRatio(108 / 428f)
             .padding(horizontal = 16.dp, vertical = 20.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
@@ -238,21 +237,33 @@ fun ProfileInfoItem(
             model = avatar,
             contentDescription = null,
             modifier = Modifier
-                .size(58.dp)
+                .size(64.dp)
                 .clip(RoundedCornerShape(6.dp)),
             contentScale = ContentScale.Crop
         )
         Spacer(modifier = Modifier.width(12.dp))
         Column(
-            modifier = Modifier.fillMaxHeight(), verticalArrangement = Arrangement.SpaceBetween
+            modifier = Modifier.height(64.dp), verticalArrangement = Arrangement.SpaceBetween
         ) {
-            Text(text = mark.ifEmpty { nickname }, fontSize = 14.sp, color = Color(0xFF1A1A1A))
+            Row(verticalAlignment = CenterVertically) {
+                Text(
+                    text = mark.ifEmpty { nickname },
+                    fontSize = 16.sp,
+                    color = Color.Black,
+                    fontWeight = FontWeight.Medium
+                )
+                Spacer(modifier = Modifier.width(6.dp))
+                Image(mipmap = if (gender == 1) R.mipmap.male else R.mipmap.female)
+            }
+            Spacer(modifier = Modifier.weight(1f))
             if (mark.isNotEmpty()) Text(
                 text = "昵称：$nickname",
                 fontSize = 10.sp,
                 color = Color(0xFF4D4D4D)
             )
-            Text(text = "FCID：$id", fontSize = 10.sp, color = Color(0xFF4D4D4D))
+            Spacer(modifier = Modifier.weight(1f))
+            Text(text = "FCID：$id", fontSize = 12.sp, color = Color(0xFF808080))
+            Spacer(modifier = Modifier.height(5.dp))
 //            Text(text = "地区：$location", fontSize = 10.sp, color = Color(0xFF4D4D4D))
         }
     }

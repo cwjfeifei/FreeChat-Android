@@ -12,6 +12,7 @@ import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.Text
+import androidx.compose.material.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.ui.Alignment
@@ -47,7 +48,11 @@ fun HomeTitle(title: String, titleColor: Color = Color.Black) {
 }
 
 @Composable
-fun SearchView(showSearchView: MutableState<Boolean>, searchText: MutableState<String>) {
+fun SearchView(
+    showSearchView: MutableState<Boolean>,
+    searchText: MutableState<String>,
+    hintText: String = stringResource(id = R.string.search)
+) {
     val (isShowSearchView, setShowSearchView) = showSearchView
     val (searchText, setSearchText) = searchText
     Row(
@@ -71,17 +76,21 @@ fun SearchView(showSearchView: MutableState<Boolean>, searchText: MutableState<S
                 }
         ) {
             Spacer(modifier = Modifier.width(6.dp))
-            Image(mipmap = R.mipmap.search)
-            Spacer(modifier = Modifier.width(6.dp))
             if (!isShowSearchView) {
-                Text(text = "搜索", fontSize = 14.sp, color = Color(0xFFB3B3B3))
+                Image(mipmap = R.mipmap.search)
+                Spacer(modifier = Modifier.width(6.dp))
+                Text(
+                    text = hintText,
+                    fontSize = 14.sp,
+                    color = Color(0xFFB3B3B3)
+                )
             }
             AnimatedVisibility(
                 visible = isShowSearchView,
                 enter = expandHorizontally(),
                 exit = shrinkHorizontally()
             ) {
-                BasicTextField(
+                CustomPaddingTextField(
                     value = searchText,
                     onValueChange = { setSearchText(it) },
                     textStyle = TextStyle(fontSize = 14.sp, color = Color(0xFFB3B3B3)),
@@ -89,15 +98,28 @@ fun SearchView(showSearchView: MutableState<Boolean>, searchText: MutableState<S
                     keyboardActions = KeyboardActions(onSearch = {
 
                     }),
-                    decorationBox = {
-                        Box(Modifier.weight(1f)) {
-                            if (searchText.isEmpty() && isShowSearchView)
-                                Text(text = "搜索", fontSize = 14.sp, color = Color(0xFFB3B3B3))
-                            it()
-                        }
+                    placeholder = {
+                        Text(
+                            text = hintText,
+                            fontSize = 14.sp,
+                            color = Color(0xFFB3B3B3)
+                        )
                     },
                     modifier = Modifier.fillMaxWidth(),
-                    cursorBrush = SolidColor(Color(0xFF7359F5))
+                    colors = TextFieldDefaults.textFieldColors(
+                        cursorColor = Color(0xFF7359F5),
+                        backgroundColor = Color.White,
+                        focusedIndicatorColor = Color.Transparent,
+                        unfocusedIndicatorColor = Color.Transparent
+                    ),
+                    leadingIcon = {
+                        Image(mipmap = R.mipmap.search)
+                    },
+                    trailingIcon = {
+                        if (searchText.isNotEmpty())
+                            Image(mipmap = R.mipmap.close, Modifier.clickable { setSearchText("") })
+                    },
+                    padding = PaddingValues(vertical = 6.dp)
                 )
             }
         }
@@ -107,11 +129,12 @@ fun SearchView(showSearchView: MutableState<Boolean>, searchText: MutableState<S
             exit = shrinkHorizontally()
         ) {
             Text(
-                text = "取消",
-                color = Color(0xFF7359F5),
+                text = stringResource(id = R.string.cancel),
+                color = Color(0xFF323232),
                 modifier = Modifier
                     .clickable { setShowSearchView(false) }
-                    .padding(horizontal = 6.dp)
+                    .padding(horizontal = 6.dp),
+                fontSize = 16.sp
             )
         }
     }

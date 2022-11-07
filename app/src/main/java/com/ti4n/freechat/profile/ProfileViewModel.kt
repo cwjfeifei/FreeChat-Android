@@ -1,5 +1,6 @@
 package com.ti4n.freechat.profile
 
+import android.util.Log
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -24,34 +25,24 @@ class ProfileViewModel @Inject constructor(
     val isFriend = MutableStateFlow(false)
     val isSelf = MutableStateFlow(false)
     val userInfo = MutableStateFlow(UserInfo())
-    val selfInfo = MutableStateFlow(UserBaseInfo("", expiredTime = 0L, token = ""))
 
     init {
         viewModelScope.launch {
             isFriend.value = IM.isFriend(toUserId)
         }
         viewModelScope.launch {
-            db.userBaseInfoDao().getUserInfo().filterNotNull().collectLatest {
-                selfInfo.value = it
-                isSelf.value = it.userID == toUserId
-                if (isSelf.value) {
-                    userInfo.value = UserInfo().apply {
-                        birth = it.birth
-                        userID = it.userID
-                        faceURL = it.faceURL
-                        nickname = it.nickname
-                        remark = ""
-                    }
-                } else {
-                    userInfo.value = IM.getUserInfo(toUserId)?.firstOrNull() ?: UserInfo()
-                }
+            isSelf.value = IM.currentUserInfo.value.userID == toUserId
+            if (isSelf.value) {
+                userInfo.value = IM.currentUserInfo.value
+            } else {
+                userInfo.value = IM.getUserInfo(toUserId)?.firstOrNull() ?: UserInfo()
             }
         }
     }
 
     fun addFriend(requestInfo: String) {
         viewModelScope.launch {
-            IM.addFriend(toUserId,requestInfo)
+            IM.addFriend(toUserId, requestInfo)
         }
     }
 

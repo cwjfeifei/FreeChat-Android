@@ -25,6 +25,7 @@ import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.ti4n.freechat.widget.Image
 import com.ti4n.freechat.R
 import com.ti4n.freechat.Route
+import com.ti4n.freechat.addfriend.AddFriendView
 import com.ti4n.freechat.contact.NewContactView
 import com.ti4n.freechat.db.UserBaseInfoDao
 import com.ti4n.freechat.di.dataStore
@@ -233,6 +234,9 @@ fun HomeView(userBaseInfoDao: UserBaseInfoDao) {
             }
             aniComposable(Route.NewContact.route) {
                 NewContactView(navController = navController)
+            }
+            aniComposable(Route.AddFriend.route) {
+                AddFriendView(navController = navController)
             }
         }
     }

@@ -141,4 +141,6 @@
     <string name="set_remark">设置备注</string>
     <string name="request_info">申请说明</string>
     <string name="send_request">发送申请</string>
+
+    <string name="search">搜索</string>
 </resources>

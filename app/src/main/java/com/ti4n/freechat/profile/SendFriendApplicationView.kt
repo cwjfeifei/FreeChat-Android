@@ -17,6 +17,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.ti4n.freechat.R
+import com.ti4n.freechat.util.IM
 import com.ti4n.freechat.widget.CustomPaddingTextField
 import com.ti4n.freechat.widget.Image
 
@@ -29,7 +30,7 @@ fun SendFriendApplicationView(navController: NavController, viewModel: ProfileVi
         )
     }
     var temName by remember {
-        mutableStateOf("我是${viewModel.selfInfo.value.nickname}")
+        mutableStateOf("我是${IM.currentUserInfo.value.nickname}")
     }
     Scaffold(topBar = {
         TopAppBar(
