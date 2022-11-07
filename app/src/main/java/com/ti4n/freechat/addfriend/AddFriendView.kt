@@ -71,7 +71,8 @@ fun AddFriendView(navController: NavController) {
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color(0xFFF0F0F0)),
+            .background(Color(0xFFF0F0F0))
+            .statusBarsPadding(),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         AnimatedVisibility(

@@ -1,6 +1,7 @@
 package com.ti4n.freechat.profile
 
 import android.util.Log
+import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -24,7 +25,7 @@ class ProfileViewModel @Inject constructor(
     val toUserId = savedStateHandle.get<String>("id") ?: ""
     val isFriend = MutableStateFlow(false)
     val isSelf = MutableStateFlow(false)
-    val userInfo = MutableStateFlow(UserInfo())
+    val userInfo = MutableStateFlow<UserInfo?>(null)
 
     init {
         viewModelScope.launch {
@@ -35,7 +36,7 @@ class ProfileViewModel @Inject constructor(
             if (isSelf.value) {
                 userInfo.value = IM.currentUserInfo.value
             } else {
-                userInfo.value = IM.getUserInfo(toUserId)?.firstOrNull() ?: UserInfo()
+                userInfo.value = IM.getUserInfo(toUserId)
             }
         }
     }

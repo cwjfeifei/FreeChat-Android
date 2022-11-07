@@ -264,18 +264,17 @@ fun ConfirmTransactionView(navController: NavController, viewModel: SendMoneyVie
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(20.dp),
-            horizontalArrangement = Arrangement.spacedBy(16.dp)
+                .padding(top = 20.dp),
+            horizontalArrangement = Arrangement.spacedBy(3.dp)
         ) {
-            OutlinedButton(
+            TextButton(
                 onClick = { navController.navigateUp() },
-                border = BorderStroke(2.dp, Color(0xFF3879FD)),
-                shape = RoundedCornerShape(4.dp),
+                shape = RoundedCornerShape(0.dp),
                 modifier = Modifier
                     .weight(1f)
-                    .height(44.dp),
+                    .height(42.dp),
                 colors = ButtonDefaults.buttonColors(
-                    backgroundColor = Color.White, contentColor = Color(0xFF3879FD)
+                    backgroundColor = Color(0xFF3879FD), contentColor = Color.White
                 )
             ) {
                 Text(
@@ -286,10 +285,10 @@ fun ConfirmTransactionView(navController: NavController, viewModel: SendMoneyVie
             }
             TextButton(
                 onClick = { viewModel.transfer() },
-                shape = RoundedCornerShape(4.dp),
+                shape = RoundedCornerShape(0.dp),
                 modifier = Modifier
                     .weight(1f)
-                    .height(44.dp),
+                    .height(42.dp),
                 colors = ButtonDefaults.buttonColors(
                     backgroundColor = Color(0xFF3879FD), contentColor = Color.White
                 )

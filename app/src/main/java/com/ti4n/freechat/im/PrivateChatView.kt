@@ -147,7 +147,7 @@ fun PrivateChatView(
             .background(Color(0xFFF0F0F0))
     ) {
         TopAppBar(backgroundColor = Color(0xFFF0F0F0), title = {
-            HomeTitle(toUserInfo.nickname ?: "")
+            HomeTitle(toUserInfo?.nickname ?: "")
         }, navigationIcon = {
             IconButton(onClick = { navController.navigateUp() }) {
                 Icon(imageVector = Icons.Default.ArrowBack, contentDescription = null)
@@ -341,6 +341,7 @@ fun ToUserMessage(message: Message, navController: NavController) {
             contentDescription = null,
             modifier = Modifier
                 .size(38.dp)
+                .clip(RoundedCornerShape(3.45.dp))
                 .clickable { navController.navigate(Route.Profile.jump(message.sendID)) }
         )
         Spacer(modifier = Modifier.width(6.dp))
@@ -455,6 +456,7 @@ fun MineMessage(message: Message, navController: NavController) {
             contentDescription = null,
             modifier = Modifier
                 .size(38.dp)
+                .clip(RoundedCornerShape(3.45.dp))
                 .clickable { navController.navigate(Route.Profile.jump(message.sendID)) }
         )
     }

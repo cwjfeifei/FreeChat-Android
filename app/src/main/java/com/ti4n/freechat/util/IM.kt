@@ -154,7 +154,6 @@ object IM {
             }
 
             override fun onRecvC2CReadReceipt(list: MutableList<ReadReceiptInfo>?) {
-                TODO("Not yet implemented")
             }
 
             override fun onRecvGroupMessageReadReceipt(list: MutableList<ReadReceiptInfo>?) {
@@ -393,16 +392,17 @@ object IM {
             )
         }
 
-    suspend fun getUserInfo(vararg toUserId: String) = suspendCoroutine {
+    suspend fun getUserInfo(toUserId: String) = suspendCoroutine {
         imClient.userInfoManager.getUsersInfo(object : OnBase<List<UserInfo>> {
             override fun onError(code: Int, error: String?) {
                 it.resumeWithException(IMError(code, error))
             }
 
-            override fun onSuccess(data: List<UserInfo>?) {
-                it.resume(data)
+            override fun onSuccess(data: List<UserInfo>) {
+                val info = data.first()
+                it.resume(info)
             }
-        }, toUserId.asList())
+        }, listOf(toUserId))
     }
 
     suspend fun pinConversation(conversationId: String, isPin: Boolean) = suspendCoroutine {

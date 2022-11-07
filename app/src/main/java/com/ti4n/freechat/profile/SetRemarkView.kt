@@ -27,7 +27,7 @@ fun SetRemarkView(navController: NavController, viewModel: ProfileViewModel) {
             color = Color.White
         )
     }
-    val default by remember { derivedStateOf { viewModel.userInfo.value.remark.ifEmpty { viewModel.userInfo.value.nickname } } }
+    val default by remember { derivedStateOf { viewModel.userInfo.value?.remark?.ifEmpty { viewModel.userInfo.value?.nickname } } }
     var temName by remember {
         mutableStateOf(default)
     }
@@ -54,12 +54,12 @@ fun SetRemarkView(navController: NavController, viewModel: ProfileViewModel) {
             Spacer(modifier = Modifier.weight(1f))
             Text(text = stringResource(id = R.string.done),
                 fontSize = 14.sp,
-                color = if (temName.isNotEmpty()) Color(0xFF26C24F) else Color(0xFFB3B3B3),
+                color = if (!temName.isNullOrEmpty()) Color(0xFF26C24F) else Color(0xFFB3B3B3),
                 fontWeight = FontWeight.Medium,
                 modifier = Modifier
                     .clickable {
-                        if (temName.isNotEmpty()) {
-                            viewModel.setRemark(temName)
+                        if (!temName.isNullOrEmpty()) {
+                            viewModel.setRemark(temName ?: "")
                             navController.navigateUp()
                         }
                     }
@@ -68,7 +68,7 @@ fun SetRemarkView(navController: NavController, viewModel: ProfileViewModel) {
     }, backgroundColor = Color(0xFFF0F0F0)) {
         Column(Modifier.fillMaxSize()) {
             Spacer(modifier = Modifier.height(8.dp))
-            TextField(value = temName,
+            TextField(value = temName ?: "",
                 onValueChange = { temName = it },
                 modifier = Modifier
                     .padding(it)
@@ -87,7 +87,7 @@ fun SetRemarkView(navController: NavController, viewModel: ProfileViewModel) {
                 textStyle = TextStyle(fontSize = 16.sp, color = Color.Black),
                 placeholder = {
                     Text(
-                        text = default, color = Color(0xFFB3B3B3), fontSize = 16.sp
+                        text = default ?: "", color = Color(0xFFB3B3B3), fontSize = 16.sp
                     )
                 })
         }

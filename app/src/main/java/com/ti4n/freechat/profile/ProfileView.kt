@@ -64,7 +64,7 @@ fun ProfileView(navController: NavController, viewModel: ProfileViewModel = hilt
                     ) {
                         Text(
                             text = "发消息",
-                            color = Color(0xFF6F5FFC),
+                            color = Color.White,
                             fontSize = 16.sp,
                             fontWeight = FontWeight.Medium,
                         )
@@ -98,7 +98,7 @@ fun ProfileView(navController: NavController, viewModel: ProfileViewModel = hilt
                     ) {
                         Text(
                             text = "申请加为好友",
-                            color = Color(0xFF6F5FFC),
+                            color = Color.White,
                             fontSize = 16.sp,
                             fontWeight = FontWeight.Medium,
                             modifier = Modifier.fillMaxWidth(),
@@ -140,11 +140,11 @@ fun ProfileView(navController: NavController, viewModel: ProfileViewModel = hilt
             LazyColumn(modifier = Modifier.background(Color.White)) {
                 item {
                     ProfileInfoItem(
-                        userInfo.faceURL ?: "",
-                        userInfo.nickname ?: "",
-                        userInfo.remark ?: "",
-                        userInfo.userID ?: "",
-                        userInfo.gender ?: 1,
+                        userInfo?.faceURL ?: "",
+                        userInfo?.nickname ?: "",
+                        userInfo?.remark ?: "",
+                        userInfo?.userID ?: "",
+                        userInfo?.gender ?: 1,
                     )
                     Divider(color = Color(0xFFF0F0F0))
                 }

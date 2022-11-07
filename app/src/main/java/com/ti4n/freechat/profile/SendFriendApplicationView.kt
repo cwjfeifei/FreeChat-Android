@@ -32,6 +32,9 @@ fun SendFriendApplicationView(navController: NavController, viewModel: ProfileVi
     var temName by remember {
         mutableStateOf("我是${IM.currentUserInfo.value.nickname}")
     }
+    var remark by remember {
+        mutableStateOf("")
+    }
     Scaffold(topBar = {
         TopAppBar(
             navigationIcon = {
@@ -49,19 +52,21 @@ fun SendFriendApplicationView(navController: NavController, viewModel: ProfileVi
                 )
             },
             backgroundColor = Color.White, elevation = 0.dp,
+            modifier = Modifier.statusBarsPadding()
         )
     }) {
         Column(
             Modifier
                 .fillMaxSize()
                 .padding(it)
-                .padding(24.dp)
+                .padding(top = 24.dp)
         ) {
             Spacer(modifier = Modifier.height(12.dp))
             Text(
                 text = stringResource(id = R.string.request_info),
                 fontSize = 12.sp,
-                color = Color(0xFF808080)
+                color = Color(0xFF808080),
+                modifier = Modifier.padding(horizontal = 24.dp)
             )
             Spacer(modifier = Modifier.height(4.dp))
             CustomPaddingTextField(
@@ -69,6 +74,7 @@ fun SendFriendApplicationView(navController: NavController, viewModel: ProfileVi
                 onValueChange = { temName = it },
                 modifier = Modifier
                     .fillMaxWidth()
+                    .padding(horizontal = 24.dp)
                     .height(80.dp),
                 colors = TextFieldDefaults.textFieldColors(
                     focusedIndicatorColor = Color.Transparent,
@@ -78,15 +84,47 @@ fun SendFriendApplicationView(navController: NavController, viewModel: ProfileVi
                 textStyle = TextStyle(fontSize = 16.sp, color = Color.Black),
                 padding = PaddingValues(horizontal = 20.dp, vertical = 12.dp)
             )
+            Spacer(modifier = Modifier.height(16.dp))
+            Text(
+                text = stringResource(id = R.string.set_friend_remark),
+                fontSize = 12.sp,
+                color = Color(0xFF808080),
+                modifier = Modifier.padding(horizontal = 24.dp)
+            )
+            Spacer(modifier = Modifier.height(4.dp))
+            CustomPaddingTextField(value = remark,
+                onValueChange = { remark = it },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 24.dp)
+                    .height(50.dp),
+                colors = TextFieldDefaults.textFieldColors(
+                    focusedIndicatorColor = Color.Transparent,
+                    unfocusedIndicatorColor = Color.Transparent,
+                    backgroundColor = Color(0xFFF7F7F7)
+                ),
+                textStyle = TextStyle(fontSize = 16.sp, color = Color.Black),
+                padding = PaddingValues(horizontal = 20.dp, vertical = 12.dp),
+                placeholder = {
+                    Text(
+                        text = stringResource(id = R.string.default_display_nickname),
+                        fontSize = 16.sp,
+                        color = Color(0xFFB3B3B3)
+                    )
+                })
             Spacer(modifier = Modifier.weight(1f))
-            Button(
-                onClick = { viewModel.addFriend(temName) },
+            TextButton(
+                onClick = {
+                    if (remark.isNotEmpty()) viewModel.setRemark(remark)
+                    viewModel.addFriend(temName)
+                },
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(42.dp),
                 colors = ButtonDefaults.buttonColors(
                     backgroundColor = Color(0xFF3879FD), contentColor = Color.White
-                )
+                ),
+                shape = RoundedCornerShape(0.dp)
             ) {
                 Text(text = stringResource(id = R.string.send_request), fontSize = 16.sp)
             }

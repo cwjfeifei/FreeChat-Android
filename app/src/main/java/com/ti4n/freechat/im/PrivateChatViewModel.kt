@@ -33,13 +33,13 @@ class PrivateChatViewModel @Inject constructor(
         messagePagingSourceFactory.create(toUserId, conversationId)
     }.flow.cachedIn(viewModelScope)
 
-    val toUserInfo = MutableStateFlow(UserInfo())
+    val toUserInfo = MutableStateFlow<UserInfo?>(null)
     val mineInfo =
         db.userBaseInfoDao().getUserInfo().stateIn(viewModelScope, SharingStarted.Eagerly, null)
 
     init {
         viewModelScope.launch {
-            toUserInfo.value = IM.getUserInfo(toUserId)?.firstOrNull() ?: UserInfo()
+            toUserInfo.value = IM.getUserInfo(toUserId)
         }
         IM.newMessages.clear()
     }
