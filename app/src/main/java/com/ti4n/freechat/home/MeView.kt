@@ -26,6 +26,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
@@ -168,11 +169,15 @@ fun MeInfoItem(
 
         Text(
             text = if (TextUtils.isEmpty(nickname)) "" else nickname,
-            modifier = Modifier.constrainAs(nicknameView) {
-                top.linkTo(faceView.top)
-                start.linkTo(faceView.end, margin = 12.dp)
-            },
+            modifier = Modifier
+                .constrainAs(nicknameView) {
+                    top.linkTo(faceView.top)
+                    start.linkTo(faceView.end, margin = 12.dp)
+                }
+                .widthIn(0.dp, 160.dp),
             fontSize = 16.sp,
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis,
             color = Color.Black
         )
 
@@ -188,11 +193,15 @@ fun MeInfoItem(
 
         Text(
             text = "FCCID: " + userID,
-            modifier = Modifier.constrainAs(uidView) {
-                bottom.linkTo(faceView.bottom)
-                start.linkTo(nicknameView.start)
-            },
+            modifier = Modifier
+                .constrainAs(uidView) {
+                    bottom.linkTo(faceView.bottom)
+                    start.linkTo(nicknameView.start)
+                }
+                .widthIn(0.dp, 240.dp),
             fontSize = 12.sp,
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis,
             color = Color(0xFF808080)
         )
 

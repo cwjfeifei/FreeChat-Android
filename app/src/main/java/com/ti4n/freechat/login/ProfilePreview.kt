@@ -19,6 +19,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
@@ -156,7 +157,7 @@ fun ProfileInfoItem(
 
         val (faceView, nicknameView, genderView, uidView) = createRefs()
         AsyncImage(
-            model =  if (TextUtils.isEmpty(faceURL)) IM.DEFAULT_FACEURL else faceURL,
+            model = if (TextUtils.isEmpty(faceURL)) IM.DEFAULT_FACEURL else faceURL,
             contentDescription = null,
             modifier = Modifier
                 .constrainAs(faceView) {
@@ -172,11 +173,15 @@ fun ProfileInfoItem(
 
         Text(
             text = if (TextUtils.isEmpty(nickname)) "未设置昵称" else nickname,
-            modifier = Modifier.constrainAs(nicknameView) {
-                top.linkTo(faceView.top)
-                start.linkTo(faceView.end, margin = 12.dp)
-            },
+            modifier = Modifier
+                .constrainAs(nicknameView) {
+                    top.linkTo(faceView.top)
+                    start.linkTo(faceView.end, margin = 12.dp)
+                }
+                .widthIn(0.dp, 160.dp),
             fontSize = 16.sp,
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis,
             color = Color.Black
         )
 
@@ -193,12 +198,16 @@ fun ProfileInfoItem(
         // Assign reference "text" to the Text composable
         // and constrain it to the bottom of the Button composable
         Text(
-            text = "FCCID: " + userID,
-            modifier = Modifier.constrainAs(uidView) {
-                bottom.linkTo(faceView.bottom)
-                start.linkTo(nicknameView.start)
-            },
+            text = "FCCID:" + userID,
+            modifier = Modifier
+                .constrainAs(uidView) {
+                    bottom.linkTo(faceView.bottom)
+                    start.linkTo(nicknameView.start)
+                }
+                .widthIn(0.dp, 240.dp),
             fontSize = 12.sp,
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis,
             color = Color(0xFF808080)
         )
     }
