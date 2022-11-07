@@ -149,7 +149,7 @@ fun HomeView(userBaseInfoDao: UserBaseInfoDao) {
                 MeView(Modifier.padding(it), navController = navController)
             }
             aniComposable(Route.MeDetails.route) { _ ->
-                MeDetailsView(navController = navController)
+                MeEditView(navController = navController)
             }
             aniComposable(Route.Wallet.route) { _ ->
                 WalletView(navController)

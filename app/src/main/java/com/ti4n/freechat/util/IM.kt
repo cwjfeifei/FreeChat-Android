@@ -6,29 +6,14 @@ import android.util.Log
 import androidx.compose.runtime.mutableStateListOf
 import io.openim.android.sdk.OpenIMClient
 import io.openim.android.sdk.enums.Platform
-import io.openim.android.sdk.listener.OnAdvanceMsgListener
-import io.openim.android.sdk.listener.OnBase
-import io.openim.android.sdk.listener.OnConnListener
-import io.openim.android.sdk.listener.OnConversationListener
-import io.openim.android.sdk.listener.OnFileUploadProgressListener
-import io.openim.android.sdk.listener.OnFriendshipListener
-import io.openim.android.sdk.listener.OnMsgSendCallback
-import io.openim.android.sdk.models.BlacklistInfo
-import io.openim.android.sdk.models.ConversationInfo
-import io.openim.android.sdk.models.FriendApplicationInfo
-import io.openim.android.sdk.models.FriendInfo
-import io.openim.android.sdk.models.FriendshipInfo
-import io.openim.android.sdk.models.Message
-import io.openim.android.sdk.models.OfflinePushInfo
-import io.openim.android.sdk.models.ReadReceiptInfo
-import io.openim.android.sdk.models.RevokedInfo
-import io.openim.android.sdk.models.UserInfo
+import io.openim.android.sdk.listener.*
+import io.openim.android.sdk.models.*
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
 import kotlin.coroutines.suspendCoroutine
 
-private const val TAG = "IMXXX"
+private const val TAG = "IM"
 
 object IM {
 
@@ -74,6 +59,7 @@ object IM {
     }
 
     suspend fun login(userId: String, token: String) = suspendCoroutine {
+        Log.d(TAG, "login: " + userId)
         imClient.login(object : OnBase<String> {
             override fun onError(code: Int, error: String?) {
                 it.resumeWithException(IMError(code, error))
@@ -81,7 +67,6 @@ object IM {
 
             override fun onSuccess(data: String?) {
                 it.resume(data)
-                getSelfInfo()
                 getAllConversations()
                 getFriend()
             }
@@ -101,6 +86,9 @@ object IM {
         })
     }
 
+    /**
+     * don't need to call this, @see setOnUserListener
+     */
     fun getSelfInfo() {
         imClient.userInfoManager.getSelfUserInfo(object : OnBase<UserInfo> {
             override fun onError(code: Int, error: String?) {
@@ -108,6 +96,8 @@ object IM {
 
             override fun onSuccess(data: UserInfo?) {
                 data?.let {
+                    // why assert twice? if value is not null, MutableStateFlow will not update state
+                    currentUserInfo.value = UserInfo()
                     currentUserInfo.value = it
                 }
             }
@@ -116,6 +106,8 @@ object IM {
 
     private fun setListener() {
         imClient.userInfoManager.setOnUserListener {
+            // why assert twice? if value is not null, MutableStateFlow will not update state
+            currentUserInfo.value = UserInfo()
             currentUserInfo.value = it
         }
         imClient.conversationManager.setOnConversationListener(object : OnConversationListener {
@@ -246,7 +238,7 @@ object IM {
                     }
 
                     override fun onSuccess(data: String?) {
-                        getSelfInfo()
+//                        getSelfInfo()
                         it.resume(Unit)
                     }
                 }, nickname, faceURL, gender, 1, "", birth, email, ex

@@ -1,7 +1,6 @@
 package com.ti4n.freechat.login
 
 import android.os.Build
-import android.util.Log
 import android.widget.Toast
 import androidx.annotation.StringRes
 import androidx.compose.foundation.BorderStroke

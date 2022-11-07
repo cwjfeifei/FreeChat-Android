@@ -192,7 +192,7 @@ fun MeInfoItem(
         )
 
         Text(
-            text = "FCCID: " + userID,
+            text = "FCCID: $userID",
             modifier = Modifier
                 .constrainAs(uidView) {
                     bottom.linkTo(faceView.bottom)

@@ -198,7 +198,7 @@ fun ProfileInfoItem(
         // Assign reference "text" to the Text composable
         // and constrain it to the bottom of the Button composable
         Text(
-            text = "FCCID:" + userID,
+            text = "FCCID:$userID",
             modifier = Modifier
                 .constrainAs(uidView) {
                     bottom.linkTo(faceView.bottom)
