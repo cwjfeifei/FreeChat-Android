@@ -73,7 +73,7 @@ fun ProfileView(
                     onClick = {
                         showRefuseDialog = true
                     }, colors = ButtonDefaults.buttonColors(
-                        backgroundColor = Color(0xFF3879FD), contentColor = Color.White
+                        backgroundColor = Color(0xFFED5B56), contentColor = Color.White
                     ), shape = RoundedCornerShape(0.dp),
                     modifier = Modifier
                         .weight(1f)
