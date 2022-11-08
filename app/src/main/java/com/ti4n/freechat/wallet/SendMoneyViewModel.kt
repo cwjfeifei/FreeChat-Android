@@ -1,8 +1,7 @@
 package com.ti4n.freechat.wallet
 
 import android.content.Context
-import android.util.Log
-import androidx.datastore.preferences.core.stringPreferencesKey
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.Pager
@@ -16,10 +15,13 @@ import com.ti4n.freechat.erc20.ethereum
 import com.ti4n.freechat.erc20.wethereum
 import com.ti4n.freechat.network.FreeChatApiService
 import com.ti4n.freechat.util.EthUtil
+import com.ti4n.freechat.util.IM
 import com.ti4n.freechat.util.address
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
+import io.openim.android.sdk.models.UserInfo
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.collectLatest
@@ -37,15 +39,20 @@ import kotlin.math.pow
 class SendMoneyViewModel @Inject constructor(
     @ApplicationContext val context: Context,
     val freeChatApiService: FreeChatApiService,
-    val db: AppDataBase
+    val db: AppDataBase,
+    savedStateHandle: SavedStateHandle
 ) : ViewModel() {
+    val isRedPack = savedStateHandle.get<Boolean>("redpack") ?: false
+    val toUserId = savedStateHandle.get<String>("userId") ?: ""
+    val toUserInfo = MutableStateFlow<UserInfo?>(null)
+
     val tokens = MutableStateFlow(emptyList<ERC20Token>())
 
-    val toAddress = MutableStateFlow("")
+    val toAddress = MutableStateFlow(toUserId)
     val amount = MutableStateFlow("")
     val amountUSD = MutableStateFlow(0f)
     val selectedToken = MutableStateFlow<ERC20Token?>(null)
-    val fromAddress = MutableStateFlow("")
+    val fromAddress = IM.currentUserInfo.value.userID
     val remainAmount = MutableStateFlow("")
 
     val gas = MutableStateFlow("")
@@ -61,13 +68,17 @@ class SendMoneyViewModel @Inject constructor(
 
     init {
         viewModelScope.launch {
-            fromAddress.value = context.dataStore.data.map { it[stringPreferencesKey("address")] }
-                .filter { !it.isNullOrEmpty() }.first() ?: ""
-        }
-        viewModelScope.launch {
-            tokens.value =
-                listOf(ethereum, wethereum) + freeChatApiService.getSupportTokens().result
-            setSelectedToken(tokens.value.first())
+            async {
+                tokens.value =
+                    listOf(ethereum, wethereum) + freeChatApiService.getSupportTokens().result
+                setSelectedToken(tokens.value.first())
+            }
+            async {
+                if (isRedPack && toUserId.isNotEmpty()) {
+                    toUserInfo.value = IM.getUserInfo(toUserId)
+                    addressDone()
+                }
+            }
         }
     }
 
@@ -79,7 +90,7 @@ class SendMoneyViewModel @Inject constructor(
         if (toAddress.value.isNotEmpty()) {
             viewModelScope.launch(Dispatchers.IO) {
                 EthUtil.gasPrice(
-                    fromAddress.value, toAddress.value
+                    fromAddress, toAddress.value
                 ).collectLatest {
                     it?.let {
                         maxGas.value = it.first
@@ -106,8 +117,8 @@ class SendMoneyViewModel @Inject constructor(
         selectedToken.value = token
         viewModelScope.launch {
             remainAmount.value = if (token.symbol != "ETH") EthUtil.balanceOf(
-                token, fromAddress.value
-            )?.toBigDecimal()?.toPlainString() ?: "" else EthUtil.balanceOf(fromAddress.value)
+                token, fromAddress
+            )?.toBigDecimal()?.toPlainString() ?: "" else EthUtil.balanceOf(fromAddress)
                 ?.toBigDecimal()?.toPlainString() ?: ""
         }
 
@@ -127,6 +138,14 @@ class SendMoneyViewModel @Inject constructor(
                     transactionHash.value = it.transactionHash
                     db.recentTransferDao()
                         .insert(RecentTransfer(toAddress.value, Date(System.currentTimeMillis())))
+                    if (isRedPack) {
+                        IM.sendRedPackMessage(
+                            toUserId,
+                            selectedToken.value!!.transLogo,
+                            amount.value,
+                            it.transactionHash
+                        )
+                    }
                     transactionSend.tryEmit(true)
                 }
             } else {
@@ -139,6 +158,14 @@ class SendMoneyViewModel @Inject constructor(
                     transactionHash.value = it.transactionHash
                     db.recentTransferDao()
                         .insert(RecentTransfer(toAddress.value, Date(System.currentTimeMillis())))
+                    if (isRedPack) {
+                        IM.sendRedPackMessage(
+                            toUserId,
+                            selectedToken.value!!.transLogo,
+                            amount.value,
+                            it.transactionHash
+                        )
+                    }
                     transactionSend.tryEmit(true)
                 }
             }

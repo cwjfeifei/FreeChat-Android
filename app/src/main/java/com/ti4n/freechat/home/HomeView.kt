@@ -16,6 +16,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.compose.currentBackStackEntryAsState
+import androidx.navigation.navArgument
 import com.google.accompanist.navigation.animation.AnimatedNavHost
 import com.google.accompanist.navigation.animation.rememberAnimatedNavController
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
@@ -31,6 +32,8 @@ import com.ti4n.freechat.profile.ApproveFriendApplicationView
 import com.ti4n.freechat.profile.ProfileView
 import com.ti4n.freechat.profile.SendFriendApplicationView
 import com.ti4n.freechat.profile.SetRemarkView
+import com.ti4n.freechat.redpack.SendRedPackView
+import com.ti4n.freechat.redpack.TransferRiskView
 import com.ti4n.freechat.swap.SwapView
 import com.ti4n.freechat.util.IM
 import com.ti4n.freechat.util.aniComposable
@@ -150,7 +153,7 @@ fun HomeView(userBaseInfoDao: UserBaseInfoDao) {
                 MeView(Modifier.padding(it), navController = navController)
             }
             aniComposable(Route.MeEdit.route) { _ ->
-                MeEditView(navController = navController )
+                MeEditView(navController = navController)
             }
             aniComposable(Route.EditPickFaceImage.route) { _ ->
                 val backStackEntry = remember {
@@ -175,6 +178,13 @@ fun HomeView(userBaseInfoDao: UserBaseInfoDao) {
             }
             aniComposable(Route.SendMoney.route) { _ ->
                 SendMoneyView(navController)
+            }
+            aniComposable(
+                "sendMoney?userId={userId}&redpack={redpack}",
+                arguments = listOf(navArgument("userId") { defaultValue = "" },
+                    navArgument("redpack") { defaultValue = true })
+            ) { _ ->
+                SendRedPackView(navController)
             }
             aniComposable(Route.ReceiveMoney.route) { _ ->
                 ReceiveMoneyView(navController)
@@ -208,7 +218,11 @@ fun HomeView(userBaseInfoDao: UserBaseInfoDao) {
             }
             aniComposable(Route.ConfirmTransaction.route) { navBackEntry ->
                 val backStackEntry = remember {
-                    navController.getBackStackEntry(Route.SendMoney.route)
+                    try {
+                        navController.getBackStackEntry(Route.SendMoney.route)
+                    } catch (e: Exception) {
+                        navController.getBackStackEntry("sendMoney?userId={userId}&redpack={redpack}")
+                    }
                 }
                 ConfirmTransactionView(
                     navController = navController, viewModel = hiltViewModel(backStackEntry)
@@ -236,8 +250,7 @@ fun HomeView(userBaseInfoDao: UserBaseInfoDao) {
                     navController.getBackStackEntry(Route.LookFriendApplication.route)
                 }
                 ApproveFriendApplicationView(
-                    navController = navController,
-                    hiltViewModel(backStackEntry)
+                    navController = navController, hiltViewModel(backStackEntry)
                 )
             }
             aniComposable(
@@ -259,8 +272,7 @@ fun HomeView(userBaseInfoDao: UserBaseInfoDao) {
                     navController.getBackStackEntry(Route.Profile.route)
                 }
                 SendFriendApplicationView(
-                    navController = navController,
-                    hiltViewModel(backStackEntry)
+                    navController = navController, hiltViewModel(backStackEntry)
                 )
             }
             aniComposable(Route.NewContact.route) {
@@ -268,6 +280,9 @@ fun HomeView(userBaseInfoDao: UserBaseInfoDao) {
             }
             aniComposable(Route.AddFriend.route) {
                 AddFriendView(navController = navController)
+            }
+            aniComposable(Route.TransferRisk.route) {
+                TransferRiskView(navController = navController)
             }
         }
     }

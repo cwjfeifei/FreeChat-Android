@@ -58,7 +58,6 @@ fun ConfirmTransactionView(navController: NavController, viewModel: SendMoneyVie
     val toToken by viewModel.selectedToken.collectAsState()
     val amount by viewModel.amount.collectAsState()
     val amountUSD by viewModel.amountUSD.collectAsState()
-    val fromAddress by viewModel.fromAddress.collectAsState()
     val toAddress by viewModel.toAddress.collectAsState()
     val usd by viewModel.gasUSD.collectAsState()
     val eth by viewModel.gas.collectAsState()
@@ -145,7 +144,7 @@ fun ConfirmTransactionView(navController: NavController, viewModel: SendMoneyVie
                         fontWeight = FontWeight.Bold
                     )
                     Spacer(modifier = Modifier.height(16.dp))
-                    Text(text = fromAddress, maxLines = 1, overflow = TextOverflow.Ellipsis)
+                    Text(text = viewModel.fromAddress, maxLines = 1, overflow = TextOverflow.Ellipsis)
                 }
             }
             Image(mipmap = R.mipmap.jiantou, modifier = Modifier.padding(horizontal = 8.dp))

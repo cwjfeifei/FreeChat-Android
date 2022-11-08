@@ -1,9 +1,10 @@
-package com.ti4n.freechat.splash
+package com.ti4n.freechat.redpack
 
 import androidx.annotation.StringRes
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -16,7 +17,6 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.Divider
-import androidx.compose.material.OutlinedButton
 import androidx.compose.material.Text
 import androidx.compose.material.TextButton
 import androidx.compose.runtime.Composable
@@ -32,18 +32,14 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
-import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.navigation.NavController
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.ti4n.freechat.R
-import com.ti4n.freechat.Route
 import com.ti4n.freechat.di.dataStore
-import kotlinx.coroutines.flow.firstOrNull
-import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 
 @Composable
-fun PermissionView(navController: NavController, exitApp: () -> Unit) {
+fun TransferRiskView(navController: NavController) {
 
     val systemUiController = rememberSystemUiController()
     val context = LocalContext.current
@@ -58,56 +54,43 @@ fun PermissionView(navController: NavController, exitApp: () -> Unit) {
             .systemBarsPadding(),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Text(
-            text = stringResource(id = R.string.permission_intro),
-            fontSize = 17.sp,
-            color = Color.Black,
-            fontWeight = FontWeight.Bold,
-            modifier = Modifier.padding(vertical = 10.dp)
-        )
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(44.dp)
+        ) {
+            Text(
+                text = stringResource(id = R.string.transfer_risk_tip),
+                fontSize = 17.sp,
+                color = Color(0xFF1A1A1A),
+                fontWeight = FontWeight.SemiBold,
+                modifier = Modifier
+                    .padding(vertical = 10.dp)
+                    .align(Alignment.Center)
+            )
+            com.ti4n.freechat.widget.Image(
+                mipmap = R.mipmap.nav_back, modifier = Modifier
+                    .padding(14.dp)
+                    .align(Alignment.CenterStart)
+                    .clickable { navController.navigateUp() }
+            )
+        }
         Divider(thickness = 1.dp, color = Color(0xFFE6E6E6))
         LazyColumn(
             modifier = Modifier.padding(vertical = 10.dp, horizontal = 16.dp),
             verticalArrangement = Arrangement.spacedBy(10.dp)
         ) {
             item {
-                ContentText(content = R.string.permission_intro_detail)
+                ContentText(content = R.string.transfer_risk_tip_1)
             }
             item {
-                TitleText(title = R.string.file_permission)
+                ContentText(content = R.string.transfer_risk_tip_2)
             }
             item {
-                ContentText(content = R.string.file_permission_detail)
+                ContentText(content = R.string.transfer_risk_tip_3)
             }
             item {
-                TitleText(title = R.string.camera_permission)
-            }
-            item {
-                ContentText(content = R.string.camera_permission_detail)
-            }
-            item {
-                TitleText(title = R.string.contact_permission)
-            }
-            item {
-                ContentText(content = R.string.contact_permission_detail)
-            }
-            item {
-                TitleText(title = R.string.data_permission)
-            }
-            item {
-                ContentText(content = R.string.data_permission_detail)
-            }
-            item {
-                TitleText(title = R.string.vpn_permission)
-            }
-            item {
-                ContentText(content = R.string.vpn_permission_detail)
-            }
-            item {
-                TitleText(title = R.string.location_permission)
-            }
-            item {
-                ContentText(content = R.string.location_permission_detail)
+                ContentText(content = R.string.transfer_risk_tip_4)
             }
         }
         Spacer(modifier = Modifier.weight(1f))
@@ -116,17 +99,17 @@ fun PermissionView(navController: NavController, exitApp: () -> Unit) {
             horizontalArrangement = Arrangement.spacedBy(3.dp)
         ) {
             TextButton(
-                onClick = { exitApp() },
+                onClick = { navController.navigateUp() },
                 shape = RoundedCornerShape(0.dp),
                 modifier = Modifier
                     .weight(1f)
                     .height(42.dp),
                 colors = ButtonDefaults.buttonColors(
-                    backgroundColor = Color(0xFFED5B56), contentColor = Color.White
+                    backgroundColor = Color(0xFF3879FD), contentColor = Color.White
                 )
             ) {
                 Text(
-                    text = stringResource(id = R.string.reject),
+                    text = stringResource(id = R.string.back),
                     fontSize = 14.sp,
                     fontWeight = FontWeight.Medium
                 )
@@ -135,20 +118,9 @@ fun PermissionView(navController: NavController, exitApp: () -> Unit) {
                 onClick = {
                     scope.launch {
                         context.dataStore.edit {
-                            it[booleanPreferencesKey("agreePermission")] = true
+                            it[booleanPreferencesKey("agreeTransferRisk")] = true
                         }
-                        val isLogin =
-                            !context.dataStore.data.map { it[stringPreferencesKey("account")] }
-                                .firstOrNull().isNullOrEmpty()
-                        if (isLogin) {
-                            navController.navigate(Route.Home.route) {
-                                popUpTo(Route.PermissionIntro.route) { inclusive = true }
-                            }
-                        } else {
-                            navController.navigate(Route.MainLogin.route) {
-                                popUpTo(Route.PermissionIntro.route) { inclusive = true }
-                            }
-                        }
+                        navController.navigateUp()
                     }
                 },
                 shape = RoundedCornerShape(0.dp),
@@ -160,7 +132,7 @@ fun PermissionView(navController: NavController, exitApp: () -> Unit) {
                 )
             ) {
                 Text(
-                    text = stringResource(id = R.string.agree),
+                    text = stringResource(id = R.string.i_read_and_know),
                     fontSize = 14.sp,
                     fontWeight = FontWeight.Medium
                 )

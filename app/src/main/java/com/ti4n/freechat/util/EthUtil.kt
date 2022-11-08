@@ -53,9 +53,9 @@ import kotlin.math.pow
 object EthUtil {
 
     val web3 =
-        Web3j.build(HttpService("https://mainnet.infura.io/v3/a36c7f54cb3244a3b352f922daad690c"))
+        Web3j.build(HttpService("https://goerli.infura.io/v3/a36c7f54cb3244a3b352f922daad690c"))
 
-    val rpc = HttpEthereumRPC("https://mainnet.infura.io/v3/a36c7f54cb3244a3b352f922daad690c")
+    val rpc = HttpEthereumRPC("https://goerli.infura.io/v3/a36c7f54cb3244a3b352f922daad690c")
 
     fun mnemonicWordsExist(words: String) =
         WalletUtils.isValidAddress(MnemonicWords(words).address().hex)
@@ -125,7 +125,6 @@ object EthUtil {
     ): Flow<EthSendTransaction> {
         val credentials = loadCredentials(context, password)
         val value = Convert.toWei(amount, Convert.Unit.ETHER).toBigInteger()
-        Log.e("transfer", "transfer: ${credentials.address}")
         val ethGetTransactionCount = transactionCount(credentials.address)
         val gasPrice = gasPrice()
         val rawTransaction = RawTransaction.createEtherTransaction(
@@ -133,10 +132,7 @@ object EthUtil {
         )
         val signedMessage = TransactionEncoder.signMessage(rawTransaction, credentials)
         val hexValue = Numeric.toHexString(signedMessage)
-        return web3.ethSendRawTransaction(hexValue).flowable().asFlow().onEach {
-            Log.e("transfer", "transfer: ${it.transactionHash}")
-            Log.e("transfer", "transfer: ${it.error}")
-        }.flowOn(Dispatchers.IO)
+        return web3.ethSendRawTransaction(hexValue).flowable().asFlow().flowOn(Dispatchers.IO)
     }
 
     suspend fun balanceOf(

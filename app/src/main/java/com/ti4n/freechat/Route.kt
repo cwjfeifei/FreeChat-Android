@@ -42,6 +42,10 @@ sealed class Route(val route: String) {
     object EditNickName : Route("editNickName")
     object Wallet : Route("Wallet")
     object SendMoney : Route("sendMoney")
+    object SendRedPack : Route("sendMoney") {
+        fun jump(toUserId: String) = "sendMoney?userId=$toUserId&redpack=true"
+    }
+
     object ReceiveMoney : Route("receiveMoney")
     object SendMoneyInputDetail : Route("sendMoneyInputDetail")
     object TokenDetailSimply : Route("tokenSimply/{tokenSymbol}/{address}") {
@@ -66,4 +70,6 @@ sealed class Route(val route: String) {
     object NewContact : Route("newContact")
 
     object AddFriend : Route("addFriend")
+
+    object TransferRisk : Route("transferRisk")
 }

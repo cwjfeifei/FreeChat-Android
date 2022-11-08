@@ -4,6 +4,7 @@ import android.content.Context
 import android.net.Uri
 import android.util.Log
 import androidx.compose.runtime.mutableStateListOf
+import com.google.gson.Gson
 import io.openim.android.sdk.OpenIMClient
 import io.openim.android.sdk.enums.Platform
 import io.openim.android.sdk.listener.*
@@ -235,7 +236,6 @@ object IM {
                     }
 
                     override fun onSuccess(data: String?) {
-//                        getSelfInfo()
                         it.resume(Unit)
                     }
                 }, nickname, faceURL, gender, 1, "", birth, email, ex
@@ -381,6 +381,48 @@ object IM {
             )
         }
 
+    data class TransferMessageContent(
+        val tokenIcon: String,
+        val amount: String,
+        val txHash: String
+    )
+
+    suspend fun sendRedPackMessage(
+        toUserId: String,
+        tokenIcon: String,
+        amount: String,
+        txHash: String
+    ) =
+        suspendCoroutine {
+            imClient.messageManager.sendMessage(
+                object : OnMsgSendCallback {
+                    override fun onError(code: Int, error: String?) {
+                        it.resumeWithException(IMError(code, error))
+                    }
+
+                    override fun onSuccess(s: Message?) {
+                        it.resume(s)
+                        if (s != null) newMessages.add(s)
+                    }
+
+                    override fun onProgress(progress: Long) {
+                    }
+                },
+                imClient.messageManager.createCustomMessage(
+                    Gson().toJson(
+                        TransferMessageContent(
+                            tokenIcon,
+                            amount,
+                            txHash
+                        )
+                    ), "transfer", ""
+                ),
+                toUserId,
+                null,
+                OfflinePushInfo()
+            )
+        }
+
     suspend fun getUserInfo(toUserId: String) = suspendCoroutine {
         imClient.userInfoManager.getUsersInfo(object : OnBase<List<UserInfo>> {
             override fun onError(code: Int, error: String?) {
@@ -481,7 +523,7 @@ object IM {
             }
 
             override fun onSuccess(data: List<FriendApplicationInfo>?) {
-                Log.e("TAG", ": ${data?.size}", )
+                Log.e("TAG", ": ${data?.size}")
                 it.resume(data)
             }
         })
@@ -506,7 +548,7 @@ object IM {
             }
 
             override fun onSuccess(data: String?) {
-                Log.e(TAG, "onSuccess: $id $data", )
+                Log.e(TAG, "onSuccess: $id $data")
                 it.resume(data)
             }
         }, id, "")

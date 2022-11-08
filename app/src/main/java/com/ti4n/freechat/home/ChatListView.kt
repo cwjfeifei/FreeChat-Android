@@ -37,6 +37,7 @@ import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.google.gson.Gson
 import com.ti4n.freechat.R
 import com.ti4n.freechat.Route
+import com.ti4n.freechat.model.CustomMessage
 import com.ti4n.freechat.util.IM
 import com.ti4n.freechat.widget.Image
 import com.ti4n.freechat.widget.*
@@ -123,12 +124,7 @@ fun ChatListView(
                         scrollState,
                         it.faceURL,
                         it.showName,
-                        when (message.contentType) {
-                            MessageType.PICTURE -> "[图片]"
-                            MessageType.VOICE -> "[语音]"
-                            MessageType.TEXT -> message.content
-                            else -> "不支持的消息类型"
-                        },
+                        dealWithMessageType(message),
                         SimpleDateFormat("yyyy-MM-dd hh:mm").format(
                             Date(it.latestMsgSendTime)
                         ),
@@ -156,11 +152,7 @@ fun ChatListView(
                         scrollState,
                         it.faceURL,
                         it.showName,
-                        when {
-                            !message.pictureElem.snapshotPicture.url.isNullOrEmpty() -> "[图片]"
-                            !message.soundElem.soundPath.isNullOrEmpty() -> "[语音]"
-                            else -> message.content
-                        },
+                        dealWithMessageType(message),
                         SimpleDateFormat("yyyy-MM-dd hh:mm").format(
                             Date(it.latestMsgSendTime)
                         ),
@@ -274,4 +266,20 @@ fun ChatItem(
             )
         }
     }
+}
+
+fun dealWithMessageType(message: Message) = when (message.contentType) {
+    MessageType.PICTURE -> "[图片]"
+    MessageType.VOICE -> "[语音]"
+    MessageType.TEXT -> message.content
+    MessageType.CUSTOM -> {
+        val content =
+            Gson().fromJson(message.content, CustomMessage::class.java)
+        when (content.extension) {
+            "transfer" -> "[转账]"
+            else -> "不支持的消息类型"
+        }
+    }
+
+    else -> "不支持的消息类型"
 }

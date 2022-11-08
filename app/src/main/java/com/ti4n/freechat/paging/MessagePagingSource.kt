@@ -25,7 +25,7 @@ class MessagePagingSource @AssistedInject constructor(
             LoadResult.Error(e)
         } finally {
             IM.markMessagesRead(userId,
-                messages.filter { it.sendID == userId && (it.contentType == MessageType.TEXT || it.contentType == MessageType.VOICE || it.contentType == MessageType.PICTURE) && !it.isRead }
+                messages.filter { it.sendID == userId && (it.contentType == MessageType.TEXT || it.contentType == MessageType.VOICE || it.contentType == MessageType.PICTURE || it.contentType == 10000) && !it.isRead }
                     .map { it.clientMsgID })
         }
     }

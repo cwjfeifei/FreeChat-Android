@@ -159,4 +159,14 @@
     <string name="reply">回复</string>
     <string name="send">发送</string>
     <string name="finish">完成</string>
+
+    <string name="select_transfer_token">请选择转账币种</string>
+    <string name="select_transfer_amount">请选择转账金额</string>
+
+    <string name="transfer_risk_tip">防欺诈提示</string>
+    <string name="transfer_risk_tip_1">尊敬的Freechat用户，请注意你正在进行转账操作，你需要确认以下事项，防止被欺诈和钓鱼攻击。</string>
+    <string name="transfer_risk_tip_2">1.请确认对方是否是你的朋友。你可以通过电话、短信等方式确认其身份，防止钓鱼攻击。</string>
+    <string name="transfer_risk_tip_3">2.如果是通过网络购买虚拟物品，请确认你是否已收到虚拟物品。如果是先付款，请确认交易是否安全。</string>
+    <string name="transfer_risk_tip_4">3.请确认对方是否冒充政府机构、执法机构向你进行钓鱼攻击。政府和执法机构不会使用Freechat向你索取费用。</string>
+    <string name="i_read_and_know">我已确认并知晓</string>
 </resources>

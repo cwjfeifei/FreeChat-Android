@@ -53,6 +53,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.CenterVertically
+import androidx.compose.ui.Alignment.Companion.End
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawBehind
@@ -61,7 +62,10 @@ import androidx.compose.ui.graphics.nativeCanvas
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalUriHandler
+import androidx.compose.ui.platform.UriHandler
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -70,6 +74,7 @@ import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
 import androidx.core.graphics.drawable.updateBounds
 import androidx.core.net.toUri
+import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.paging.compose.collectAsLazyPagingItems
@@ -79,8 +84,12 @@ import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.PermissionStatus
 import com.google.accompanist.permissions.rememberPermissionState
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 import com.ti4n.freechat.R
 import com.ti4n.freechat.Route
+import com.ti4n.freechat.di.dataStore
+import com.ti4n.freechat.model.CustomMessage
 import com.ti4n.freechat.util.IM
 import com.ti4n.freechat.util.Minio
 import com.ti4n.freechat.util.RecordVoiceUtil
@@ -91,6 +100,8 @@ import com.ti4n.freechat.widget.HomeTitle
 import io.openim.android.sdk.enums.MessageType
 import io.openim.android.sdk.models.Message
 import io.openim.android.sdk.models.UserInfo
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import java.io.File
 
@@ -131,16 +142,15 @@ fun PrivateChatView(
         }
     }
     var photoFile: File? = null
-    val takePhoto =
-        rememberLauncherForActivityResult(ActivityResultContracts.TakePicture()) {
-            if (it) {
-                photoFile?.let {
-                    scope.launch {
-                        IM.sendImageMessage(viewModel.toUserId, it.absolutePath)
-                    }
+    val takePhoto = rememberLauncherForActivityResult(ActivityResultContracts.TakePicture()) {
+        if (it) {
+            photoFile?.let {
+                scope.launch {
+                    IM.sendImageMessage(viewModel.toUserId, it.absolutePath)
                 }
             }
         }
+    }
 
     Column(
         Modifier
@@ -288,9 +298,7 @@ fun PrivateChatView(
                                 File(context.cacheDir, "${System.currentTimeMillis()}_camera.jpg")
                             takePhoto.launch(
                                 FileProvider.getUriForFile(
-                                    context,
-                                    "com.ti4n.freechat.provider",
-                                    photoFile!!
+                                    context, "com.ti4n.freechat.provider", photoFile!!
                                 )
                             )
                         } else {
@@ -301,7 +309,16 @@ fun PrivateChatView(
                         pickImage.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
                     }
                     ItemMoreFunction(image = R.mipmap.transfer_chat, text = R.string.transfer) {
-
+                        scope.launch {
+                            if (context.dataStore.data.map {
+                                    it[booleanPreferencesKey("agreeTransferRisk")] == true
+                                }.first()) navController.navigate(
+                                Route.SendRedPack.jump(
+                                    viewModel.toUserId
+                                )
+                            )
+                            else navController.navigate(Route.TransferRisk.route)
+                        }
                     }
                 }
             }
@@ -332,19 +349,18 @@ fun ToUserMessage(message: Message, navController: NavController) {
     val bgImg = ContextCompat.getDrawable(
         LocalContext.current, R.mipmap.chat_bg_others
     )
+    val uriHandler = LocalUriHandler.current
     Row(
         Modifier
             .fillMaxWidth()
             .padding(start = 16.dp)
     ) {
-        AsyncImage(
-            model = message.senderFaceUrl,
+        AsyncImage(model = message.senderFaceUrl,
             contentDescription = null,
             modifier = Modifier
                 .size(38.dp)
                 .clip(RoundedCornerShape(3.45.dp))
-                .clickable { navController.navigate(Route.Profile.jump(message.sendID)) }
-        )
+                .clickable { navController.navigate(Route.Profile.jump(message.sendID)) })
         Spacer(modifier = Modifier.width(6.dp))
         when (message.contentType) {
             MessageType.PICTURE -> AsyncImage(
@@ -355,24 +371,25 @@ fun ToUserMessage(message: Message, navController: NavController) {
                     .weight(1f)
             )
 
-            MessageType.VOICE -> Row(verticalAlignment = CenterVertically, modifier = Modifier
-                .drawBehind {
-                    bgImg?.updateBounds(0, 0, size.width.toInt(), size.height.toInt())
-                    bgImg?.draw(drawContext.canvas.nativeCanvas)
-                }
-                .clickable {
-                    val mediaPlayer = MediaPlayer()
-                    mediaPlayer.setAudioAttributes(
-                        AudioAttributes
-                            .Builder()
-                            .setContentType(AudioAttributes.CONTENT_TYPE_SPEECH)
-                            .build()
-                    )
-                    mediaPlayer.setDataSource(message.soundElem.soundPath)
-                    mediaPlayer.prepare()
-                    mediaPlayer.start()
-                }
-                .padding(horizontal = 12.dp, vertical = 8.dp)) {
+            MessageType.VOICE -> Row(verticalAlignment = CenterVertically,
+                modifier = Modifier
+                    .drawBehind {
+                        bgImg?.updateBounds(0, 0, size.width.toInt(), size.height.toInt())
+                        bgImg?.draw(drawContext.canvas.nativeCanvas)
+                    }
+                    .clickable {
+                        val mediaPlayer = MediaPlayer()
+                        mediaPlayer.setAudioAttributes(
+                            AudioAttributes
+                                .Builder()
+                                .setContentType(AudioAttributes.CONTENT_TYPE_SPEECH)
+                                .build()
+                        )
+                        mediaPlayer.setDataSource(message.soundElem.soundPath)
+                        mediaPlayer.prepare()
+                        mediaPlayer.start()
+                    }
+                    .padding(horizontal = 12.dp, vertical = 8.dp)) {
                 Text(
                     text = "${message.soundElem.duration}”",
                     color = Color.Black,
@@ -391,6 +408,63 @@ fun ToUserMessage(message: Message, navController: NavController) {
                         bgImg?.draw(drawContext.canvas.nativeCanvas)
                     }
                     .padding(horizontal = 12.dp, vertical = 8.dp))
+
+            MessageType.CUSTOM -> {
+                val gson = Gson()
+                val custom = gson.fromJson(message.content, CustomMessage::class.java)
+                when (custom.extension) {
+                    "transfer" -> {
+                        val transferBg = ContextCompat.getDrawable(
+                            LocalContext.current, R.mipmap.transfer_message_bg_other
+                        )
+                        val transfer =
+                            gson.fromJson(custom.data, IM.TransferMessageContent::class.java)
+                        Column(modifier = Modifier
+                            .drawBehind {
+                                transferBg?.updateBounds(
+                                    0,
+                                    0,
+                                    size.width.toInt(),
+                                    size.height.toInt()
+                                )
+                                transferBg?.draw(drawContext.canvas.nativeCanvas)
+                            }
+                            .clickable { uriHandler.openUri("https://goerli.etherscan.io/tx/${transfer.txHash}") }
+                            .padding(horizontal = 12.dp, vertical = 4.dp)
+                            .weight(1f)
+                        ) {
+                            Text(
+                                text = stringResource(id = R.string.transfer),
+                                color = Color(0xFFFFECD8),
+                                fontSize = 12.sp
+                            )
+                            Spacer(modifier = Modifier.height(4.dp))
+                            Divider(color = Color(0x1AFFFFFF), thickness = 1.dp)
+                            Spacer(modifier = Modifier.height(8.dp))
+                            Row(verticalAlignment = Alignment.CenterVertically) {
+                                AsyncImage(
+                                    model = transfer.tokenIcon,
+                                    contentDescription = null,
+                                    modifier = Modifier.size(32.dp)
+                                )
+                                Spacer(modifier = Modifier.width(8.dp))
+                                Text(
+                                    text = transfer.amount,
+                                    color = Color.White,
+                                    fontSize = 16.sp,
+                                    fontWeight = FontWeight.SemiBold
+                                )
+                            }
+                            Text(
+                                text = stringResource(id = R.string.detail),
+                                color = Color.White,
+                                fontSize = 10.sp,
+                                modifier = Modifier.align(End)
+                            )
+                        }
+                    }
+                }
+            }
         }
         Spacer(modifier = Modifier.width(50.dp))
     }
@@ -398,7 +472,11 @@ fun ToUserMessage(message: Message, navController: NavController) {
 
 @Composable
 fun MineMessage(message: Message, navController: NavController) {
-    Log.e("TAG", "MineMessage: ${message.contentType}")
+    Log.e(
+        "TAG",
+        "MineMessage: ${message.contentType} ${message.ext}  ${message.ex} ${message.content}",
+    )
+    val uriHandler = LocalUriHandler.current
     val bgImg = ContextCompat.getDrawable(
         LocalContext.current, R.mipmap.chat_bg_mine
     )
@@ -417,24 +495,25 @@ fun MineMessage(message: Message, navController: NavController) {
                     .weight(1f)
             )
 
-            MessageType.VOICE -> Row(verticalAlignment = CenterVertically, modifier = Modifier
-                .drawBehind {
-                    bgImg?.updateBounds(0, 0, size.width.toInt(), size.height.toInt())
-                    bgImg?.draw(drawContext.canvas.nativeCanvas)
-                }
-                .clickable {
-                    val mediaPlayer = MediaPlayer()
-                    mediaPlayer.setAudioAttributes(
-                        AudioAttributes
-                            .Builder()
-                            .setContentType(AudioAttributes.CONTENT_TYPE_SPEECH)
-                            .build()
-                    )
-                    mediaPlayer.setDataSource(message.soundElem.soundPath)
-                    mediaPlayer.prepare()
-                    mediaPlayer.start()
-                }
-                .padding(horizontal = 12.dp, vertical = 8.dp)) {
+            MessageType.VOICE -> Row(verticalAlignment = CenterVertically,
+                modifier = Modifier
+                    .drawBehind {
+                        bgImg?.updateBounds(0, 0, size.width.toInt(), size.height.toInt())
+                        bgImg?.draw(drawContext.canvas.nativeCanvas)
+                    }
+                    .clickable {
+                        val mediaPlayer = MediaPlayer()
+                        mediaPlayer.setAudioAttributes(
+                            AudioAttributes
+                                .Builder()
+                                .setContentType(AudioAttributes.CONTENT_TYPE_SPEECH)
+                                .build()
+                        )
+                        mediaPlayer.setDataSource(message.soundElem.soundPath)
+                        mediaPlayer.prepare()
+                        mediaPlayer.start()
+                    }
+                    .padding(horizontal = 12.dp, vertical = 8.dp)) {
                 Image(mipmap = R.mipmap.yuyin_r)
                 Spacer(modifier = Modifier.width(10.dp))
                 Text(
@@ -463,16 +542,70 @@ fun MineMessage(message: Message, navController: NavController) {
                         bgImg?.draw(drawContext.canvas.nativeCanvas)
                     }
                     .padding(horizontal = 12.dp, vertical = 8.dp))
-        }
 
+            MessageType.CUSTOM -> {
+                val gson = Gson()
+                val custom = gson.fromJson(message.content, CustomMessage::class.java)
+                when (custom.extension) {
+                    "transfer" -> {
+                        val transferBg = ContextCompat.getDrawable(
+                            LocalContext.current, R.mipmap.transfer_message_me_bg
+                        )
+                        val transfer =
+                            gson.fromJson(custom.data, IM.TransferMessageContent::class.java)
+                        Column(modifier = Modifier
+                            .drawBehind {
+                                transferBg?.updateBounds(
+                                    0,
+                                    0,
+                                    size.width.toInt(),
+                                    size.height.toInt()
+                                )
+                                transferBg?.draw(drawContext.canvas.nativeCanvas)
+                            }
+                            .clickable { uriHandler.openUri("https://goerli.etherscan.io/tx/${transfer.txHash}") }
+                            .padding(horizontal = 12.dp, vertical = 4.dp)
+                            .weight(1f)
+                        ) {
+                            Text(
+                                text = stringResource(id = R.string.transfer),
+                                color = Color(0xFFFFECD8),
+                                fontSize = 12.sp
+                            )
+                            Spacer(modifier = Modifier.height(4.dp))
+                            Divider(color = Color(0x1AFFFFFF), thickness = 1.dp)
+                            Spacer(modifier = Modifier.height(8.dp))
+                            Row(verticalAlignment = Alignment.CenterVertically) {
+                                AsyncImage(
+                                    model = transfer.tokenIcon,
+                                    contentDescription = null,
+                                    modifier = Modifier.size(32.dp)
+                                )
+                                Spacer(modifier = Modifier.width(8.dp))
+                                Text(
+                                    text = transfer.amount,
+                                    color = Color.White,
+                                    fontSize = 16.sp,
+                                    fontWeight = FontWeight.SemiBold
+                                )
+                            }
+                            Text(
+                                text = stringResource(id = R.string.detail),
+                                color = Color.White,
+                                fontSize = 10.sp,
+                                modifier = Modifier.align(End)
+                            )
+                        }
+                    }
+                }
+            }
+        }
         Spacer(modifier = Modifier.width(6.dp))
-        AsyncImage(
-            model = message.senderFaceUrl,
+        AsyncImage(model = message.senderFaceUrl,
             contentDescription = null,
             modifier = Modifier
                 .size(38.dp)
                 .clip(RoundedCornerShape(3.45.dp))
-                .clickable { navController.navigate(Route.Profile.jump(message.sendID)) }
-        )
+                .clickable { navController.navigate(Route.Profile.jump(message.sendID)) })
     }
 }
