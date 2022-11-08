@@ -85,7 +85,6 @@ fun MeView(
         )
         LazyColumn(modifier = Modifier.background(Color.White)) {
             me?.let {
-                Log.d("Me", "MeView: " + me.userID + "/" + me.faceURL + "/" + me.nickname + "/" + me.gender + "/" + me.email)
                 item {
                     MeInfoItem(
                         faceURL = it.faceURL,

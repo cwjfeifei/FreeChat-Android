@@ -28,7 +28,6 @@ object IM {
     val DEFAULT_FACEURL = "https://freechat.world/images/face.apng" // TODO
 
     fun init(context: Context) {
-        Log.w(TAG, "init")
         imClient.initSDK(Platform.ANDROID,
             "http://47.57.185.242:10002",
             "ws://47.57.185.242:10001",
@@ -98,8 +97,6 @@ object IM {
 
             override fun onSuccess(data: UserInfo?) {
                 data?.let {
-                    // why assert twice? if value is not null, MutableStateFlow will not update state
-                    currentUserInfo.value = UserInfo()
                     currentUserInfo.value = it
                 }
             }
@@ -108,14 +105,7 @@ object IM {
 
     private fun setListener() {
         imClient.userInfoManager.setOnUserListener {
-            // why assert twice? if value is not null, MutableStateFlow will not update state
-            currentUserInfo.value = UserInfo()
             currentUserInfo.value = it
-            Log.d(
-                TAG,
-                "User Listener: " + currentUserInfo.value.userID + "/" + currentUserInfo.value.faceURL + "/"
-                        + currentUserInfo.value.nickname +"/"+currentUserInfo.value.gender+"/"+currentUserInfo.value.email
-            )
         }
         imClient.conversationManager.setOnConversationListener(object : OnConversationListener {
             override fun onConversationChanged(list: MutableList<ConversationInfo>?) {
@@ -491,6 +481,7 @@ object IM {
             }
 
             override fun onSuccess(data: List<FriendApplicationInfo>?) {
+                Log.e("TAG", ": ${data?.size}", )
                 it.resume(data)
             }
         })

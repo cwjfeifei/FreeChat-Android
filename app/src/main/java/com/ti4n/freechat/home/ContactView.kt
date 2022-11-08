@@ -80,7 +80,7 @@ fun ContactView(
         Spacer(modifier = Modifier.height(6.dp))
         Box {
             val items = IM.friends.groupBy {
-                it.nickname.pinyin.first()
+                it.remark.ifEmpty { it.nickname }.pinyin.first()
             }
             LazyColumn(modifier = Modifier.background(Color.White)) {
                 item {
@@ -157,7 +157,9 @@ fun ItemFriend(friendInfo: FriendInfo, click: () -> Unit) {
         )
         Spacer(modifier = Modifier.width(10.dp))
         Text(
-            text = friendInfo.nickname, color = Color(0xFF1A1A1A), fontSize = 16.sp
+            text = friendInfo.remark.ifEmpty { friendInfo.nickname },
+            color = Color(0xFF1A1A1A),
+            fontSize = 16.sp
         )
     }
 }

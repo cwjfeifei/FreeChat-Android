@@ -27,6 +27,8 @@ import com.ti4n.freechat.Route
 import com.ti4n.freechat.util.IM
 import com.ti4n.freechat.widget.CustomPaddingTextField
 import com.ti4n.freechat.widget.Image
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.filter
 
 @Composable
 fun ProfileView(
@@ -38,6 +40,9 @@ fun ProfileView(
     val isFriend by viewModel.isFriend.collectAsState()
     val isSelf by viewModel.isSelf.collectAsState()
     val userInfo by viewModel.userInfo.collectAsState()
+    var isFromFriendApplication by remember {
+        mutableStateOf(isFromFriendApplication)
+    }
     var showRefuseDialog by remember {
         mutableStateOf(false)
     }
@@ -49,6 +54,17 @@ fun ProfileView(
             color = Color.Transparent
         )
         systemUiController.setNavigationBarColor(Color(0xFFF0F0F0))
+    }
+    LaunchedEffect(viewModel.toUserId) {
+        viewModel.refuseSuccess.filter { it }.collectLatest {
+            showRefuseDialog = false
+            isFromFriendApplication = false
+        }
+    }
+    LaunchedEffect(viewModel.toUserId) {
+        viewModel.approveSuccess.filter { it }.collectLatest {
+            isFromFriendApplication = false
+        }
     }
     Scaffold(bottomBar = {
         if (isFromFriendApplication && !isFriend && !isSelf) {

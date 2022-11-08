@@ -19,13 +19,15 @@ import javax.inject.Inject
 @HiltViewModel
 class ProfileViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
-    val db: AppDataBase
 ) : ViewModel() {
 
     val toUserId = savedStateHandle.get<String>("id") ?: ""
     val isFriend = MutableStateFlow(false)
     val isSelf = MutableStateFlow(false)
     val userInfo = MutableStateFlow<UserInfo?>(null)
+
+    val refuseSuccess = MutableStateFlow(false)
+    val approveSuccess = MutableStateFlow(false)
 
     init {
         viewModelScope.launch {
@@ -67,12 +69,25 @@ class ProfileViewModel @Inject constructor(
     fun acceptFriendApplication() {
         viewModelScope.launch {
             IM.acceptFriendApplication(toUserId)
+            approveSuccess.value = true
+            isFriend.value = true
+            IM.friends.find { it.userID == toUserId }?.let {
+                userInfo.value = UserInfo().apply {
+                    userID = it.userID
+                    faceURL = it.faceURL
+                    nickname = it.nickname
+                    gender = it.gender
+                    remark = it.remark
+                }
+            }
+
         }
     }
 
     fun refuseFriendApplication() {
         viewModelScope.launch {
             IM.rejectFriendApplication(toUserId)
+            refuseSuccess.value = true
         }
     }
 }

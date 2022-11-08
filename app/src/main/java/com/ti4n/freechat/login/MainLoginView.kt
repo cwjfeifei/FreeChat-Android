@@ -207,12 +207,13 @@ fun LoginCommonView(
         modifier = Modifier
             .fillMaxSize()
             .background(Color.White)
+            .statusBarsPadding()
     ) {
         Image(
             mipmap = R.mipmap.nav_back,
             modifier = Modifier
                 .clickable { backClick() }
-                .padding(vertical = 16.dp)
+                .padding(16.dp)
                 .align(Alignment.Start)
         )
         Image(R.mipmap.logo)

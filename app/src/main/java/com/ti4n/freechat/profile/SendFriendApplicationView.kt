@@ -117,6 +117,7 @@ fun SendFriendApplicationView(navController: NavController, viewModel: ProfileVi
                 onClick = {
                     if (remark.isNotEmpty()) viewModel.setRemark(remark)
                     viewModel.addFriend(temName)
+                    navController.navigateUp()
                 },
                 modifier = Modifier
                     .fillMaxWidth()

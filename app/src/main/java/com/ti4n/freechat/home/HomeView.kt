@@ -244,7 +244,11 @@ fun HomeView(userBaseInfoDao: UserBaseInfoDao) {
                 route = Route.SetRemark.route
             ) {
                 val backStackEntry = remember {
-                    navController.getBackStackEntry(Route.Profile.route)
+                    try {
+                        navController.getBackStackEntry(Route.Profile.route)
+                    } catch (e: Exception) {
+                        navController.getBackStackEntry(Route.LookFriendApplication.route)
+                    }
                 }
                 SetRemarkView(navController = navController, hiltViewModel(backStackEntry))
             }
