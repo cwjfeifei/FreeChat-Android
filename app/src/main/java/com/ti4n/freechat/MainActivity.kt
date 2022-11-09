@@ -83,7 +83,7 @@ class MainActivity : AppCompatActivity() {
                             aniComposable(route = Route.SetEmail.route) {
                                 SetEmailView(
                                     navController,
-                                    it.arguments?.getString("words", "") ?: ""
+                                    it.arguments?.getString("userID", "") ?: ""
                                 )
                             }
                             aniComposable(route = Route.PickFaceImage.route) {
