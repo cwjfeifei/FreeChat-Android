@@ -34,7 +34,6 @@ data class ERC20Token(
     val website: String,
     val wechat: String,
     val whitepaper: String,
-    val transLogo: String
 ) : Parcelable
 
 data class ERC20Tokens(val result: List<ERC20Token>)
@@ -69,7 +68,6 @@ val ethereum = ERC20Token(
     website = "",
     wechat = "",
     whitepaper = "",
-    transLogo = ""
 )
 
 val wethereum = ERC20Token(
@@ -102,5 +100,4 @@ val wethereum = ERC20Token(
     website = "",
     wechat = "",
     whitepaper = "",
-    transLogo = ""
 )

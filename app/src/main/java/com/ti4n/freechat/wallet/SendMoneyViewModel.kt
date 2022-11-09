@@ -52,7 +52,7 @@ class SendMoneyViewModel @Inject constructor(
     val amount = MutableStateFlow("")
     val amountUSD = MutableStateFlow(0f)
     val selectedToken = MutableStateFlow<ERC20Token?>(null)
-    val fromAddress = IM.currentUserInfo.value.userID
+    val fromAddress = IM.currentUserInfo.value?.userID ?: ""
     val remainAmount = MutableStateFlow("")
 
     val gas = MutableStateFlow("")
@@ -141,7 +141,7 @@ class SendMoneyViewModel @Inject constructor(
                     if (isRedPack) {
                         IM.sendRedPackMessage(
                             toUserId,
-                            selectedToken.value!!.transLogo,
+                            selectedToken.value!!.LogoURI,
                             amount.value,
                             it.transactionHash
                         )
@@ -161,7 +161,7 @@ class SendMoneyViewModel @Inject constructor(
                     if (isRedPack) {
                         IM.sendRedPackMessage(
                             toUserId,
-                            selectedToken.value!!.transLogo,
+                            selectedToken.value!!.LogoURI,
                             amount.value,
                             it.transactionHash
                         )

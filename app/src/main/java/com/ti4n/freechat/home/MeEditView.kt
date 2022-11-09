@@ -44,6 +44,7 @@ import kotlinx.coroutines.launch
 import androidx.compose.foundation.layout.Row as Row1
 
 private const val TAG = "MeEditView"
+
 /**
  * Edit self profile view
  */
@@ -98,7 +99,7 @@ fun MeEditView(
         androidx.compose.foundation.Image(
             painter = rememberAsyncImagePainter(
                 ImageRequest.Builder(context)
-                    .data(data = if (TextUtils.isEmpty(me.faceURL)) DEFAULT_FACEURL else me.faceURL)
+                    .data(data = if (TextUtils.isEmpty(me?.faceURL)) DEFAULT_FACEURL else me?.faceURL)
                     .build(),
                 imageLoader = imageLoader
             ),
@@ -115,11 +116,10 @@ fun MeEditView(
         LazyColumn(modifier = Modifier.background(Color.White)) {
             item {
                 me?.let {
-                    Log.w(TAG, "MeEditView: " +faceURL +"/" +nickname+"/"+me.userID+"/"+gender+"/"+email )
                     ProfileInfoItem(
                         faceURL = faceURL,
                         nickname = nickname,
-                        userID = me.userID,
+                        userID = me?.userID ?: "",
                         gender = gender
                     ) {
                         navController.navigate(Route.EditNickName.route)
@@ -135,10 +135,15 @@ fun MeEditView(
                         verticalAlignment = Alignment.CenterVertically) {
                         Spacer(modifier = Modifier.width(16.dp))
                         Text(
-                            text = stringResource(id = R.string.edit_email), color = Color.Black, fontSize = 14.sp
+                            text = stringResource(id = R.string.edit_email),
+                            color = Color.Black,
+                            fontSize = 14.sp
                         )
                         Text(
-                            text = email, color = Color(0xFF1A1A1A), fontSize = 14.sp, modifier = Modifier
+                            text = email,
+                            color = Color(0xFF1A1A1A),
+                            fontSize = 14.sp,
+                            modifier = Modifier
                                 .weight(1f)
                                 .padding(start = 16.dp, end = 48.dp)
                         )

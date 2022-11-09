@@ -20,7 +20,9 @@ import kotlin.experimental.and
 
 suspend fun pingFreeChat() = withContext(Dispatchers.IO) {
     suspendCancellableCoroutine {
-        it.resume(Runtime.getRuntime().exec("ping -c 1 -w 100 https://freechat.world/").waitFor() == 0)
+        it.resume(
+            Runtime.getRuntime().exec("ping -c 1 -w 100 https://freechat.world/").waitFor() == 0
+        )
     }
 }
 
@@ -75,7 +77,7 @@ fun Modifier.coloredShadow(
             val leftPixel = (0f - spreadPixel) + offsetX.toPx()
             val topPixel = (0f - spreadPixel) + offsetY.toPx()
             val rightPixel = (this.size.width + spreadPixel)
-            val bottomPixel =  (this.size.height + spreadPixel)
+            val bottomPixel = (this.size.height + spreadPixel)
 
             if (blurRadius != 0.dp) {
                 /*

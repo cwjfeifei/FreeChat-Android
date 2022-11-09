@@ -2,17 +2,25 @@ package com.ti4n.freechat.profile
 
 import android.util.Log
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.snapshotFlow
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ti4n.freechat.db.AppDataBase
 import com.ti4n.freechat.db.UserBaseInfo
+import com.ti4n.freechat.model.im.BaseInfo
+import com.ti4n.freechat.model.im.IFriendInfo
+import com.ti4n.freechat.model.im.toBaseInfo
 import com.ti4n.freechat.util.IM
 import dagger.hilt.android.lifecycle.HiltViewModel
+import io.openim.android.sdk.models.FriendInfo
 import io.openim.android.sdk.models.UserInfo
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.filterNotNull
+import kotlinx.coroutines.flow.onStart
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -24,7 +32,7 @@ class ProfileViewModel @Inject constructor(
     val toUserId = savedStateHandle.get<String>("id") ?: ""
     val isFriend = MutableStateFlow(false)
     val isSelf = MutableStateFlow(false)
-    val userInfo = MutableStateFlow<UserInfo?>(null)
+    val userInfo = MutableStateFlow<BaseInfo?>(null)
 
     val refuseSuccess = MutableStateFlow(false)
     val approveSuccess = MutableStateFlow(false)
@@ -34,22 +42,18 @@ class ProfileViewModel @Inject constructor(
             isFriend.value = IM.isFriend(toUserId)
         }
         viewModelScope.launch {
-            isSelf.value = IM.currentUserInfo.value.userID == toUserId
+            isSelf.value = IM.currentUserInfo.value?.userID == toUserId
             if (isSelf.value) {
                 userInfo.value = IM.currentUserInfo.value
             } else {
-                userInfo.value =
-                    IM.friends.find { it.userID == toUserId }?.let {
-                        UserInfo().apply {
-                            userID = it.userID
-                            faceURL = it.faceURL
-                            nickname = it.nickname
-                            gender = it.gender
-                            remark = it.remark
-                        }
-                    } ?: IM.getUserInfo(
-                        toUserId
-                    )
+                IM.friends.collectLatest {
+                    val f = it.find { it.userID == toUserId }
+                    if (f != null) {
+                        userInfo.value = f
+                    } else {
+                        userInfo.value = IM.getUserInfo(toUserId).toBaseInfo()
+                    }
+                }
             }
         }
     }
@@ -71,16 +75,6 @@ class ProfileViewModel @Inject constructor(
             IM.acceptFriendApplication(toUserId)
             approveSuccess.value = true
             isFriend.value = true
-            IM.friends.find { it.userID == toUserId }?.let {
-                userInfo.value = UserInfo().apply {
-                    userID = it.userID
-                    faceURL = it.faceURL
-                    nickname = it.nickname
-                    gender = it.gender
-                    remark = it.remark
-                }
-            }
-
         }
     }
 
