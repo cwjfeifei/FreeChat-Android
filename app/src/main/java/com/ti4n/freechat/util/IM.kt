@@ -5,10 +5,17 @@ import android.net.Uri
 import android.util.Log
 import androidx.compose.runtime.mutableStateListOf
 import com.google.gson.Gson
+import com.ti4n.freechat.model.im.BaseInfo
+import com.ti4n.freechat.model.im.IFriendInfo
+import com.ti4n.freechat.model.im.IUserInfo
+import com.ti4n.freechat.model.im.toBaseInfo
+import com.ti4n.freechat.model.im.toIFriendInfo
+import com.ti4n.freechat.model.im.toIUserInfo
 import io.openim.android.sdk.OpenIMClient
 import io.openim.android.sdk.enums.Platform
 import io.openim.android.sdk.listener.*
 import io.openim.android.sdk.models.*
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
@@ -19,10 +26,10 @@ private const val TAG = "IM"
 object IM {
 
     val imClient = OpenIMClient.getInstance()
-    val currentUserInfo = MutableStateFlow(UserInfo())
+    val currentUserInfo = MutableStateFlow<BaseInfo?>(null)
     val newMessages = mutableStateListOf<Message>()
     val conversations = mutableStateListOf<ConversationInfo>()
-    val friends = mutableStateListOf<FriendInfo>()
+    val friends = MutableStateFlow(emptyList<BaseInfo>())
     val totalUnreadCount = MutableStateFlow(0)
     val showNewFriendApplication = MutableStateFlow(false)
 
@@ -98,7 +105,7 @@ object IM {
 
             override fun onSuccess(data: UserInfo?) {
                 data?.let {
-                    currentUserInfo.value = it
+                    currentUserInfo.value = it.toBaseInfo()
                 }
             }
         })
@@ -106,7 +113,7 @@ object IM {
 
     private fun setListener() {
         imClient.userInfoManager.setOnUserListener {
-            currentUserInfo.value = it
+            currentUserInfo.value = it.toBaseInfo()
         }
         imClient.conversationManager.setOnConversationListener(object : OnConversationListener {
             override fun onConversationChanged(list: MutableList<ConversationInfo>?) {
@@ -181,19 +188,25 @@ object IM {
 
             override fun onFriendInfoChanged(u: FriendInfo?) {
                 u?.let { friend ->
-                    friends.removeAll { it.userID == friend.userID }
-                    friends.add(friend)
+                    val pre = friends.value.toMutableList()
+                    pre.removeAll { it.userID == friend.userID }
+                    pre.add(friend.toBaseInfo())
+                    friends.value = pre
                 }
             }
 
             override fun onFriendAdded(u: FriendInfo?) {
                 u?.let {
-                    friends.add(it)
+                    val pre = friends.value.toMutableList()
+                    pre.add(it.toBaseInfo())
+                    friends.value = pre
                 }
             }
 
             override fun onFriendDeleted(u: FriendInfo?) {
-                friends.removeAll { u?.userID == it.userID }
+                val pre = friends.value.toMutableList()
+                pre.removeAll { it.userID == u?.userID }
+                friends.value = pre
             }
         })
     }
@@ -473,7 +486,9 @@ object IM {
 
             override fun onSuccess(data: List<UserInfo>?) {
                 data?.let {
-                    friends.addAll(it.filter { it.isFriendship }.map { it.friendInfo })
+                    val pre = friends.value.toMutableList()
+                    pre.addAll(it.filter { it.isFriendship }.map { it.friendInfo.toBaseInfo() })
+                    friends.value = pre
                 }
             }
         })
