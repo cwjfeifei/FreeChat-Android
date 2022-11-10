@@ -450,11 +450,20 @@ object IM {
     }
 
     // for Test
-    fun dump(userInfo: UserInfo) {
+    fun dump(userInfo: UserInfo?) {
         userInfo?.let {
             Log.d(
                 TAG,
                 "userInfo: " + userInfo.userID + " / " + userInfo.email + " / " + userInfo.faceURL + " / "  + userInfo.nickname + " / "  + userInfo.remark
+            )
+        }
+    }
+
+    fun dump(userInfo: BaseInfo?) {
+        userInfo?.let {
+            Log.d(
+                TAG,
+                "BaseInfo: " + userInfo.userID + " / " + userInfo.email + " / " + userInfo.faceURL + " / "  + userInfo.nickname + " / "  + userInfo.remark
             )
         }
     }

@@ -1,5 +1,7 @@
 package com.ti4n.freechat.model.im
 
+import android.text.TextUtils
+import androidx.compose.ui.unit.TextUnit
 import com.ti4n.freechat.util.IM.DEFAULT_FACEURL
 import io.openim.android.sdk.models.FriendInfo
 import io.openim.android.sdk.models.UserInfo
@@ -14,6 +16,6 @@ data class BaseInfo(
     val email: String
 )
 
-fun UserInfo.toBaseInfo() = BaseInfo(userID, nickname, remark ?: "", faceURL.ifEmpty { DEFAULT_FACEURL }, birth, gender, email ?: "")
+fun UserInfo.toBaseInfo() = BaseInfo(userID, nickname ?:"", remark ?: "", if (TextUtils.isEmpty(faceURL)) DEFAULT_FACEURL else faceURL, birth, gender, email ?: "")
 fun FriendInfo.toBaseInfo() =
-    BaseInfo(userID, nickname, remark ?: "", faceURL, birth, gender, email)
+    BaseInfo(userID, nickname ?:"", remark ?: "", if (TextUtils.isEmpty(faceURL)) DEFAULT_FACEURL else faceURL, birth, gender, email ?: "")
