@@ -128,8 +128,8 @@ class MainActivity : AppCompatActivity() {
                                 SetNameView(navController, hiltViewModel(backStackEntry))
                             }
                             aniComposable(route = Route.Home.route) {
-                                navController.backQueue.removeIf { it.destination.route != Route.Home.route }
-                                HomeView(db.userBaseInfoDao())
+//                                navController.backQueue.removeIf { it.destination.route != Route.Home.route }
+                                HomeView(db.userBaseInfoDao(), navController)
                             }
                             aniComposable(
                                 route = Route.BigImage.route

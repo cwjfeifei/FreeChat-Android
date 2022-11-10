@@ -56,13 +56,18 @@ import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.ti4n.freechat.R
+import com.ti4n.freechat.Route
 import com.ti4n.freechat.widget.HomeTitle
 import com.ti4n.freechat.widget.Image
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun ConfirmTransactionView(navController: NavController, viewModel: SendMoneyViewModel) {
+fun ConfirmTransactionView(
+    navController: NavController,
+    viewModel: SendMoneyViewModel,
+    forgetPwd: () -> Unit
+) {
     val toToken by viewModel.selectedToken.collectAsState()
     val amount by viewModel.amount.collectAsState()
     val amountUSD by viewModel.amountUSD.collectAsState()
@@ -89,7 +94,7 @@ fun ConfirmTransactionView(navController: NavController, viewModel: SendMoneyVie
         sheetContent = {
             InputPasswordBottomSheet(
                 close = { scope.launch { sheetstate.collapse() } },
-                forgotPassword = { },
+                forgotPassword = forgetPwd,
                 confirm = {
                     scope.launch { sheetstate.collapse() }
                     viewModel.transfer(it)

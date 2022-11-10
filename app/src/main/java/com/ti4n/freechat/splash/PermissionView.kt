@@ -138,7 +138,7 @@ fun PermissionView(navController: NavController, exitApp: () -> Unit) {
                             it[booleanPreferencesKey("agreePermission")] = true
                         }
                         val isLogin =
-                            !context.dataStore.data.map { it[stringPreferencesKey("account")] }
+                            !context.dataStore.data.map { it[stringPreferencesKey("address")] }
                                 .firstOrNull().isNullOrEmpty()
                         if (isLogin) {
                             navController.navigate(Route.Home.route) {

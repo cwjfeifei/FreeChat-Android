@@ -85,6 +85,7 @@ fun InputPasswordBottomSheet(
                 text = stringResource(id = R.string.forget_password),
                 color = Color(0xFF666666),
                 fontSize = 14.sp,
+                modifier = Modifier.clickable { forgotPassword() }
             )
             Spacer(modifier = Modifier.height(40.dp))
             TextButton(

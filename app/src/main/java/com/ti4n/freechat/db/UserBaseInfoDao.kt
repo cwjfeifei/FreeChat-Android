@@ -18,4 +18,7 @@ interface UserBaseInfoDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(userBaseInfo: UserBaseInfo)
+
+    @Query("DELETE  FROM userbaseinfo")
+    suspend fun delete()
 }

@@ -171,6 +171,7 @@ fun CompleteProfileView(controller: NavController, viewModel: RegisterViewModel 
                     val result = IM.setUserInfo(faceURL, nickname, gender, 0, null, null)
                     if (result is Unit) {
                         // success
+                        controller.backQueue.clear()
                         controller.navigate(Route.Home.route)
                     } else {
                         // set user info failed

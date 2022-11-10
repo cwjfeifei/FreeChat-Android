@@ -10,7 +10,7 @@ import retrofit2.http.Body
 import retrofit2.http.Header
 import retrofit2.http.POST
 
-const val freeChatIMUrl = "http://47.57.185.242:10002/"
+const val freeChatIMUrl = "http://8.218.80.2:10002/"
 
 interface FreeChatIMService {
 

@@ -1,10 +1,10 @@
 package com.ti4n.freechat.util
 
 import android.content.Context
-import android.util.Log
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
 import com.ti4n.freechat.R
+import com.ti4n.freechat.db.UserBaseInfoDao
 import com.ti4n.freechat.di.dataStore
 import com.ti4n.freechat.erc20.ERC20Token
 import com.ti4n.freechat.toast
@@ -16,8 +16,6 @@ import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.onEach
-import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.reactive.asFlow
 import kotlinx.coroutines.withContext
 import org.kethereum.DEFAULT_ETHEREUM_BIP44_PATH
@@ -81,6 +79,18 @@ object EthUtil {
             it[stringPreferencesKey("file")] = file
             it[stringPreferencesKey("address")] = MnemonicWords(mnemonicWords).address().hex
         }
+    }
+
+    suspend fun deleteWallet(context: Context, userBaseInfoDao: UserBaseInfoDao) {
+        val file =
+            context.dataStore.data.map { it[stringPreferencesKey("file")] }.filterNotNull().first()
+        File(context.cacheDir, file).delete()
+        context.dataStore.edit {
+            it[stringPreferencesKey("address")] = ""
+            it[stringPreferencesKey("file")] = ""
+        }
+        IM.logout()
+        userBaseInfoDao.delete()
     }
 
     suspend fun loadCredentials(context: Context, password: String) = withContext(Dispatchers.IO) {

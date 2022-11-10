@@ -15,6 +15,7 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.ti4n.freechat.R
+import com.ti4n.freechat.Route
 import com.ti4n.freechat.util.EthUtil
 import com.ti4n.freechat.util.address
 import kotlinx.coroutines.flow.collectLatest
@@ -36,6 +37,9 @@ fun SetPasswordView(
     val scope = rememberCoroutineScope()
     LaunchedEffect(Unit) {
         viewModel.navigationRoute.filter { it.isNotEmpty() }.collectLatest {
+            if (it == Route.Home.route) {
+                navController.backQueue.clear()
+            }
             navController.navigate(it)
         }
     }

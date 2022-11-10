@@ -15,6 +15,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.navArgument
 import com.google.accompanist.navigation.animation.AnimatedNavHost
@@ -35,6 +36,7 @@ import com.ti4n.freechat.profile.SetRemarkView
 import com.ti4n.freechat.redpack.SendRedPackView
 import com.ti4n.freechat.redpack.TransferRiskView
 import com.ti4n.freechat.swap.SwapView
+import com.ti4n.freechat.util.EthUtil
 import com.ti4n.freechat.util.IM
 import com.ti4n.freechat.util.aniComposable
 import com.ti4n.freechat.util.noAniComposable
@@ -45,16 +47,18 @@ import com.ti4n.freechat.wallet.SendMoneyView
 import com.ti4n.freechat.wallet.TokenDetailSimplyView
 import com.ti4n.freechat.wallet.TokenDetailView
 import com.ti4n.freechat.wallet.WalletView
+import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalAnimationApi::class)
 @Composable
-fun HomeView(userBaseInfoDao: UserBaseInfoDao) {
+fun HomeView(userBaseInfoDao: UserBaseInfoDao, globleNavController: NavController) {
     val systemUiController = rememberSystemUiController()
     val navController = rememberAnimatedNavController()
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry?.destination?.route
     val unread by IM.totalUnreadCount.collectAsState()
     val context = LocalContext.current
+    val scope = rememberCoroutineScope()
     SideEffect {
         systemUiController.setSystemBarsColor(
             color = Color(0xFFF0F0F0)
@@ -226,7 +230,13 @@ fun HomeView(userBaseInfoDao: UserBaseInfoDao) {
                 }
                 ConfirmTransactionView(
                     navController = navController, viewModel = hiltViewModel(backStackEntry)
-                )
+                ) {
+                    scope.launch {
+                        EthUtil.deleteWallet(context, userBaseInfoDao)
+                        globleNavController.backQueue.clear()
+                        globleNavController.navigate(Route.Login.route)
+                    }
+                }
             }
             aniComposable(Route.PrivateChat.route) { _ ->
                 PrivateChatView(
