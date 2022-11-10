@@ -1,7 +1,6 @@
 package com.ti4n.freechat.model.im
 
 import android.text.TextUtils
-import androidx.compose.ui.unit.TextUnit
 import com.ti4n.freechat.util.IM.DEFAULT_FACEURL
 import io.openim.android.sdk.models.FriendInfo
 import io.openim.android.sdk.models.UserInfo
