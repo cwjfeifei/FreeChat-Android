@@ -27,6 +27,7 @@ import com.ti4n.freechat.Route
 import com.ti4n.freechat.util.IM
 import com.ti4n.freechat.widget.CustomPaddingTextField
 import com.ti4n.freechat.widget.Image
+import io.openim.android.sdk.models.FriendInfo
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.filter
 

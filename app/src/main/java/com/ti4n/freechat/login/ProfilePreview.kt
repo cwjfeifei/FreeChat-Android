@@ -43,7 +43,7 @@ fun ProfilePreview(
 ) {
 
     val userID by lazy {
-        IM.currentUserInfo.value.userID
+        IM.currentUserInfo.value?.userID
     }
     var faceURL by remember {
         mutableStateOf(viewModel.faceURL.value)
@@ -114,7 +114,7 @@ fun ProfilePreview(
             Divider(color = Color(0xFFEBEBEB), thickness = 0.5.dp, startIndent = 16.dp)
 
             ProfileInfoItem(
-                userID = userID,
+                userID = userID ?: "",
                 faceURL = faceURL,
                 nickname = nickname,
                 gender = gender

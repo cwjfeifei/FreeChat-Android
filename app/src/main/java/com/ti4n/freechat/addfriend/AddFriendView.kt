@@ -105,13 +105,13 @@ fun AddFriendView(navController: NavController) {
         if (!showSearchView.value) {
             Spacer(modifier = Modifier.height(8.dp))
             Text(
-                text = "FCID: ${meInfo.userID}",
+                text = "FCID: ${meInfo?.userID}",
                 color = Color(0xFF1A1A1A),
                 fontWeight = FontWeight.Medium
             )
             Spacer(modifier = Modifier.height(24.dp))
             val qrcode =
-                BarcodeEncoder().encodeBitmap(meInfo.userID, BarcodeFormat.QR_CODE, 600, 600)
+                BarcodeEncoder().encodeBitmap(meInfo?.userID, BarcodeFormat.QR_CODE, 600, 600)
             androidx.compose.foundation.Image(
                 bitmap = qrcode.asImageBitmap(),
                 contentDescription = null,

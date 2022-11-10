@@ -30,7 +30,7 @@ fun SendFriendApplicationView(navController: NavController, viewModel: ProfileVi
         )
     }
     var temName by remember {
-        mutableStateOf("我是${IM.currentUserInfo.value.nickname}")
+        mutableStateOf("我是${IM.currentUserInfo.value?.nickname}")
     }
     var remark by remember {
         mutableStateOf("")

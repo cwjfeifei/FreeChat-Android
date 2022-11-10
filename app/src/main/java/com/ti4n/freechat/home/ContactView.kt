@@ -7,6 +7,7 @@ import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.hoverable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -25,10 +26,12 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Divider
 import androidx.compose.material.DropdownMenu
 import androidx.compose.material.DropdownMenuItem
+import androidx.compose.material.Slider
 import androidx.compose.material.Text
 import androidx.compose.material.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.SideEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -49,6 +52,8 @@ import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.ti4n.freechat.R
 import com.ti4n.freechat.Route
 import com.ti4n.freechat.contact.NewContactView
+import com.ti4n.freechat.model.im.BaseInfo
+import com.ti4n.freechat.model.im.IFriendInfo
 import com.ti4n.freechat.util.IM
 import com.ti4n.freechat.widget.HomeTitle
 import com.ti4n.freechat.widget.Image
@@ -64,6 +69,7 @@ fun ContactView(
 ) {
     val scrollState = rememberLazyListState()
     val systemUiController = rememberSystemUiController()
+    val friends by IM.friends.collectAsState()
     SideEffect {
         systemUiController.setSystemBarsColor(
             color = Color(0xFFF0F0F0)
@@ -78,8 +84,8 @@ fun ContactView(
             HomeTitle(R.string.contact)
         }, elevation = 0.dp, modifier = Modifier.statusBarsPadding())
         Spacer(modifier = Modifier.height(6.dp))
-        Box {
-            val items = IM.friends.groupBy {
+        Box(modifier = Modifier.weight(1f)) {
+            val items = friends.groupBy {
                 it.remark.ifEmpty { it.nickname }.pinyin.first()
             }
             LazyColumn(modifier = Modifier.background(Color.White)) {
@@ -106,9 +112,6 @@ fun ContactView(
                         color = Color(0xFF4D4D4D),
                         fontSize = 9.sp,
                         modifier = modifier
-                            .clickable {
-
-                            }
                             .padding(horizontal = 4.dp, vertical = 1.dp)
                     )
                 }
@@ -139,7 +142,7 @@ fun ItemNewFriend(click: () -> Unit) {
 }
 
 @Composable
-fun ItemFriend(friendInfo: FriendInfo, click: () -> Unit) {
+fun ItemFriend(friendInfo: BaseInfo, click: () -> Unit) {
     Row(
         Modifier
             .fillMaxWidth()
@@ -179,4 +182,33 @@ fun ItemLetter(letter: Char) {
         )
     }
 }
+
+val letters = listOf(
+    'A',
+    'B',
+    "C",
+    "D",
+    "E",
+    "F",
+    "G",
+    "H",
+    "I",
+    "J",
+    "K",
+    "L",
+    "M",
+    "N",
+    "O",
+    "P",
+    "Q",
+    "R",
+    "S",
+    "T",
+    "U",
+    "V",
+    "W",
+    "X",
+    "Y",
+    "Z"
+)
 

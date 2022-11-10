@@ -18,6 +18,7 @@ import androidx.navigation.NavController
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.ti4n.freechat.R
 import com.ti4n.freechat.widget.Image
+import io.openim.android.sdk.models.FriendInfo
 
 @Composable
 fun SetRemarkView(navController: NavController, viewModel: ProfileViewModel) {
@@ -27,7 +28,8 @@ fun SetRemarkView(navController: NavController, viewModel: ProfileViewModel) {
             color = Color.White
         )
     }
-    val default by remember { derivedStateOf { viewModel.userInfo.value?.remark?.ifEmpty { viewModel.userInfo.value?.nickname } } }
+    val userInfo by viewModel.userInfo.collectAsState()
+    val default = userInfo?.remark?.ifEmpty { userInfo?.nickname }
     var temName by remember {
         mutableStateOf(default)
     }

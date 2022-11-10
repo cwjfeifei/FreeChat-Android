@@ -73,7 +73,7 @@ fun MeView(
         androidx.compose.foundation.Image(
             painter = rememberAsyncImagePainter(
                 ImageRequest.Builder(context)
-                    .data(data = if (TextUtils.isEmpty(me.faceURL)) DEFAULT_FACEURL else me.faceURL)
+                    .data(data = me?.faceURL?.ifEmpty { DEFAULT_FACEURL })
                     .build(),
                 imageLoader = imageLoader
             ),
@@ -90,7 +90,7 @@ fun MeView(
                         faceURL = it.faceURL,
                         nickname = it.nickname,
                         userID = it.userID,
-                        gender = me.gender
+                        gender = me?.gender ?: 1
                     ) {
                         navController.navigate(Route.MeEdit.route)
                     }
