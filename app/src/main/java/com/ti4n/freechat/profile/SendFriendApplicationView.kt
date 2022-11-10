@@ -38,10 +38,9 @@ fun SendFriendApplicationView(navController: NavController, viewModel: ProfileVi
     Scaffold(topBar = {
         TopAppBar(
             navigationIcon = {
-                Image(R.mipmap.nav_back,
-                    modifier = Modifier
-                        .clickable { navController.navigateUp() }
-                        .padding(14.dp))
+                IconButton(onClick = { navController.navigateUp() }) {
+                    Image(mipmap = R.mipmap.nav_back)
+                }
             },
             title = {
                 Text(

@@ -58,6 +58,7 @@ import com.ti4n.freechat.R
 import com.ti4n.freechat.Route
 import com.ti4n.freechat.erc20.ERC20Token
 import com.ti4n.freechat.widget.HomeTitle
+import com.ti4n.freechat.widget.Image
 
 @Composable
 fun SendMoneyInputDetailView(
@@ -83,7 +84,7 @@ fun SendMoneyInputDetailView(
             HomeTitle(R.string.transfer)
         }, navigationIcon = {
             IconButton(onClick = { navController.navigateUp() }) {
-                Icon(imageVector = Icons.Default.ArrowBack, contentDescription = null)
+                Image(mipmap = R.mipmap.nav_back)
             }
         })
         Spacer(modifier = Modifier.height(20.dp))

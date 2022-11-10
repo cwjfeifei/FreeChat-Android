@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.Divider
+import androidx.compose.material.IconButton
 import androidx.compose.material.Text
 import androidx.compose.material.TextButton
 import androidx.compose.runtime.*
@@ -90,12 +91,9 @@ fun ProfilePreview(
                     .padding(horizontal = 24.dp)
                     .systemBarsPadding()
             ) {
-                Image(
-                    mipmap = R.mipmap.nav_back,
-                    modifier = Modifier
-                        .clickable { navController.navigateUp() }
-                        .padding(vertical = 16.dp)
-                )
+                IconButton(onClick = { navController.navigateUp() }) {
+                    Image(mipmap = R.mipmap.nav_back)
+                }
             }
 
             androidx.compose.foundation.Image(

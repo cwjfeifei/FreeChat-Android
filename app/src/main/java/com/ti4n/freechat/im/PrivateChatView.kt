@@ -151,7 +151,7 @@ fun PrivateChatView(
             HomeTitle(toUserInfo?.nickname ?: "")
         }, navigationIcon = {
             IconButton(onClick = { navController.navigateUp() }) {
-                Icon(imageVector = Icons.Default.ArrowBack, contentDescription = null)
+                Image(mipmap = R.mipmap.nav_back)
             }
         }, modifier = Modifier.statusBarsPadding(), elevation = 0.dp)
         LazyColumn(

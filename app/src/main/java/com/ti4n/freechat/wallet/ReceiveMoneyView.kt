@@ -88,6 +88,7 @@ fun ReceiveMoneyView(navController: NavController) {
     Column(
         modifier = Modifier
             .fillMaxSize()
+            .background(Color.White)
             .systemBarsPadding(),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
@@ -95,7 +96,7 @@ fun ReceiveMoneyView(navController: NavController) {
             HomeTitle(R.string.receive_money)
         }, navigationIcon = {
             IconButton(onClick = { navController.navigateUp() }) {
-                Icon(imageVector = Icons.Default.ArrowBack, contentDescription = null)
+                com.ti4n.freechat.widget.Image(mipmap = R.mipmap.nav_back)
             }
         }, elevation = 0.dp)
         Spacer(modifier = Modifier.height(40.dp))

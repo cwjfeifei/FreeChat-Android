@@ -10,6 +10,7 @@ import androidx.compose.foundation.text.ClickableText
 import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.Card
 import androidx.compose.material.Checkbox
+import androidx.compose.material.IconButton
 import androidx.compose.material.OutlinedButton
 import androidx.compose.material.Snackbar
 import androidx.compose.material.Text
@@ -209,13 +210,9 @@ fun LoginCommonView(
             .background(Color.White)
             .statusBarsPadding()
     ) {
-        Image(
-            mipmap = R.mipmap.nav_back,
-            modifier = Modifier
-                .clickable { backClick() }
-                .padding(16.dp)
-                .align(Alignment.Start)
-        )
+        IconButton(onClick = { backClick() }, modifier = Modifier.align(Alignment.Start)) {
+            Image(mipmap = R.mipmap.nav_back)
+        }
         Image(R.mipmap.logo)
         Spacer(modifier = Modifier.height(3.dp))
         Image(R.mipmap.register_freechat)

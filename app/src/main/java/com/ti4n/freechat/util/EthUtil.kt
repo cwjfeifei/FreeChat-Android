@@ -112,10 +112,7 @@ object EthUtil {
         to,
         BigInteger((amount.toDouble() * (10.0.pow(decimal))).toBigDecimal().toPlainString())
     )
-        .flowable().asFlow().catch { it.printStackTrace() }.onEach {
-            Log.e("transfer", "transfer: ${it.transactionHash}")
-            Log.e("transfer", "transfer: ${it.status}")
-        }.flowOn(Dispatchers.IO)
+        .flowable().asFlow().catch { it.printStackTrace() }.flowOn(Dispatchers.IO)
 
     suspend fun transfer(
         context: Context,

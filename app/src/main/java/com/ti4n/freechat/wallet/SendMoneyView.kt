@@ -105,7 +105,7 @@ fun SendMoneyView(navController: NavController, viewModel: SendMoneyViewModel = 
                 HomeTitle(R.string.transfer)
             }, navigationIcon = {
                 IconButton(onClick = { navController.navigateUp() }) {
-                    Icon(imageVector = Icons.Default.ArrowBack, contentDescription = null)
+                    Image(mipmap = R.mipmap.nav_back)
                 }
             }, elevation = 0.dp)
             Spacer(modifier = Modifier.height(20.dp))

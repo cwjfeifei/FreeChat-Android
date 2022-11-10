@@ -17,6 +17,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.Divider
+import androidx.compose.material.IconButton
 import androidx.compose.material.Text
 import androidx.compose.material.TextButton
 import androidx.compose.runtime.Composable
@@ -36,6 +37,7 @@ import androidx.navigation.NavController
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.ti4n.freechat.R
 import com.ti4n.freechat.di.dataStore
+import com.ti4n.freechat.widget.Image
 import kotlinx.coroutines.launch
 
 @Composable
@@ -68,12 +70,9 @@ fun TransferRiskView(navController: NavController) {
                     .padding(vertical = 10.dp)
                     .align(Alignment.Center)
             )
-            com.ti4n.freechat.widget.Image(
-                mipmap = R.mipmap.nav_back, modifier = Modifier
-                    .padding(14.dp)
-                    .align(Alignment.CenterStart)
-                    .clickable { navController.navigateUp() }
-            )
+            IconButton(onClick = { navController.navigateUp() }) {
+                Image(mipmap = R.mipmap.nav_back)
+            }
         }
         Divider(thickness = 1.dp, color = Color(0xFFE6E6E6))
         LazyColumn(

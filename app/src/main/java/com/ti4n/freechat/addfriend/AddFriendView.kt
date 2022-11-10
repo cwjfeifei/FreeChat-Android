@@ -17,6 +17,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.Divider
+import androidx.compose.material.IconButton
 import androidx.compose.material.Text
 import androidx.compose.material.TopAppBar
 import androidx.compose.runtime.Composable
@@ -81,10 +82,9 @@ fun AddFriendView(navController: NavController) {
             TopAppBar(backgroundColor = Color(0xFFF0F0F0), title = {
                 HomeTitle(R.string.add_friend)
             }, elevation = 0.dp, modifier = Modifier.statusBarsPadding(), navigationIcon = {
-                Image(mipmap = R.mipmap.nav_back,
-                    modifier = Modifier
-                        .clickable { navController.navigateUp() }
-                        .padding(14.dp))
+                IconButton(onClick = { navController.navigateUp() }) {
+                    Image(mipmap = R.mipmap.nav_back)
+                }
             }, actions = {
                 Image(mipmap = R.mipmap.scan_black, modifier = Modifier
                     .clickable {

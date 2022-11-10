@@ -66,7 +66,7 @@ fun TokenDetailView(
             HomeTitle(token?.Name ?: "")
         }, navigationIcon = {
             IconButton(onClick = { navController.navigateUp() }) {
-                Icon(imageVector = Icons.Default.ArrowBack, contentDescription = null)
+                Image(mipmap = R.mipmap.nav_back)
             }
         }, elevation = 0.dp)
         LazyColumn(

@@ -81,7 +81,7 @@ fun TokenDetailSimplyView(
             HomeTitle(token?.Name ?: "")
         }, navigationIcon = {
             IconButton(onClick = { navController.navigateUp() }) {
-                Icon(imageVector = Icons.Default.ArrowBack, contentDescription = null)
+                Image(mipmap = R.mipmap.nav_back)
             }
         }, actions = {
             Text(text = stringResource(id = R.string.detail), Modifier.clickable {

@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.ButtonDefaults
+import androidx.compose.material.IconButton
 import androidx.compose.material.OutlinedButton
 import androidx.compose.material.Text
 import androidx.compose.runtime.*
@@ -77,13 +78,9 @@ fun PickFaceImageView(
                 .padding(horizontal = 24.dp)
                 .systemBarsPadding()
         ) {
-            Image(
-                mipmap = R.mipmap.nav_back,
-                modifier = Modifier
-                    .clickable { navController.navigateUp() }
-                    .padding(vertical = 16.dp)
-//                .align(Alignment.Start)
-            )
+            IconButton(onClick = { navController.navigateUp() }) {
+                Image(mipmap = R.mipmap.nav_back)
+            }
             Text(
                 text = stringResource(id = R.string.set_faceurl),
                 color = Color(0xFF1A1A1A),

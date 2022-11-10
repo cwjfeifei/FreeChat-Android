@@ -83,7 +83,7 @@ fun ConfirmTransactionView(navController: NavController, viewModel: SendMoneyVie
             HomeTitle(R.string.confirm_transaction)
         }, navigationIcon = {
             IconButton(onClick = { navController.navigateUp() }) {
-                Icon(imageVector = Icons.Default.ArrowBack, contentDescription = null)
+                Image(mipmap = R.mipmap.nav_back)
             }
         }, elevation = 0.dp)
         Spacer(modifier = Modifier.height(40.dp))

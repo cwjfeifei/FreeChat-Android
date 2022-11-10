@@ -71,13 +71,14 @@ fun WalletView(navController: NavController, viewModel: WalletViewModel = hiltVi
     Column(
         modifier = Modifier
             .fillMaxSize()
+            .background(Color.White)
             .systemBarsPadding()
     ) {
         TopAppBar(backgroundColor = Color(0xFFF0F0F0), title = {
             HomeTitle(R.string.wallet)
         }, navigationIcon = {
             IconButton(onClick = { navController.navigateUp() }) {
-                Icon(imageVector = Icons.Default.ArrowBack, contentDescription = null)
+                Image(mipmap = R.mipmap.nav_back)
             }
         })
         Spacer(modifier = Modifier.height(20.dp))

@@ -100,8 +100,8 @@ fun SwapView(navController: NavController, viewModel: SwapViewModel = hiltViewMo
     Box(modifier = Modifier.fillMaxSize()) {
         Image(
             mipmap = R.mipmap.transfer_bg,
-            modifier = Modifier.fillMaxWidth(),
-            contentScale = ContentScale.FillWidth
+            modifier = Modifier.fillMaxSize(),
+            contentScale = ContentScale.FillBounds
         )
         Column(
             modifier = Modifier
@@ -112,7 +112,7 @@ fun SwapView(navController: NavController, viewModel: SwapViewModel = hiltViewMo
                 HomeTitle("闪兑")
             }, navigationIcon = {
                 IconButton(onClick = { navController.navigateUp() }) {
-                    Icon(imageVector = Icons.Default.ArrowBack, contentDescription = null)
+                    Image(mipmap = R.mipmap.nav_back)
                 }
             }, elevation = 0.dp)
             Card(
@@ -341,15 +341,17 @@ fun SwapView(navController: NavController, viewModel: SwapViewModel = hiltViewMo
                 title = "收到的最低数额滑点后（0.05%）",
                 value = "${(quoteAmount.toDoubleOrNull() ?: 0.0) * 0.95} ${toToken?.symbol ?: ""}"
             )
+
             ItemInfo(title = "网络费用", value = "$$gasUSD")
             Spacer(modifier = Modifier.height(8.dp))
+            Spacer(modifier = Modifier.weight(1f))
             TextButton(
                 onClick = {
                     viewModel.swap("")
                 },
                 Modifier
-                    .height(44.dp)
-                    .fillMaxWidth(), shape = RoundedCornerShape(4.dp),
+                    .height(42.dp)
+                    .fillMaxWidth(), shape = RoundedCornerShape(2.dp),
                 colors = ButtonDefaults.buttonColors(
                     backgroundColor = Color(0xFF3879FD),
                     contentColor = Color.White

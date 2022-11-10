@@ -20,6 +20,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Badge
 import androidx.compose.material.BadgedBox
 import androidx.compose.material.ButtonDefaults
+import androidx.compose.material.IconButton
 import androidx.compose.material.Text
 import androidx.compose.material.TextButton
 import androidx.compose.material.TopAppBar
@@ -58,10 +59,9 @@ fun NewContactView(navController: NavController, viewModel: NewContactViewModel 
             .statusBarsPadding()
     ) {
         TopAppBar(navigationIcon = {
-            Image(R.mipmap.nav_back,
-                modifier = Modifier
-                    .clickable { navController.navigateUp() }
-                    .padding(14.dp))
+            IconButton(onClick = { navController.navigateUp() }) {
+                Image(mipmap = R.mipmap.nav_back)
+            }
         }, title = {
             Text(
                 text = stringResource(id = R.string.new_friend),

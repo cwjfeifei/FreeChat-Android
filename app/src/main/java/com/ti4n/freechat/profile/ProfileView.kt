@@ -156,10 +156,9 @@ fun ProfileView(
                     backgroundColor = Color.Transparent,
                     title = {},
                     navigationIcon = {
-                        Image(mipmap = R.mipmap.me_back,
-                            modifier = Modifier
-                                .clickable { navController.navigateUp() }
-                                .padding(horizontal = 16.dp))
+                        IconButton(onClick = { navController.navigateUp() }) {
+                            Image(mipmap = R.mipmap.me_back)
+                        }
                     },
                     elevation = 0.dp
                 )
