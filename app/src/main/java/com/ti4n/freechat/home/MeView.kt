@@ -73,15 +73,14 @@ fun MeView(
         androidx.compose.foundation.Image(
             painter = rememberAsyncImagePainter(
                 ImageRequest.Builder(context)
-                    .data(data = me?.faceURL?.ifEmpty { DEFAULT_FACEURL })
+                    .data(data =  me?.faceURL?.ifEmpty { DEFAULT_FACEURL })
                     .build(),
-                imageLoader = imageLoader
+                imageLoader = imageLoader,
             ),
             contentDescription = null,
-            modifier = modifier
-                .fillMaxWidth()
-                .aspectRatio(1f),
-            contentScale = ContentScale.FillBounds
+            modifier = Modifier
+                .fillMaxWidth(),
+            contentScale = ContentScale.Crop
         )
         LazyColumn(modifier = Modifier.background(Color.White)) {
             me?.let {
@@ -149,7 +148,6 @@ fun MeInfoItem(
             contentDescription = null,
             modifier = Modifier
                 .constrainAs(faceView) {
-                    top.linkTo(parent.top, margin = 20.dp)
                     bottom.linkTo(parent.bottom, margin = 20.dp)
                     start.linkTo(parent.start, margin = 16.dp)
                 }
