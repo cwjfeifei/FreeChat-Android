@@ -60,6 +60,8 @@ class SwapViewModel @Inject constructor(
 
     val impact = MutableStateFlow("")
 
+    val usdt = MutableStateFlow<ERC20Token?>(null)
+
     init {
         viewModelScope.launch {
             try {
@@ -69,6 +71,7 @@ class SwapViewModel @Inject constructor(
                 toToken.value = tokens[1]
                 setFromToken(fromToken.value!!)
                 setToToken(toToken.value!!)
+                usdt.value = tokens.find { it.symbol == "USDT" }
             } catch (e: Exception) {
                 e.printStackTrace()
             }
@@ -82,7 +85,7 @@ class SwapViewModel @Inject constructor(
     fun setFromToken(from: ERC20Token) {
         fromToken.value = from
         viewModelScope.launch {
-            fromUSD.value = getRate(from.symbol)
+            fromUSD.value = getRate(from)
             calculateRate()
         }
         getFromBalance()
@@ -91,7 +94,7 @@ class SwapViewModel @Inject constructor(
     fun setToToken(to: ERC20Token) {
         toToken.value = to
         viewModelScope.launch {
-            toUSD.value = getRate(to.symbol)
+            toUSD.value = getRate(to)
             calculateRate()
         }
         getToBalance()
@@ -131,10 +134,9 @@ class SwapViewModel @Inject constructor(
                             ?: 0.0) * 10.0.pow(fromToken.value!!.Decimals)).toBigDecimal()
                             .toPlainString()
                     )
-                    gasUSD.value =
-                        ((EthUtil.gasPrice()?.toFloat() ?: 0F) * quote.estimatedGas.toFloat() *
-                                (freeChatApiService.getRate("ETH-USD").data.firstOrNull()?.idxPx
-                                    ?: "1").toFloat()).toWei(18)
+                    gasUSD.value = ((EthUtil.gasPrice()?.toFloat()
+                        ?: 0F) * quote.estimatedGas.toFloat() * (freeChatApiService.getRate("ETH-USD").data.firstOrNull()?.idxPx
+                        ?: "1").toFloat()).toWei(18)
                     quoteAmount.value = (quote.toTokenAmount.toDoubleOrNull()
                         ?: 0.0).toWei(toToken.value!!.Decimals)
                     impact.value =
@@ -146,9 +148,20 @@ class SwapViewModel @Inject constructor(
         }
     }
 
-    suspend fun getRate(symbol: String): String {
-        return freeChatApiService.getRate("$symbol-USD").data.firstOrNull()?.idxPx
-            ?: "1"
+    suspend fun getRate(token: ERC20Token): String {
+        return if (token.symbol == "FCC") {
+            ((swapApiService.quote(
+                token.contractAddress,
+                usdt.value?.contractAddress ?: "0xdac17f958d2ee523a2206206994597c13d831ec7",
+                (10.0.pow(token.Decimals)).toBigDecimal().stripTrailingZeros()
+                    .toPlainString()
+            ).toTokenAmount.toDoubleOrNull() ?: 0.0) / (10.0.pow(
+                usdt.value?.Decimals ?: 6
+            ))).toBigDecimal()
+                .toPlainString()
+        } else {
+            freeChatApiService.getRate("${token.symbol}-USD").data.firstOrNull()?.idxPx ?: "1"
+        }
     }
 
     fun swap(password: String) {
