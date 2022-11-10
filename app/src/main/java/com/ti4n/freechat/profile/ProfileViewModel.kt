@@ -51,7 +51,7 @@ class ProfileViewModel @Inject constructor(
                     if (f != null) {
                         userInfo.value = f
                     } else {
-                        userInfo.value = IM.getUserInfo(toUserId).toBaseInfo()
+                        userInfo.value = IM.getUserInfo(toUserId)?.toBaseInfo()
                     }
                 }
             }

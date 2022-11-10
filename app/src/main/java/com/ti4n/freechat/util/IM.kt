@@ -443,7 +443,7 @@ object IM {
             }
 
             override fun onSuccess(data: List<UserInfo>) {
-                val info = data.first()
+                val info = data.firstOrNull()
                 it.resume(info)
             }
         }, listOf(toUserId))

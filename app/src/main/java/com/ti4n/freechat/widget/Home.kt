@@ -51,7 +51,8 @@ fun HomeTitle(title: String, titleColor: Color = Color.Black) {
 fun SearchView(
     showSearchView: MutableState<Boolean>,
     searchText: MutableState<String>,
-    hintText: String = stringResource(id = R.string.search)
+    hintText: String = stringResource(id = R.string.search),
+    onSearchClick: () -> Unit = {},
 ) {
     val (isShowSearchView, setShowSearchView) = showSearchView
     val (searchText, setSearchText) = searchText
@@ -96,7 +97,7 @@ fun SearchView(
                     textStyle = TextStyle(fontSize = 14.sp, color = Color(0xFFB3B3B3)),
                     keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),
                     keyboardActions = KeyboardActions(onSearch = {
-
+                        onSearchClick()
                     }),
                     placeholder = {
                         Text(
