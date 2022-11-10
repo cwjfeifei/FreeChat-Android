@@ -174,12 +174,18 @@ fun AddFriendView(navController: NavController) {
     }
 }
 
-suspend fun onSearchFriend(context: Context, uid: String, navController: NavController) {
-    val userInfo = IM.getUserInfo(uid)
-    if (userInfo == null) {
-        Toast.makeText(context, R.string.user_not_exist, Toast.LENGTH_SHORT).show()
+suspend fun onSearchFriend(context: Context, searchText : String, navController: NavController) {
+    if (searchText.isEmpty()) {
+        Toast.makeText(context, R.string.search_uid_invalid, Toast.LENGTH_SHORT).show()
     } else {
-        navController.navigate(Route.Profile.jump(uid))
+//        val uID = "0x903d6a8b2407ccdc388b46f3c79d088db25186ab"
+        val uID = searchText.trim()
+        val userInfo = IM.getUserInfo(uID)
+        if (userInfo == null) {
+            Toast.makeText(context, R.string.user_not_exist, Toast.LENGTH_SHORT).show()
+        } else {
+            navController.navigate(Route.Profile.jump(uID))
+        }
     }
 
 }
