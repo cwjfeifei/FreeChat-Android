@@ -1,5 +1,7 @@
 package com.ti4n.freechat.addfriend
 
+import android.content.Context
+import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.expandVertically
@@ -20,19 +22,15 @@ import androidx.compose.material.Divider
 import androidx.compose.material.IconButton
 import androidx.compose.material.Text
 import androidx.compose.material.TopAppBar
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.SideEffect
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.asImageBitmap
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
@@ -43,10 +41,12 @@ import com.journeyapps.barcodescanner.ScanContract
 import com.journeyapps.barcodescanner.ScanOptions
 import com.ti4n.freechat.R
 import com.ti4n.freechat.Route
+import com.ti4n.freechat.model.im.toBaseInfo
 import com.ti4n.freechat.util.IM
 import com.ti4n.freechat.widget.HomeTitle
 import com.ti4n.freechat.widget.Image
 import com.ti4n.freechat.widget.SearchView
+import kotlinx.coroutines.launch
 
 @Composable
 fun AddFriendView(navController: NavController) {
@@ -63,6 +63,9 @@ fun AddFriendView(navController: NavController) {
     val searchText = remember {
         mutableStateOf("")
     }
+
+    val context = LocalContext.current
+    val scope = rememberCoroutineScope()
     val barcodeLauncher = rememberLauncherForActivityResult(ScanContract()) { result ->
         result.contents?.let {
             showSearchView.component2()(true)
@@ -100,14 +103,24 @@ fun AddFriendView(navController: NavController) {
             })
         }
         Spacer(modifier = Modifier.height(8.dp))
-        SearchView(showSearchView = showSearchView, searchText = searchText, hintText = "FCID")
+        SearchView(
+            showSearchView = showSearchView,
+            searchText = searchText,
+            hintText = "FCID",
+            onSearchClick = {
+                scope.launch {
+                    onSearchFriend(context = context, searchText.value, navController)
+                }
+            })
         Spacer(modifier = Modifier.height(8.dp))
         if (!showSearchView.value) {
             Spacer(modifier = Modifier.height(8.dp))
             Text(
                 text = "FCID: ${meInfo?.userID}",
                 color = Color(0xFF1A1A1A),
-                fontWeight = FontWeight.Medium
+                fontWeight = FontWeight.Medium,
+                modifier = Modifier.padding(start = 14.dp, end = 14.dp),
+                textAlign = TextAlign.Center
             )
             Spacer(modifier = Modifier.height(24.dp))
             val qrcode =
@@ -131,7 +144,11 @@ fun AddFriendView(navController: NavController) {
                 Row(
                     Modifier
                         .fillMaxWidth()
-                        .clickable { navController.navigate(Route.Profile.jump(searchText.value)) },
+                        .clickable {
+                            scope.launch {
+                                onSearchFriend(context = context, searchText.value, navController)
+                            }
+                        },
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Spacer(modifier = Modifier.width(16.dp))
@@ -155,4 +172,20 @@ fun AddFriendView(navController: NavController) {
             }
         }
     }
+}
+
+suspend fun onSearchFriend(context: Context, searchText : String, navController: NavController) {
+    if (searchText.isEmpty()) {
+        Toast.makeText(context, R.string.search_uid_invalid, Toast.LENGTH_SHORT).show()
+    } else {
+//        val uID = "0x903d6a8b2407ccdc388b46f3c79d088db25186ab"
+        val uID = searchText.trim()
+        val userInfo = IM.getUserInfo(uID)
+        if (userInfo == null) {
+            Toast.makeText(context, R.string.user_not_exist, Toast.LENGTH_SHORT).show()
+        } else {
+            navController.navigate(Route.Profile.jump(uID))
+        }
+    }
+
 }

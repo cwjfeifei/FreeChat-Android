@@ -148,6 +148,8 @@
     <string name="send_request">发送申请</string>
 
     <string name="search">搜索</string>
+    <string name="search_uid_invalid">请输入有效的用户ID</string>
+    <string name="user_not_exist">用户不存在</string>
     <string name="three_day">三天内</string>
     <string name="three_day_before">三天前</string>
     <string name="already_accept">已添加</string>

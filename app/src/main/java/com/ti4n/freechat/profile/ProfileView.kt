@@ -1,5 +1,7 @@
 package com.ti4n.freechat.profile
 
+import android.os.Build
+import android.text.TextUtils
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -13,6 +15,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -20,11 +23,18 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import coil.ImageLoader
 import coil.compose.AsyncImage
+import coil.compose.rememberAsyncImagePainter
+import coil.decode.GifDecoder
+import coil.decode.ImageDecoderDecoder
+import coil.request.ImageRequest
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.ti4n.freechat.R
 import com.ti4n.freechat.Route
+import com.ti4n.freechat.util.AnimatedPngDecoder
 import com.ti4n.freechat.util.IM
+import com.ti4n.freechat.util.IM.DEFAULT_FACEURL
 import com.ti4n.freechat.widget.CustomPaddingTextField
 import com.ti4n.freechat.widget.Image
 import io.openim.android.sdk.models.FriendInfo
@@ -50,6 +60,17 @@ fun ProfileView(
     var refuseMessage by remember {
         mutableStateOf("")
     }
+
+    val context = LocalContext.current
+    val imageLoader = ImageLoader.Builder(context).components {
+        if (Build.VERSION.SDK_INT >= 28) {
+            add(ImageDecoderDecoder.Factory())
+        } else {
+            add(GifDecoder.Factory())
+        }
+        add(AnimatedPngDecoder.Factory())
+    }.build()
+
     SideEffect {
         systemUiController.setStatusBarColor(
             color = Color.Transparent
@@ -144,12 +165,17 @@ fun ProfileView(
             Box(
                 modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.TopCenter
             ) {
-                Image(
-                    mipmap = R.mipmap.mine_bg,
+                androidx.compose.foundation.Image(
+                    painter = rememberAsyncImagePainter(
+                        ImageRequest.Builder(context)
+                            .data(data = userInfo?.faceURL ?: DEFAULT_FACEURL)
+                            .build(),
+                        imageLoader = imageLoader,
+                    ),
+                    contentDescription = null,
                     modifier = Modifier
-                        .fillMaxWidth()
-                        .aspectRatio(700 / 428f),
-                    contentScale = ContentScale.FillBounds
+                        .fillMaxWidth(),
+                    contentScale = ContentScale.Crop
                 )
                 TopAppBar(
                     modifier = Modifier.statusBarsPadding(),
@@ -166,7 +192,7 @@ fun ProfileView(
             LazyColumn(modifier = Modifier.background(Color.White)) {
                 item {
                     ProfileInfoItem(
-                        userInfo?.faceURL ?: "",
+                        userInfo?.faceURL ?: DEFAULT_FACEURL,
                         userInfo?.nickname ?: "",
                         userInfo?.remark ?: "",
                         userInfo?.userID ?: "",

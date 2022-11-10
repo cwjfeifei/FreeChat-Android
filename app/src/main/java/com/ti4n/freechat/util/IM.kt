@@ -443,10 +443,20 @@ object IM {
             }
 
             override fun onSuccess(data: List<UserInfo>) {
-                val info = data.first()
+                val info = data.firstOrNull()
                 it.resume(info)
             }
         }, listOf(toUserId))
+    }
+
+    // for Test
+    fun dump(userInfo: UserInfo) {
+        userInfo?.let {
+            Log.d(
+                TAG,
+                "userInfo: " + userInfo.userID + " / " + userInfo.email + " / " + userInfo.faceURL + " / "  + userInfo.nickname + " / "  + userInfo.remark
+            )
+        }
     }
 
     suspend fun pinConversation(conversationId: String, isPin: Boolean) = suspendCoroutine {
