@@ -37,8 +37,8 @@ object IM {
 
     fun init(context: Context) {
         imClient.initSDK(Platform.ANDROID,
-            "http://47.57.185.242:10002",
-            "ws://47.57.185.242:10001",
+            "http://8.218.80.2:10002",
+            "ws://8.218.80.2:10001",
             context.cacheDir.absolutePath,
             Log.DEBUG,
             "minio",
