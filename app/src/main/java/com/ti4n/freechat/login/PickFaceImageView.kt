@@ -6,6 +6,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.IconButton
@@ -43,12 +44,12 @@ fun PickFaceImageView(
 ) {
     val context = LocalContext.current
 
-    var faceURL by remember {
-        mutableStateOf(viewModel.faceURL.value)
-    }
+    val faceURL by viewModel.faceURL.collectAsState()
     var gender by remember {
         mutableStateOf(viewModel.gender.value)
     }
+
+    val faceUrls by viewModel.faceUrls.collectAsState()
 
     val imageLoader = ImageLoader.Builder(context).components {
         if (Build.VERSION.SDK_INT >= 28) {
@@ -58,10 +59,6 @@ fun PickFaceImageView(
         }
         add(AnimatedPngDecoder.Factory())
     }.build()
-
-    LaunchedEffect(Unit) {
-        // TODO viewMode-> request face images List
-    }
 
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -109,10 +106,8 @@ fun PickFaceImageView(
 
         androidx.compose.foundation.Image(
             painter = rememberAsyncImagePainter(
-                ImageRequest.Builder(context).data(data = "https://freechat.world/images/face.apng")
+                ImageRequest.Builder(context).data(data = faceURL)
                     .build(),
-//              ImageRequest.Builder(context).data(data = "https://pic-go-bed.oss-cn-beijing.aliyuncs.com/img/20220316151929.png")
-//                    .build(),
                 imageLoader = imageLoader,
             ),
             contentDescription = null,
@@ -130,35 +125,26 @@ fun PickFaceImageView(
             GenderItem(
                 title = stringResource(id = R.string.male), isSelected = gender == 1
             ) {
-                viewModel.setGender(1)
+                gender = 1
             }
             Spacer(modifier = Modifier.width(2.dp))
             GenderItem(
                 title = stringResource(id = R.string.female), isSelected = gender == 2
             ) {
-                viewModel.setGender(2)
+                gender = 2
             }
         }
 //        Divider(color = Color(0xFFEBEBEB), thickness = 0.5.dp, startIndent = 2.dp)
-        Box(modifier = Modifier
-            .fillMaxWidth()
-            .height(96.dp)) {
-//            val items by viewModel.faceImagesData.collectAsState()
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(96.dp)
+        ) {
             LazyRow(modifier = Modifier.background(Color.White)) {
-                item(10) {
-                    // FIXME show list
-//                    items.forEach {
-                    ItemFaceImage() {
+                items(if (gender == 1) faceUrls.male else faceUrls.female) {
+                    ItemFaceImage(it) {
+                        viewModel.setFaceURL(it)
                     }
-                    ItemFaceImage() {
-                    }
-                    ItemFaceImage() {
-                    }
-                    ItemFaceImage() {
-                    }
-                    ItemFaceImage() {
-                    }
-//                    }
                 }
             }
         }
@@ -167,7 +153,7 @@ fun PickFaceImageView(
 }
 
 @Composable
-fun ItemFaceImage(click: () -> Unit) {
+fun ItemFaceImage(faceUrl: String, click: () -> Unit) {
     Column(
         Modifier
             .fillMaxSize()
@@ -175,7 +161,7 @@ fun ItemFaceImage(click: () -> Unit) {
             .padding(horizontal = 2.dp),
         horizontalAlignment = Alignment.CenterHorizontally) {
         AsyncImage(
-            model = "https://freechat.world/images/face.apng", contentDescription = null,
+            model = faceUrl, contentDescription = null,
             Modifier
                 .size(96.dp)
                 .clip(

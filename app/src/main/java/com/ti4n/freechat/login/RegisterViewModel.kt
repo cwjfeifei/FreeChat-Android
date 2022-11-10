@@ -13,6 +13,8 @@ import com.ti4n.freechat.db.UserBaseInfo
 import com.ti4n.freechat.model.request.GetSelfInfo
 import com.ti4n.freechat.model.request.GetToken
 import com.ti4n.freechat.model.request.Register
+import com.ti4n.freechat.model.response.FaceImageInfo
+import com.ti4n.freechat.network.FreeChatApiService
 import com.ti4n.freechat.network.FreeChatIMService
 import com.ti4n.freechat.util.EthUtil
 import com.ti4n.freechat.util.IM
@@ -31,6 +33,7 @@ private const val TAG = "RegisterViewModel"
 @HiltViewModel
 class RegisterViewModel @Inject constructor(
     val imService: FreeChatIMService,
+    val freeChatApiService: FreeChatApiService,
     val db: AppDataBase
 ) : ViewModel() {
 
@@ -48,6 +51,8 @@ class RegisterViewModel @Inject constructor(
     val gender = MutableStateFlow(2)  // 1 male 2 female
     val email = MutableStateFlow("")
 
+    val faceUrls = MutableStateFlow(FaceImageInfo(emptyList(), emptyList()))
+
     init {
         viewModelScope.launch {
             var selfInfo = IM.currentUserInfo.value
@@ -58,6 +63,8 @@ class RegisterViewModel @Inject constructor(
                 birth.value = it.birth
                 email.value = if (it.email == null) "" else it.email
             }
+            faceUrls.value =
+                freeChatApiService.getAvatars().data ?: FaceImageInfo(emptyList(), emptyList())
         }
     }
 
