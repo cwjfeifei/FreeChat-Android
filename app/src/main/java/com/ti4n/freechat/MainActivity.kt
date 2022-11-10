@@ -3,6 +3,7 @@
 package com.ti4n.freechat
 
 import android.os.Bundle
+import android.widget.Toast
 import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.animation.ExperimentalAnimationApi
@@ -16,6 +17,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.core.view.WindowCompat
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.lifecycleScope
 import com.google.accompanist.navigation.animation.AnimatedNavHost
 import com.google.accompanist.navigation.animation.rememberAnimatedNavController
 import com.google.accompanist.navigation.material.ExperimentalMaterialNavigationApi
@@ -34,8 +36,13 @@ import com.ti4n.freechat.ui.theme.FreeChatTheme
 import com.ti4n.freechat.util.*
 import com.ti4n.freechat.widget.BigImageView
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+val toast = MutableSharedFlow<Int>(replay = 0, extraBufferCapacity = 1)
 
 @OptIn(ExperimentalAnimationApi::class, ExperimentalMaterialNavigationApi::class)
 @AndroidEntryPoint
@@ -148,6 +155,12 @@ class MainActivity : AppCompatActivity() {
                         }
                     }
                 }
+            }
+        }
+
+        lifecycleScope.launch {
+            toast.collectLatest {
+                Toast.makeText(this@MainActivity, it, Toast.LENGTH_SHORT).show()
             }
         }
     }

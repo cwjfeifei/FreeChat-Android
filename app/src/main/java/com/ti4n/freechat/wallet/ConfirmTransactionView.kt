@@ -17,9 +17,12 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.BottomSheetScaffold
+import androidx.compose.material.BottomSheetValue
 import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.Card
 import androidx.compose.material.Divider
+import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.OutlinedButton
@@ -28,10 +31,13 @@ import androidx.compose.material.TextButton
 import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.rememberBottomSheetScaffoldState
+import androidx.compose.material.rememberBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Alignment.Companion.End
@@ -52,7 +58,9 @@ import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.ti4n.freechat.R
 import com.ti4n.freechat.widget.HomeTitle
 import com.ti4n.freechat.widget.Image
+import kotlinx.coroutines.launch
 
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun ConfirmTransactionView(navController: NavController, viewModel: SendMoneyViewModel) {
     val toToken by viewModel.selectedToken.collectAsState()
@@ -72,278 +80,311 @@ fun ConfirmTransactionView(navController: NavController, viewModel: SendMoneyVie
             color = Color.White
         )
     }
+    val sheetstate = rememberBottomSheetState(initialValue = BottomSheetValue.Collapsed)
+    val scaffoldState = rememberBottomSheetScaffoldState(bottomSheetState = sheetstate)
+    val scope = rememberCoroutineScope()
 
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .systemBarsPadding(),
-        horizontalAlignment = CenterHorizontally
+    BottomSheetScaffold(
+        scaffoldState = scaffoldState,
+        sheetContent = {
+            InputPasswordBottomSheet(
+                close = { scope.launch { sheetstate.collapse() } },
+                forgotPassword = { },
+                confirm = {
+                    scope.launch { sheetstate.collapse() }
+                    viewModel.transfer(it)
+                }
+            )
+        },
+        sheetBackgroundColor = Color.White,
+        sheetPeekHeight = 0.dp,
+        sheetShape = RoundedCornerShape(topStart = 12.dp, topEnd = 12.dp)
     ) {
-        TopAppBar(backgroundColor = Color.Transparent, title = {
-            HomeTitle(R.string.confirm_transaction)
-        }, navigationIcon = {
-            IconButton(onClick = { navController.navigateUp() }) {
-                Image(mipmap = R.mipmap.nav_back)
-            }
-        }, elevation = 0.dp)
-        Spacer(modifier = Modifier.height(40.dp))
-        Box(Modifier.align(CenterHorizontally)) {
-            Image(
-                mipmap = R.mipmap.jiaoyi, modifier = Modifier
-                    .offset(x = (-20).dp)
-                    .size(60.dp)
-            )
-            AsyncImage(
-                model = toToken?.LogoURI, null, modifier = Modifier
-                    .offset(x = 20.dp)
-                    .size(60.dp)
-            )
-        }
-        Spacer(modifier = Modifier.height(16.dp))
-        Text(
-            text = stringResource(id = R.string.transfer),
-            fontSize = 20.sp,
-            color = Color(0xFF1A1A1A),
-            fontWeight = FontWeight.Bold
-        )
-        Spacer(modifier = Modifier.height(8.dp))
-        Text(
-            text = "$amount ${toToken?.symbol}",
-            fontSize = 20.sp,
-            color = Color(0xFF1A1A1A),
-            fontWeight = FontWeight.Bold
-        )
-        Spacer(
+        Column(
             modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 16.dp, vertical = 20.dp)
-                .height(1.dp)
-                .background(
-                    Color(0xFFDBDBDB)
+                .fillMaxSize()
+                .background(Color.White)
+                .systemBarsPadding(),
+            horizontalAlignment = CenterHorizontally
+        ) {
+            TopAppBar(backgroundColor = Color.Transparent, title = {
+                HomeTitle(R.string.confirm_transaction)
+            }, navigationIcon = {
+                IconButton(onClick = { navController.navigateUp() }) {
+                    Image(mipmap = R.mipmap.nav_back)
+                }
+            }, elevation = 0.dp)
+            Spacer(modifier = Modifier.height(40.dp))
+            Box(Modifier.align(CenterHorizontally)) {
+                Image(
+                    mipmap = R.mipmap.jiaoyi, modifier = Modifier
+                        .offset(x = (-20).dp)
+                        .size(60.dp)
                 )
-        )
-        Row(
-            Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 16.dp),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Card(
-                backgroundColor = Color(0xFFF7F7F7),
-                shape = RoundedCornerShape(8.dp),
-                modifier = Modifier
-                    .weight(1f)
-                    .height(124.dp),
-                elevation = 0.dp
-            ) {
-                Column(modifier = Modifier.padding(horizontal = 12.dp, vertical = 20.dp)) {
-                    Text(
-                        text = stringResource(id = R.string.send_address),
-                        fontSize = 16.sp,
-                        color = Color(0xFF1A1A1A),
-                        fontWeight = FontWeight.Bold
-                    )
-                    Spacer(modifier = Modifier.height(16.dp))
-                    Text(text = viewModel.fromAddress, maxLines = 1, overflow = TextOverflow.Ellipsis)
-                }
+                AsyncImage(
+                    model = toToken?.LogoURI, null, modifier = Modifier
+                        .offset(x = 20.dp)
+                        .size(60.dp)
+                )
             }
-            Image(mipmap = R.mipmap.jiantou, modifier = Modifier.padding(horizontal = 8.dp))
-            Card(
-                backgroundColor = Color(0xFFF7F7F7),
-                shape = RoundedCornerShape(8.dp),
-                modifier = Modifier
-                    .weight(1f)
-                    .height(124.dp),
-                elevation = 0.dp
-            ) {
-                Column(
-                    horizontalAlignment = End,
-                    modifier = Modifier.padding(horizontal = 12.dp, vertical = 20.dp)
-                ) {
-                    Text(
-                        text = stringResource(id = R.string.receive_account),
-                        fontSize = 16.sp,
-                        color = Color(0xFF1A1A1A),
-                        fontWeight = FontWeight.Bold
-                    )
-                    Spacer(modifier = Modifier.height(16.dp))
-                    Text(text = toAddress, overflow = TextOverflow.Ellipsis)
-                }
-            }
-        }
-        Spacer(modifier = Modifier.height(20.dp))
-        Row(
-            Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 16.dp)
-        ) {
+            Spacer(modifier = Modifier.height(16.dp))
             Text(
-                text = stringResource(id = R.string.consume_gas),
-                fontSize = 14.sp,
+                text = stringResource(id = R.string.transfer),
+                fontSize = 20.sp,
                 color = Color(0xFF1A1A1A),
                 fontWeight = FontWeight.Bold
             )
-            Spacer(modifier = Modifier.weight(1f))
-            Column(horizontalAlignment = End) {
-                Row {
-                    Text(
-                        text = "$${String.format("%.2f", usd)}",
-                        fontSize = 14.sp,
-                        color = Color(0xFF1B1B1B)
+            Spacer(modifier = Modifier.height(8.dp))
+            Text(
+                text = "$amount ${toToken?.symbol}",
+                fontSize = 20.sp,
+                color = Color(0xFF1A1A1A),
+                fontWeight = FontWeight.Bold
+            )
+            Spacer(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp, vertical = 20.dp)
+                    .height(1.dp)
+                    .background(
+                        Color(0xFFDBDBDB)
                     )
-                    Spacer(modifier = Modifier.width(6.dp))
-                    Text(
-                        text = "$eth ETH",
-                        fontSize = 14.sp,
-                        color = Color(0xFF1B1B1B),
-                        fontWeight = FontWeight.Bold
-                    )
+            )
+            Row(
+                Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Card(
+                    backgroundColor = Color(0xFFF7F7F7),
+                    shape = RoundedCornerShape(8.dp),
+                    modifier = Modifier
+                        .weight(1f)
+                        .height(124.dp),
+                    elevation = 0.dp
+                ) {
+                    Column(modifier = Modifier.padding(horizontal = 12.dp, vertical = 20.dp)) {
+                        Text(
+                            text = stringResource(id = R.string.send_address),
+                            fontSize = 16.sp,
+                            color = Color(0xFF1A1A1A),
+                            fontWeight = FontWeight.Bold
+                        )
+                        Spacer(modifier = Modifier.height(16.dp))
+                        Text(
+                            text = viewModel.fromAddress,
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis,
+                            color = Color(0xFF1A1A1A)
+                        )
+                    }
                 }
-                Spacer(modifier = Modifier.height(6.dp))
-                Text(
-                    text = stringResource(id = R.string.max_gas, "$maxEth ETH"),
-                    fontSize = 14.sp,
-                    color = Color(0xFF808080)
-                )
+                Image(mipmap = R.mipmap.jiantou, modifier = Modifier.padding(horizontal = 8.dp))
+                Card(
+                    backgroundColor = Color(0xFFF7F7F7),
+                    shape = RoundedCornerShape(8.dp),
+                    modifier = Modifier
+                        .weight(1f)
+                        .height(124.dp),
+                    elevation = 0.dp
+                ) {
+                    Column(
+                        horizontalAlignment = End,
+                        modifier = Modifier.padding(horizontal = 12.dp, vertical = 20.dp)
+                    ) {
+                        Text(
+                            text = stringResource(id = R.string.receive_account),
+                            fontSize = 16.sp,
+                            color = Color(0xFF1A1A1A),
+                            fontWeight = FontWeight.Bold
+                        )
+                        Spacer(modifier = Modifier.height(16.dp))
+                        Text(
+                            text = toAddress,
+                            overflow = TextOverflow.Ellipsis,
+                            color = Color(0xFF1A1A1A)
+                        )
+                    }
+                }
             }
-        }
-        Spacer(modifier = Modifier.height(16.dp))
-        Divider(
-            modifier = Modifier.padding(horizontal = 16.dp),
-            thickness = 1.dp,
-            color = Color(0xFFDBDBDB)
-        )
-        Spacer(modifier = Modifier.height(16.dp))
-        Row(Modifier.padding(horizontal = 16.dp)) {
-            Column {
+            Spacer(modifier = Modifier.height(20.dp))
+            Row(
+                Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp)
+            ) {
                 Text(
-                    text = stringResource(id = R.string.total_consume),
+                    text = stringResource(id = R.string.consume_gas),
                     fontSize = 14.sp,
                     color = Color(0xFF1A1A1A),
                     fontWeight = FontWeight.Bold
                 )
-                Spacer(modifier = Modifier.height(30.dp))
-                Text(
-                    text = stringResource(id = R.string.amount_gas),
-                    fontSize = 12.sp,
-                    color = Color(0xFF1A1A1A)
-                )
+                Spacer(modifier = Modifier.weight(1f))
+                Column(horizontalAlignment = End) {
+                    Row {
+                        Text(
+                            text = "$${String.format("%.2f", usd)}",
+                            fontSize = 14.sp,
+                            color = Color(0xFF1B1B1B)
+                        )
+                        Spacer(modifier = Modifier.width(6.dp))
+                        Text(
+                            text = "$eth ETH",
+                            fontSize = 14.sp,
+                            color = Color(0xFF1B1B1B),
+                            fontWeight = FontWeight.Bold
+                        )
+                    }
+                    Spacer(modifier = Modifier.height(6.dp))
+                    Text(
+                        text = stringResource(id = R.string.max_gas, "$maxEth ETH"),
+                        fontSize = 14.sp,
+                        color = Color(0xFF808080)
+                    )
+                }
             }
+            Spacer(modifier = Modifier.height(16.dp))
+            Divider(
+                modifier = Modifier.padding(horizontal = 16.dp),
+                thickness = 1.dp,
+                color = Color(0xFFDBDBDB)
+            )
+            Spacer(modifier = Modifier.height(16.dp))
+            Row(Modifier.padding(horizontal = 16.dp)) {
+                Column {
+                    Text(
+                        text = stringResource(id = R.string.total_consume),
+                        fontSize = 14.sp,
+                        color = Color(0xFF1A1A1A),
+                        fontWeight = FontWeight.Bold
+                    )
+                    Spacer(modifier = Modifier.height(30.dp))
+                    Text(
+                        text = stringResource(id = R.string.amount_gas),
+                        fontSize = 12.sp,
+                        color = Color(0xFF1A1A1A)
+                    )
+                }
+                Spacer(modifier = Modifier.weight(1f))
+                Column(
+                    horizontalAlignment = End,
+                    verticalArrangement = Arrangement.spacedBy(6.dp)
+                ) {
+                    Text(
+                        text = "$${String.format("%.2f", usd + amountUSD)}",
+                        fontSize = 14.sp,
+                        color = Color(0xFF1B1B1B)
+                    )
+                    Text(
+                        text = "$amount ${toToken?.symbol}+$eth ETH",
+                        fontSize = 14.sp,
+                        color = Color(0xFF1B1B1B),
+                        fontWeight = FontWeight.Bold
+                    )
+                    Text(
+                        text = stringResource(
+                            id = R.string.max_consume,
+                            "$amount ${toToken?.symbol}+$maxEth ETH"
+                        ),
+                        fontSize = 12.sp,
+                        color = Color(0xFF808080)
+                    )
+                }
+            }
+            Spacer(modifier = Modifier.height(16.dp))
+            Divider(
+                modifier = Modifier.padding(horizontal = 16.dp),
+                thickness = 1.dp,
+                color = Color(0xFFDBDBDB)
+            )
+            Spacer(modifier = Modifier.height(16.dp))
             Spacer(modifier = Modifier.weight(1f))
-            Column(horizontalAlignment = End, verticalArrangement = Arrangement.spacedBy(6.dp)) {
-                Text(
-                    text = "$${String.format("%.2f", usd + amountUSD)}",
-                    fontSize = 14.sp,
-                    color = Color(0xFF1B1B1B)
-                )
-                Text(
-                    text = "$amount ${toToken?.symbol}+$eth ETH",
-                    fontSize = 14.sp,
-                    color = Color(0xFF1B1B1B),
-                    fontWeight = FontWeight.Bold
-                )
-                Text(
-                    text = stringResource(
-                        id = R.string.max_consume,
-                        "$amount ${toToken?.symbol}+$maxEth ETH"
-                    ),
-                    fontSize = 12.sp,
-                    color = Color(0xFF808080)
-                )
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 20.dp),
+                horizontalArrangement = Arrangement.spacedBy(3.dp)
+            ) {
+                TextButton(
+                    onClick = { navController.navigateUp() },
+                    shape = RoundedCornerShape(0.dp),
+                    modifier = Modifier
+                        .weight(1f)
+                        .height(42.dp),
+                    colors = ButtonDefaults.buttonColors(
+                        backgroundColor = Color(0xFF3879FD), contentColor = Color.White
+                    )
+                ) {
+                    Text(
+                        text = stringResource(id = R.string.back),
+                        fontSize = 14.sp,
+                        fontWeight = FontWeight.Medium
+                    )
+                }
+                TextButton(
+                    onClick = { scope.launch { sheetstate.expand() } },
+                    shape = RoundedCornerShape(0.dp),
+                    modifier = Modifier
+                        .weight(1f)
+                        .height(42.dp),
+                    colors = ButtonDefaults.buttonColors(
+                        backgroundColor = Color(0xFF3879FD), contentColor = Color.White
+                    )
+                ) {
+                    Text(
+                        text = stringResource(id = R.string.transfer),
+                        fontSize = 14.sp,
+                        fontWeight = FontWeight.Medium
+                    )
+                }
             }
         }
-        Spacer(modifier = Modifier.height(16.dp))
-        Divider(
-            modifier = Modifier.padding(horizontal = 16.dp),
-            thickness = 1.dp,
-            color = Color(0xFFDBDBDB)
-        )
-        Spacer(modifier = Modifier.height(16.dp))
-        Spacer(modifier = Modifier.weight(1f))
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(top = 20.dp),
-            horizontalArrangement = Arrangement.spacedBy(3.dp)
-        ) {
-            TextButton(
-                onClick = { navController.navigateUp() },
-                shape = RoundedCornerShape(0.dp),
-                modifier = Modifier
-                    .weight(1f)
-                    .height(42.dp),
-                colors = ButtonDefaults.buttonColors(
-                    backgroundColor = Color(0xFF3879FD), contentColor = Color.White
-                )
-            ) {
-                Text(
-                    text = stringResource(id = R.string.back),
-                    fontSize = 14.sp,
-                    fontWeight = FontWeight.Medium
-                )
-            }
-            TextButton(
-                onClick = { viewModel.transfer() },
-                shape = RoundedCornerShape(0.dp),
-                modifier = Modifier
-                    .weight(1f)
-                    .height(42.dp),
-                colors = ButtonDefaults.buttonColors(
-                    backgroundColor = Color(0xFF3879FD), contentColor = Color.White
-                )
-            ) {
-                Text(
-                    text = stringResource(id = R.string.transfer),
-                    fontSize = 14.sp,
-                    fontWeight = FontWeight.Medium
-                )
-            }
-        }
-    }
 
-    if (showSuccessDialog) {
-        Dialog(onDismissRequest = { navController.navigateUp() }) {
-            Column(Modifier.background(Color.White, RoundedCornerShape(10.dp))) {
-                Spacer(modifier = Modifier.height(40.dp))
-                Image(mipmap = R.mipmap.success, modifier = Modifier.align(CenterHorizontally))
-                Spacer(modifier = Modifier.height(12.dp))
-                Text(
-                    text = stringResource(id = R.string.transaction_boardcasted),
-                    color = Color(0xFF4B6AF7),
-                    fontSize = 16.sp,
-                    modifier = Modifier.align(CenterHorizontally)
-                )
-                Spacer(modifier = Modifier.height(40.dp))
-                Divider(color = Color(0xFFE6E6E6))
-                Row(Modifier.fillMaxWidth()) {
+        if (showSuccessDialog) {
+            Dialog(onDismissRequest = { navController.navigateUp() }) {
+                Column(Modifier.background(Color.White, RoundedCornerShape(10.dp))) {
+                    Spacer(modifier = Modifier.height(40.dp))
+                    Image(mipmap = R.mipmap.success, modifier = Modifier.align(CenterHorizontally))
+                    Spacer(modifier = Modifier.height(12.dp))
                     Text(
-                        text = stringResource(id = R.string.finish_transaction),
-                        color = Color.Black,
-                        fontSize = 18.sp,
-                        modifier = Modifier
-                            .weight(1f)
-                            .clickable { navController.navigateUp() }
-                            .padding(vertical = 12.dp),
-                        style = TextStyle(textAlign = TextAlign.Center),
-                    )
-                    Spacer(
-                        modifier = Modifier
-                            .width(1.dp)
-                            .height(50.dp)
-                            .background(Color(0xFFE6E6E6))
-                    )
-                    Text(
-                        text = stringResource(id = R.string.watch_detail),
+                        text = stringResource(id = R.string.transaction_boardcasted),
                         color = Color(0xFF4B6AF7),
-                        fontSize = 18.sp,
-                        modifier = Modifier
-                            .weight(1f)
-                            .clickable {
-                                uriHandler.openUri("https://goerli.etherscan.io/tx/$transactionHash")
-                            }
-                            .padding(vertical = 12.dp),
-                        style = TextStyle(textAlign = TextAlign.Center)
+                        fontSize = 16.sp,
+                        modifier = Modifier.align(CenterHorizontally)
                     )
+                    Spacer(modifier = Modifier.height(40.dp))
+                    Divider(color = Color(0xFFE6E6E6))
+                    Row(Modifier.fillMaxWidth()) {
+                        Text(
+                            text = stringResource(id = R.string.finish_transaction),
+                            color = Color.Black,
+                            fontSize = 18.sp,
+                            modifier = Modifier
+                                .weight(1f)
+                                .clickable { navController.navigateUp() }
+                                .padding(vertical = 12.dp),
+                            style = TextStyle(textAlign = TextAlign.Center),
+                        )
+                        Spacer(
+                            modifier = Modifier
+                                .width(1.dp)
+                                .height(50.dp)
+                                .background(Color(0xFFE6E6E6))
+                        )
+                        Text(
+                            text = stringResource(id = R.string.watch_detail),
+                            color = Color(0xFF4B6AF7),
+                            fontSize = 18.sp,
+                            modifier = Modifier
+                                .weight(1f)
+                                .clickable {
+                                    uriHandler.openUri("https://goerli.etherscan.io/tx/$transactionHash")
+                                }
+                                .padding(vertical = 12.dp),
+                            style = TextStyle(textAlign = TextAlign.Center)
+                        )
+                    }
                 }
             }
         }

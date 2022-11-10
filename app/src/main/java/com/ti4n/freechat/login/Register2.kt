@@ -61,7 +61,8 @@ fun Register2View(
             Card(
                 shape = RoundedCornerShape(8.dp),
                 modifier = Modifier.fillMaxWidth(),
-                elevation = 4.dp
+                elevation = 4.dp,
+                backgroundColor = Color.White
             ) {
                 LazyVerticalGrid(
                     columns = GridCells.Fixed(3),

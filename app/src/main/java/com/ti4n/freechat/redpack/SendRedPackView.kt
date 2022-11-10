@@ -94,6 +94,7 @@ fun SendRedPackView(
     Column(
         modifier = Modifier
             .fillMaxSize()
+            .background(Color.White)
             .statusBarsPadding(),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {

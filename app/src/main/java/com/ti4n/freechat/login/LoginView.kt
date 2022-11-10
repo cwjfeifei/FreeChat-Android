@@ -2,10 +2,12 @@ package com.ti4n.freechat.login
 
 import androidx.compose.foundation.lazy.grid.itemsIndexed
 import android.widget.Toast
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -14,13 +16,16 @@ import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.ti4n.freechat.R
 import com.ti4n.freechat.Route
+import com.ti4n.freechat.widget.CustomPaddingTextField
 
 @Composable
 fun LoginView(
@@ -70,8 +75,8 @@ fun LoginView(
     ) {
         LazyVerticalGrid(
             columns = GridCells.Fixed(3),
-            verticalArrangement = Arrangement.spacedBy(12.dp),
-            horizontalArrangement = Arrangement.spacedBy(20.dp),
+            verticalArrangement = Arrangement.spacedBy(20.dp),
+            horizontalArrangement = Arrangement.spacedBy(15.dp),
             userScrollEnabled = false,
             modifier = Modifier
                 .fillMaxWidth(),
@@ -90,21 +95,34 @@ fun LoginView(
     }
 }
 
-@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun ItemInputWord(index: Int, word: String, preWords: List<String>, wordChange: (String) -> Unit) {
     var exp by remember { mutableStateOf(preWords.isNotEmpty()) }
     Row(verticalAlignment = Alignment.CenterVertically) {
         Text(text = "0$index".takeLast(2), color = Color(0xFF1A1A1A), fontSize = 14.sp)
-        Spacer(modifier = Modifier.width(4.dp))
+        Spacer(modifier = Modifier.width(6.dp))
 
-        OutlinedTextField(
+        CustomPaddingTextField(
             value = word,
             onValueChange = wordChange,
             singleLine = true,
-            modifier = Modifier.onFocusChanged {
-                exp = it.hasFocus
-            }
+            modifier = Modifier
+                .onFocusChanged {
+                    exp = it.hasFocus
+                }
+                .height(32.dp)
+                .border(1.dp, Color(0xFFE6E6E6), RoundedCornerShape(4.dp)),
+            colors = TextFieldDefaults.textFieldColors(
+                unfocusedIndicatorColor = Color.Transparent,
+                focusedIndicatorColor = Color.Transparent
+            ),
+            padding = PaddingValues(vertical = 8.dp, horizontal = 2.dp),
+            shape = RoundedCornerShape(4.dp),
+            textStyle = TextStyle(
+                fontSize = 12.sp,
+                color = Color(0xFF1A1A1A),
+                textAlign = TextAlign.Center
+            )
         )
     }
 }

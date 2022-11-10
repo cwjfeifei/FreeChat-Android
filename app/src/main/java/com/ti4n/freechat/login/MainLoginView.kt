@@ -10,6 +10,7 @@ import androidx.compose.foundation.text.ClickableText
 import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.Card
 import androidx.compose.material.Checkbox
+import androidx.compose.material.CheckboxDefaults
 import androidx.compose.material.IconButton
 import androidx.compose.material.OutlinedButton
 import androidx.compose.material.Snackbar
@@ -115,12 +116,19 @@ fun MainLoginView(navController: NavController) {
         }
         Spacer(modifier = Modifier.height(12.dp))
         Row(Modifier.fillMaxWidth()) {
-            Checkbox(checked = isAgree, onCheckedChange = {
-                isAgree = !isAgree
-                if (isAgree) {
-                    showTip = false
-                }
-            })
+            Checkbox(
+                checked = isAgree,
+                onCheckedChange = {
+                    isAgree = !isAgree
+                    if (isAgree) {
+                        showTip = false
+                    }
+                },
+                colors = CheckboxDefaults.colors(
+                    uncheckedColor = Color(0xFF666666),
+                    checkmarkColor = Color.White
+                )
+            )
             val text = buildAnnotatedString {
                 append(stringResource(id = R.string.agree_app_terms))
 
@@ -236,7 +244,8 @@ fun LoginCommonView(
                     .padding(horizontal = 24.dp)
                     .fillMaxWidth(),
                 elevation = 0.dp,
-                border = BorderStroke(1.dp, Color(0xFFE6E6E6))
+                border = BorderStroke(1.dp, Color(0xFFE6E6E6)),
+                backgroundColor = Color.White
             ) {
                 Column(
                     Modifier

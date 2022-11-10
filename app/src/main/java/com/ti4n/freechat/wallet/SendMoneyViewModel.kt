@@ -124,7 +124,7 @@ class SendMoneyViewModel @Inject constructor(
 
     }
 
-    fun transfer() {
+    fun transfer(password: String) {
         viewModelScope.launch {
             if (selectedToken.value?.symbol != "ETH") {
                 EthUtil.transferERC20(
@@ -133,7 +133,7 @@ class SendMoneyViewModel @Inject constructor(
                     amount.value,
                     selectedToken.value!!.contractAddress,
                     selectedToken.value!!.Decimals,
-                    "",
+                    password,
                 ).collectLatest {
                     transactionHash.value = it.transactionHash
                     db.recentTransferDao()
@@ -153,8 +153,8 @@ class SendMoneyViewModel @Inject constructor(
                     context,
                     toAddress.value,
                     amount.value,
-                    "",
-                ).collectLatest {
+                    password,
+                )?.collectLatest {
                     transactionHash.value = it.transactionHash
                     db.recentTransferDao()
                         .insert(RecentTransfer(toAddress.value, Date(System.currentTimeMillis())))

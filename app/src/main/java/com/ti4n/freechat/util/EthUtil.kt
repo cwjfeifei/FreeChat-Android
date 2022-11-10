@@ -4,8 +4,10 @@ import android.content.Context
 import android.util.Log
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
+import com.ti4n.freechat.R
 import com.ti4n.freechat.di.dataStore
 import com.ti4n.freechat.erc20.ERC20Token
+import com.ti4n.freechat.toast
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
@@ -82,13 +84,18 @@ object EthUtil {
     }
 
     suspend fun loadCredentials(context: Context, password: String) = withContext(Dispatchers.IO) {
-        WalletUtils.loadCredentials(
-            password, File(
-                context.cacheDir,
-                context.dataStore.data.map { it[stringPreferencesKey("file")] }.filterNotNull()
-                    .first()
+        try {
+            WalletUtils.loadCredentials(
+                password, File(
+                    context.cacheDir,
+                    context.dataStore.data.map { it[stringPreferencesKey("file")] }.filterNotNull()
+                        .first()
+                )
             )
-        )
+        } catch (e: Exception) {
+            toast.emit(R.string.wrong_password)
+            null
+        }
     }
 
     suspend fun gasPrice() = withContext(Dispatchers.IO) {
@@ -119,17 +126,21 @@ object EthUtil {
         to: String,
         amount: String,
         password: String = ""
-    ): Flow<EthSendTransaction> {
+    ): Flow<EthSendTransaction>? {
         val credentials = loadCredentials(context, password)
-        val value = Convert.toWei(amount, Convert.Unit.ETHER).toBigInteger()
-        val ethGetTransactionCount = transactionCount(credentials.address)
-        val gasPrice = gasPrice()
-        val rawTransaction = RawTransaction.createEtherTransaction(
-            ethGetTransactionCount, gasPrice, BigInteger.valueOf(21000), to, value
-        )
-        val signedMessage = TransactionEncoder.signMessage(rawTransaction, credentials)
-        val hexValue = Numeric.toHexString(signedMessage)
-        return web3.ethSendRawTransaction(hexValue).flowable().asFlow().flowOn(Dispatchers.IO)
+        if (credentials != null) {
+            val value = Convert.toWei(amount, Convert.Unit.ETHER).toBigInteger()
+            val ethGetTransactionCount = transactionCount(credentials.address)
+            val gasPrice = gasPrice()
+            val rawTransaction = RawTransaction.createEtherTransaction(
+                ethGetTransactionCount, gasPrice, BigInteger.valueOf(21000), to, value
+            )
+            val signedMessage = TransactionEncoder.signMessage(rawTransaction, credentials)
+            val hexValue = Numeric.toHexString(signedMessage)
+            return web3.ethSendRawTransaction(hexValue).flowable().asFlow().flowOn(Dispatchers.IO)
+        } else {
+            return null
+        }
     }
 
     suspend fun balanceOf(
