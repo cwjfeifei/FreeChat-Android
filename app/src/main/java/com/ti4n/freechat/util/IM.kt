@@ -196,9 +196,10 @@ object IM {
             }
 
             override fun onFriendAdded(u: FriendInfo?) {
-                u?.let {
+                u?.let { friend ->
                     val pre = friends.value.toMutableList()
-                    pre.add(it.toBaseInfo())
+                    pre.removeAll { it.userID == friend.userID }
+                    pre.add(friend.toBaseInfo())
                     friends.value = pre
                 }
             }
