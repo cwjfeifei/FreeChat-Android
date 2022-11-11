@@ -158,13 +158,13 @@ fun MeInfoItem(
         )
 
         Text(
-            text = if (TextUtils.isEmpty(nickname)) "" else nickname,
+            text = nickname,
             modifier = Modifier
                 .constrainAs(nicknameView) {
                     top.linkTo(faceView.top)
                     start.linkTo(faceView.end, margin = 12.dp)
                 }
-                .widthIn(0.dp, 160.dp),
+                .widthIn(0.dp, 240.dp),
             fontSize = 16.sp,
             maxLines = 1,
             overflow = TextOverflow.Ellipsis,

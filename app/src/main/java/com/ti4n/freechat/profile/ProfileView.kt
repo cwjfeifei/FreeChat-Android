@@ -379,7 +379,9 @@ fun ProfileInfoItem(
                     text = mark.ifEmpty { nickname },
                     fontSize = 16.sp,
                     color = Color.Black,
-                    fontWeight = FontWeight.Medium
+                    fontWeight = FontWeight.Medium,
+                    maxLines = 1,
+                    modifier = Modifier.widthIn(0.dp, 240.dp),
                 )
                 Spacer(modifier = Modifier.width(6.dp))
                 Image(mipmap = if (gender == 1) R.mipmap.male else R.mipmap.female)
