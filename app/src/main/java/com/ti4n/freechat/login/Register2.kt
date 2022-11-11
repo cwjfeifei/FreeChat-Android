@@ -37,57 +37,89 @@ fun Register2View(
     LaunchedEffect(Unit) {
         viewModel.shuffleWord()
     }
-    LoginCommonView(when (type) {
-        LoginType.Login -> R.string.input_mnemonic
-        LoginType.Register -> R.string.input_mnemonic_by_order
-    }, backClick = { navController.navigateUp() }, next = when (type) {
-        LoginType.Login -> R.string.login_freechat
-        LoginType.Register -> R.string.next
-    }, nextClick = {
-        if (viewModel.canRegister()) {
-            navController.navigate(
-                Route.SetPassword.jump(
-                    viewModel.words.value.joinToString(
-                        " "
+    Column(Modifier.verticalScroll(scrollState)) {
+        LoginCommonView(when (type) {
+            LoginType.Login -> R.string.input_mnemonic
+            LoginType.Register -> R.string.input_mnemonic_by_order
+        }, backClick = { navController.navigateUp() }, next = when (type) {
+            LoginType.Login -> R.string.login_freechat
+            LoginType.Register -> R.string.next
+        }, nextClick = {
+            if (viewModel.canRegister()) {
+                navController.navigate(
+                    Route.SetPassword.jump(
+                        viewModel.words.value.joinToString(
+                            " "
+                        )
                     )
                 )
-            )
-        } else {
-            Toast.makeText(context, "顺序不对", Toast.LENGTH_SHORT).show()
-        }
-    }) {
-        Column(Modifier.verticalScroll(scrollState)) {
-            Spacer(Modifier.height(20.dp))
-            Card(
-                shape = RoundedCornerShape(8.dp),
-                modifier = Modifier.fillMaxWidth(),
-                elevation = 4.dp,
-                backgroundColor = Color.White
-            ) {
+            } else {
+                Toast.makeText(context, "顺序不对", Toast.LENGTH_SHORT).show()
+            }
+        }) {
+            Column() {
+                Spacer(Modifier.height(20.dp))
+                Card(
+                    shape = RoundedCornerShape(8.dp),
+                    modifier = Modifier.fillMaxWidth(),
+                    elevation = 4.dp,
+                    backgroundColor = Color.White
+                ) {
+                    LazyVerticalGrid(
+                        columns = GridCells.Fixed(3),
+                        verticalArrangement = Arrangement.spacedBy(8.dp),
+                        horizontalArrangement = Arrangement.spacedBy(20.dp),
+                        userScrollEnabled = false,
+                        modifier = Modifier
+                            .height(176.dp)
+                            .fillMaxWidth(),
+                        contentPadding = PaddingValues(horizontal = 20.dp, vertical = 16.dp)
+                    ) {
+                        items(selectedWords) {
+                            Card(
+                                backgroundColor = Color.White,
+                                shape = RoundedCornerShape(8.dp),
+                                elevation = 0.dp,
+                                border = BorderStroke(1.dp, Color(0xFFE6E6E6))
+                            ) {
+                                Box(contentAlignment = Alignment.Center,
+                                    modifier = Modifier
+                                        .height(30.dp)
+                                        .clickable { viewModel.deleteWord(it) }) {
+                                    Text(
+                                        text = it,
+                                        color = Color(0xFF4B6AF7),
+                                        fontSize = 12.sp,
+                                        fontWeight = FontWeight.Medium
+                                    )
+                                }
+                            }
+                        }
+                    }
+                }
+                Spacer(Modifier.height(12.dp))
                 LazyVerticalGrid(
                     columns = GridCells.Fixed(3),
                     verticalArrangement = Arrangement.spacedBy(8.dp),
                     horizontalArrangement = Arrangement.spacedBy(20.dp),
                     userScrollEnabled = false,
                     modifier = Modifier
-                        .height(176.dp)
-                        .fillMaxWidth(),
-                    contentPadding = PaddingValues(horizontal = 20.dp, vertical = 16.dp)
+                        .height(150.dp)
+                        .fillMaxWidth()
                 ) {
-                    items(selectedWords) {
+                    items(randomWords) {
                         Card(
-                            backgroundColor = Color.White,
+                            backgroundColor = Color(0xFFF4F6FA),
                             shape = RoundedCornerShape(8.dp),
                             elevation = 0.dp,
-                            border = BorderStroke(1.dp, Color(0xFFE6E6E6))
                         ) {
                             Box(contentAlignment = Alignment.Center,
                                 modifier = Modifier
                                     .height(30.dp)
-                                    .clickable { viewModel.deleteWord(it) }) {
+                                    .clickable { viewModel.addWord(it) }) {
                                 Text(
                                     text = it,
-                                    color = Color(0xFF4B6AF7),
+                                    color = Color(0xFF4D4D4D),
                                     fontSize = 12.sp,
                                     fontWeight = FontWeight.Medium
                                 )
@@ -96,36 +128,7 @@ fun Register2View(
                     }
                 }
             }
-            Spacer(Modifier.height(12.dp))
-            LazyVerticalGrid(
-                columns = GridCells.Fixed(3),
-                verticalArrangement = Arrangement.spacedBy(8.dp),
-                horizontalArrangement = Arrangement.spacedBy(20.dp),
-                userScrollEnabled = false,
-                modifier = Modifier
-                    .height(150.dp)
-                    .fillMaxWidth()
-            ) {
-                items(randomWords) {
-                    Card(
-                        backgroundColor = Color(0xFFF4F6FA),
-                        shape = RoundedCornerShape(8.dp),
-                        elevation = 0.dp,
-                    ) {
-                        Box(contentAlignment = Alignment.Center,
-                            modifier = Modifier
-                                .height(30.dp)
-                                .clickable { viewModel.addWord(it) }) {
-                            Text(
-                                text = it,
-                                color = Color(0xFF4D4D4D),
-                                fontSize = 12.sp,
-                                fontWeight = FontWeight.Medium
-                            )
-                        }
-                    }
-                }
-            }
         }
     }
+
 }

@@ -270,7 +270,7 @@ fun LoginCommonView(
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(vertical = 20.dp),
+                .padding(top=20.dp, bottom = 60.dp), // adjust bottom bar
             horizontalArrangement = Arrangement.spacedBy(3.dp)
         ) {
             TextButton(
