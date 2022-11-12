@@ -72,7 +72,7 @@ object EthUtil {
         val file = WalletUtils.generateWalletFile(
             password,
             MnemonicWords(mnemonicWords).toKeyPair().toWeb3ECKeyPair(),
-            context.cacheDir,
+            context.filesDir,
             false
         )
         context.dataStore.edit {
@@ -84,7 +84,7 @@ object EthUtil {
     suspend fun deleteWallet(context: Context, userBaseInfoDao: UserBaseInfoDao) {
         val file =
             context.dataStore.data.map { it[stringPreferencesKey("file")] }.filterNotNull().first()
-        File(context.cacheDir, file).delete()
+        File(context.filesDir, file).delete()
         context.dataStore.edit {
             it[stringPreferencesKey("address")] = ""
             it[stringPreferencesKey("file")] = ""
@@ -97,15 +97,40 @@ object EthUtil {
         try {
             WalletUtils.loadCredentials(
                 password, File(
-                    context.cacheDir,
+                    context.filesDir,
                     context.dataStore.data.map { it[stringPreferencesKey("file")] }.filterNotNull()
                         .first()
                 )
+
             )
         } catch (e: Exception) {
             toast.emit(R.string.wrong_password)
             null
         }
+    }
+
+    suspend fun changeWalletPassword(
+        context: Context,
+        oldPassword: String,
+        newPassword: String
+    ): Boolean {
+        loadCredentials(context, oldPassword)?.let {
+            val oldFile =
+                context.dataStore.data.map { it[stringPreferencesKey("file")] }.filterNotNull()
+                    .first()
+            File(context.filesDir, oldFile).delete()
+            val file = WalletUtils.generateWalletFile(
+                newPassword,
+                it.ecKeyPair,
+                context.filesDir,
+                false
+            )
+            context.dataStore.edit {
+                it[stringPreferencesKey("file")] = file
+            }
+            return true
+        }
+        return false
     }
 
     suspend fun gasPrice() = withContext(Dispatchers.IO) {

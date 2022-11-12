@@ -4,6 +4,7 @@ import android.os.Build.VERSION.SDK_INT
 import android.text.TextUtils
 import android.util.Log
 import androidx.annotation.DrawableRes
+import androidx.annotation.StringRes
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -22,6 +23,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -63,17 +65,18 @@ fun MeView(
         systemUiController.setStatusBarColor(
             color = Color.Transparent
         )
-        systemUiController.setNavigationBarColor(Color(0xFFF0F0F0))
+        systemUiController.setNavigationBarColor(Color.White)
+        systemUiController.setNavigationBarColor(Color.White)
     }
     Column(
         modifier = modifier
             .fillMaxSize()
-            .background(Color(0xFFF0F0F0)),
+            .background(Color.White),
     ) {
         androidx.compose.foundation.Image(
             painter = rememberAsyncImagePainter(
                 ImageRequest.Builder(context)
-                    .data(data =  me?.faceURL?.ifEmpty { DEFAULT_FACEURL })
+                    .data(data = me?.faceURL?.ifEmpty { DEFAULT_FACEURL })
                     .build(),
                 imageLoader = imageLoader,
             ),
@@ -97,7 +100,7 @@ fun MeView(
                 }
             }
             items(meItems) {
-                MeItem(icon = it.icon, title = it.title) {
+                MeItem(icon = it.icon, title = stringResource(id = it.title)) {
                     if (it.route != "") {
                         navController.navigate(it.route)
                     }
@@ -182,7 +185,7 @@ fun MeInfoItem(
         )
 
         Text(
-            text = "FCCID: $userID",
+            text = "FCID: $userID",
             modifier = Modifier
                 .constrainAs(uidView) {
                     bottom.linkTo(faceView.bottom)
@@ -261,19 +264,19 @@ fun MeInfoItem(
 
 @Composable
 fun MeDividerItem() {
-    Divider(color = Color(0xFFE6E6E6), startIndent = 16.dp, thickness = 1.dp)
+    Divider(color = Color(0xFFEBEBEB), startIndent = 16.dp, thickness = 0.5.dp)
 }
 
 data class MeItemData(
-    val icon: Int, val title: String, val route: String = ""
+    val icon: Int, @StringRes val title: Int, val route: String = ""
 )
 
 
 val meItems = listOf(
-    MeItemData(R.mipmap.me_money, "钱包", Route.Wallet.route),
+    MeItemData(R.mipmap.me_money, R.string.wallet, Route.Wallet.route),
 //    MeItemData(R.mipmap.me_service, "服务"),
 //    MeItemData(R.mipmap.me_square, "我的广场"),
 //    MeItemData(R.mipmap.me_grade, "我的评分"),
-    MeItemData(R.mipmap.me_help, "帮助"),
-    MeItemData(R.mipmap.me_setting, "设置")
+    MeItemData(R.mipmap.me_help, R.string.help),
+    MeItemData(R.mipmap.me_setting, R.string.setting, Route.Setting.route)
 )

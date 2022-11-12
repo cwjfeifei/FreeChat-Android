@@ -51,7 +51,7 @@ class RegisterViewModel @Inject constructor(
     val gender = MutableStateFlow(2)  // 1 male 2 female
     val email = MutableStateFlow("")
 
-    val faceUrls = MutableStateFlow(FaceImageInfo(emptyList(), emptyList()))
+    val faceUrls = MutableStateFlow(emptyList<FaceImageInfo>())
 
     init {
         viewModelScope.launch {
@@ -64,7 +64,7 @@ class RegisterViewModel @Inject constructor(
                 email.value = if (it.email == null) "" else it.email
             }
             faceUrls.value =
-                freeChatApiService.getAvatars().data ?: FaceImageInfo(emptyList(), emptyList())
+                freeChatApiService.getAvatars().data ?: emptyList()
         }
     }
 

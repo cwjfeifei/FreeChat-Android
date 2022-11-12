@@ -71,8 +71,11 @@ fun ContactView(
     val systemUiController = rememberSystemUiController()
     val friends by IM.friends.collectAsState()
     SideEffect {
-        systemUiController.setSystemBarsColor(
+        systemUiController.setStatusBarColor(
             color = Color(0xFFF0F0F0)
+        )
+        systemUiController.setNavigationBarColor(
+            color = Color.White
         )
     }
     Column(

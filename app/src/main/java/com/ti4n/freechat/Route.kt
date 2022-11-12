@@ -72,4 +72,9 @@ sealed class Route(val route: String) {
     object AddFriend : Route("addFriend")
 
     object TransferRisk : Route("transferRisk")
+    object Setting : Route("setting")
+    object AccountSecurity : Route("accountSecurity")
+    object LanguageSetting : Route("languageSetting")
+    object ClearCache : Route("clearCache")
+    object ChangePassword : Route("changePassword")
 }

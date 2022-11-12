@@ -26,7 +26,7 @@ interface FreeChatApiService {
     suspend fun getRate(@Query("instId") instId: String): FreeChatBaseResponse<List<Rate>>
 
     @POST()
-    suspend fun getAvatars(@Url url: String = "http://8.218.80.2:10008/user/select_face"): BaseResponse<FaceImageInfo>
+    suspend fun getAvatars(@Url url: String = "http://8.218.80.2:10008/user/select_face"): BaseResponse<List<FaceImageInfo>>
 }
 
 

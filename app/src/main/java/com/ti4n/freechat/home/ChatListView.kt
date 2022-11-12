@@ -45,8 +45,11 @@ fun ChatListView(
 ) {
     val systemUiController = rememberSystemUiController()
     SideEffect {
-        systemUiController.setSystemBarsColor(
+        systemUiController.setStatusBarColor(
             color = Color(0xFFF0F0F0)
+        )
+        systemUiController.setNavigationBarColor(
+            color = Color.White
         )
     }
     var showAddView by remember {

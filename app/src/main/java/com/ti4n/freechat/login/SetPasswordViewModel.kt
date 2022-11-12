@@ -16,6 +16,7 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 private const val TAG = "SetPasswordViewModel XXX"
+
 @HiltViewModel
 class SetPasswordViewModel @Inject constructor(
     val imService: FreeChatIMService,
@@ -31,7 +32,7 @@ class SetPasswordViewModel @Inject constructor(
                 val token = imService.getToken(GetToken(address)).data
                 token?.let {
                     val response = imService.getSelfInfo(GetSelfInfo(it.userID), it.token)
-                    Log.w(TAG, "Freechat account: " +address+ " resp: "+ response)
+                    Log.w(TAG, "Freechat account: " + address + " resp: " + response)
                     if (response.errCode == 0 && response.data != null) {
                         val selfInfo = response.data
                         db.userBaseInfoDao().insert(
@@ -41,7 +42,7 @@ class SetPasswordViewModel @Inject constructor(
                                 faceURL = selfInfo.faceURL,
                                 birth = selfInfo.birth,
                                 gender = selfInfo.gender,
-//                                email = selfInfo.email,
+                                email = selfInfo.email ?: "",
                                 token = token.token,
                                 expiredTime = token.expiredTime
                             )
@@ -58,7 +59,7 @@ class SetPasswordViewModel @Inject constructor(
                     }
                 }
             } catch (e: Exception) {
-                Log.w(TAG, "onSetPassword Error : ",  e)
+                Log.w(TAG, "onSetPassword Error : ", e)
             }
         }
     }

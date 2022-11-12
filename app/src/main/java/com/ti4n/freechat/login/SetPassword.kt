@@ -2,6 +2,7 @@ package com.ti4n.freechat.login
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
@@ -9,6 +10,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -51,7 +54,8 @@ fun SetPasswordView(
             }
         }
     }, tip = R.string.password_tip) {
-        TextField(value = password1,
+        TextField(
+            value = password1,
             onValueChange = { password1 = it },
             modifier = Modifier.fillMaxWidth(),
             maxLines = 1,
@@ -72,9 +76,13 @@ fun SetPasswordView(
                     textAlign = TextAlign.Center,
                     modifier = Modifier.fillMaxWidth()
                 )
-            })
+            },
+            visualTransformation = PasswordVisualTransformation(),
+            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password)
+        )
         Spacer(Modifier.height(20.dp))
-        TextField(value = password2,
+        TextField(
+            value = password2,
             onValueChange = { password2 = it },
             modifier = Modifier.fillMaxWidth(),
             maxLines = 1,
@@ -95,7 +103,10 @@ fun SetPasswordView(
                     textAlign = TextAlign.Center,
                     modifier = Modifier.fillMaxWidth()
                 )
-            })
+            },
+            visualTransformation = PasswordVisualTransformation(),
+            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password)
+        )
         Spacer(Modifier.height(12.dp))
         Text(
             text = "确保您的密码有大写字母、小写字母等，位数大于8位。",

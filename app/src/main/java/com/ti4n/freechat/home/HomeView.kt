@@ -35,6 +35,9 @@ import com.ti4n.freechat.profile.SendFriendApplicationView
 import com.ti4n.freechat.profile.SetRemarkView
 import com.ti4n.freechat.redpack.SendRedPackView
 import com.ti4n.freechat.redpack.TransferRiskView
+import com.ti4n.freechat.setting.AccountSecurityView
+import com.ti4n.freechat.setting.ChangePasswordView
+import com.ti4n.freechat.setting.SettingView
 import com.ti4n.freechat.swap.SwapView
 import com.ti4n.freechat.util.EthUtil
 import com.ti4n.freechat.util.IM
@@ -52,18 +55,12 @@ import kotlinx.coroutines.launch
 @OptIn(ExperimentalAnimationApi::class)
 @Composable
 fun HomeView(userBaseInfoDao: UserBaseInfoDao, globleNavController: NavController) {
-    val systemUiController = rememberSystemUiController()
     val navController = rememberAnimatedNavController()
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry?.destination?.route
     val unread by IM.totalUnreadCount.collectAsState()
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
-    SideEffect {
-        systemUiController.setSystemBarsColor(
-            color = Color(0xFFF0F0F0)
-        )
-    }
     LaunchedEffect(Unit) {
 //        @see LoginViewMode.autoLogin(context)
 //        userBaseInfoDao.getUserInfo().filterNotNull().collectLatest {
@@ -79,7 +76,7 @@ fun HomeView(userBaseInfoDao: UserBaseInfoDao, globleNavController: NavControlle
             exit = slideOutVertically {
                 it
             }) {
-            BottomNavigation(backgroundColor = Color(0xFFF0F0F0), elevation = 8.dp) {
+            BottomNavigation(backgroundColor = Color.White, elevation = 8.dp) {
                 HomeTab.values().forEach {
                     BottomNavigationItem(selected = currentRoute == it.route, onClick = {
                         navController.navigate(it.route) {
@@ -293,6 +290,15 @@ fun HomeView(userBaseInfoDao: UserBaseInfoDao, globleNavController: NavControlle
             }
             aniComposable(Route.TransferRisk.route) {
                 TransferRiskView(navController = navController)
+            }
+            aniComposable(Route.Setting.route) {
+                SettingView(navController = navController)
+            }
+            aniComposable(Route.AccountSecurity.route) {
+                AccountSecurityView(navController = navController)
+            }
+            aniComposable(Route.ChangePassword.route) {
+                ChangePasswordView(navController = navController)
             }
         }
     }

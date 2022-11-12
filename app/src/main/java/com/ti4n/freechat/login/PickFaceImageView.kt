@@ -45,9 +45,9 @@ fun PickFaceImageView(
     val context = LocalContext.current
 
     val faceURL by viewModel.faceURL.collectAsState()
-    var gender by remember {
-        mutableStateOf(viewModel.gender.value)
-    }
+//    var gender by remember {
+//        mutableStateOf(viewModel.gender.value)
+//    }
 
     val faceUrls by viewModel.faceUrls.collectAsState()
 
@@ -117,23 +117,23 @@ fun PickFaceImageView(
             contentScale = ContentScale.Crop
         )
 
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(50.dp)
-        ) {
-            GenderItem(
-                title = stringResource(id = R.string.male), isSelected = gender == 1
-            ) {
-                gender = 1
-            }
-            Spacer(modifier = Modifier.width(2.dp))
-            GenderItem(
-                title = stringResource(id = R.string.female), isSelected = gender == 2
-            ) {
-                gender = 2
-            }
-        }
+//        Row(
+//            modifier = Modifier
+//                .fillMaxWidth()
+//                .height(50.dp)
+//        ) {
+//            GenderItem(
+//                title = stringResource(id = R.string.male), isSelected = gender == 1
+//            ) {
+//                gender = 1
+//            }
+//            Spacer(modifier = Modifier.width(2.dp))
+//            GenderItem(
+//                title = stringResource(id = R.string.female), isSelected = gender == 2
+//            ) {
+//                gender = 2
+//            }
+//        }
 //        Divider(color = Color(0xFFEBEBEB), thickness = 0.5.dp, startIndent = 2.dp)
         Box(
             modifier = Modifier
@@ -141,9 +141,9 @@ fun PickFaceImageView(
                 .height(96.dp)
         ) {
             LazyRow(modifier = Modifier.background(Color.White)) {
-                items(if (gender == 1) faceUrls.male else faceUrls.female) {
-                    ItemFaceImage(it) {
-                        viewModel.setFaceURL(it)
+                items(faceUrls) {
+                    ItemFaceImage(it.small) {
+                        viewModel.setFaceURL(it.small)
                     }
                 }
             }

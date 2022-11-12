@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.ButtonDefaults
@@ -26,6 +27,7 @@ import com.ti4n.freechat.R
 import com.ti4n.freechat.widget.CustomPaddingTextField
 import com.ti4n.freechat.widget.Image
 import androidx.compose.runtime.*
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -40,7 +42,13 @@ fun InputPasswordBottomSheet(
     var password by remember {
         mutableStateOf("")
     }
-    Box(Modifier.fillMaxWidth()) {
+    val focusManager = LocalFocusManager.current
+    focusManager.clearFocus()
+    Box(
+        Modifier
+            .fillMaxWidth()
+            .imePadding()
+    ) {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.fillMaxWidth()
         ) {
@@ -90,6 +98,7 @@ fun InputPasswordBottomSheet(
             Spacer(modifier = Modifier.height(40.dp))
             TextButton(
                 onClick = {
+                    focusManager.clearFocus()
                     confirm(password)
                 },
                 Modifier
@@ -110,7 +119,10 @@ fun InputPasswordBottomSheet(
         Image(mipmap = R.mipmap.close_input_password,
             modifier = Modifier
                 .align(Alignment.TopStart)
-                .clickable { close() }
+                .clickable {
+                    focusManager.clearFocus()
+                    close()
+                }
                 .padding(start = 16.dp, top = 32.dp))
     }
 

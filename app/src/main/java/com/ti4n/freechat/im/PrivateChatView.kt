@@ -16,12 +16,15 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.imeNestedScroll
+import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
@@ -95,7 +98,7 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import java.io.File
 
-@OptIn(ExperimentalPermissionsApi::class)
+@OptIn(ExperimentalPermissionsApi::class, ExperimentalLayoutApi::class)
 @Composable
 fun PrivateChatView(
     navController: NavController, viewModel: PrivateChatViewModel = hiltViewModel()
@@ -157,7 +160,8 @@ fun PrivateChatView(
         LazyColumn(
             Modifier
                 .weight(1f)
-                .padding(bottom = 16.dp), reverseLayout = true
+                .padding(bottom = 16.dp)
+                .imeNestedScroll(), reverseLayout = true
         ) {
             items(IM.newMessages.filter { it.recvID == viewModel.toUserId || it.sendID == viewModel.toUserId }
                 .reversed()) {
@@ -185,7 +189,8 @@ fun PrivateChatView(
                 .height(50.dp)
                 .coloredShadow(blurRadius = 8.dp, color = Color(0xFFCCCCCC), offsetY = (-2).dp)
                 .background(Color(0xFFF0F0F0))
-                .padding(horizontal = 10.dp),
+                .padding(horizontal = 10.dp)
+                .imePadding(),
             horizontalArrangement = Arrangement.spacedBy(10.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
