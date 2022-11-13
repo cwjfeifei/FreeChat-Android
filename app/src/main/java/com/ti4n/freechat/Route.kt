@@ -77,4 +77,12 @@ sealed class Route(val route: String) {
     object LanguageSetting : Route("languageSetting")
     object ClearCache : Route("clearCache")
     object ChangePassword : Route("changePassword")
+
+    object VerifyEmailRegister : Route("verifyEmailRegister/{userID}/{email}") {
+        fun jump(userId: String, email: String) = "verifyEmailRegister/$userId/$email"
+    }
+
+    object VerifyEmailLogin : Route("verifyEmailLogin/{userID}/{email}") {
+        fun jump(userId: String, email: String) = "verifyEmailLogin/$userId/$email"
+    }
 }

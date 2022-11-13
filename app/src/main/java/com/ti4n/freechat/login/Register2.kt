@@ -2,6 +2,7 @@ package com.ti4n.freechat.login
 
 import android.widget.Toast
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.grid.GridCells
@@ -17,6 +18,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -29,34 +31,38 @@ import com.ti4n.freechat.Route
 fun Register2View(
     navController: NavController, type: LoginType, viewModel: RegisterViewModel = hiltViewModel()
 ) {
-    val scrollState = rememberScrollState()
     val randomWords by viewModel.shuffledWord.collectAsState()
     val selectedWords by viewModel.clickedWords.collectAsState()
     val context = LocalContext.current
-    val scope = rememberCoroutineScope()
     LaunchedEffect(Unit) {
         viewModel.shuffleWord()
     }
-    Column(Modifier.verticalScroll(scrollState)) {
-        LoginCommonView(when (type) {
-            LoginType.Login -> R.string.input_mnemonic
-            LoginType.Register -> R.string.input_mnemonic_by_order
-        }, backClick = { navController.navigateUp() }, next = when (type) {
-            LoginType.Login -> R.string.login_freechat
-            LoginType.Register -> R.string.next
-        }, nextClick = {
-            if (viewModel.canRegister()) {
-                navController.navigate(
-                    Route.SetPassword.jump(
-                        viewModel.words.value.joinToString(
-                            " "
+    Column(
+        Modifier
+            .fillMaxSize()
+            .background(Color.White)) {
+        LoginCommonView(
+            stringResource(
+                id = when (type) {
+                    LoginType.Login -> R.string.input_mnemonic
+                    LoginType.Register -> R.string.input_mnemonic_by_order
+                }
+            ), backClick = { navController.navigateUp() }, next = when (type) {
+                LoginType.Login -> R.string.login_freechat
+                LoginType.Register -> R.string.next
+            }, nextClick = {
+                if (viewModel.canRegister()) {
+                    navController.navigate(
+                        Route.SetPassword.jump(
+                            viewModel.words.value.joinToString(
+                                " "
+                            )
                         )
                     )
-                )
-            } else {
-                Toast.makeText(context, "顺序不对", Toast.LENGTH_SHORT).show()
-            }
-        }) {
+                } else {
+                    Toast.makeText(context, "顺序不对", Toast.LENGTH_SHORT).show()
+                }
+            }) {
             Column() {
                 Spacer(Modifier.height(20.dp))
                 Card(

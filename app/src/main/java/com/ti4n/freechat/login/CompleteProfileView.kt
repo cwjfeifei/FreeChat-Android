@@ -46,15 +46,10 @@ fun CompleteProfileView(controller: NavController, viewModel: RegisterViewModel 
         )
     }
 
-    val faceURL by remember {
-        mutableStateOf(viewModel.faceURL.value)
-    }
-    val nickname by remember {
-        mutableStateOf(viewModel.name.value)
-    }
-    val gender by remember {
-        mutableStateOf(viewModel.gender.value)
-    }
+    val faceURL by viewModel.faceURL.collectAsState()
+    val nickname by viewModel.name.collectAsState()
+    val gender by viewModel.gender.collectAsState()
+    val email by viewModel.email.collectAsState()
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
 
@@ -168,7 +163,7 @@ fun CompleteProfileView(controller: NavController, viewModel: RegisterViewModel 
             onClick = {
                 scope.launch {
                     // must be IM.login
-                    val result = IM.setUserInfo(faceURL, nickname, gender, 0, null, null)
+                    val result = IM.setUserInfo(faceURL, nickname, gender, 0, email, null)
                     if (result is Unit) {
                         // success
                         controller.backQueue.clear()

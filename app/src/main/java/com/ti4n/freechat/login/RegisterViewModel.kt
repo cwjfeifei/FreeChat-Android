@@ -1,31 +1,26 @@
 package com.ti4n.freechat.login
 
-import android.content.Context
-import android.text.TextUtils
 import android.util.Log
-import android.widget.Toast
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ti4n.freechat.R
 import com.ti4n.freechat.Route
 import com.ti4n.freechat.db.AppDataBase
 import com.ti4n.freechat.db.UserBaseInfo
-import com.ti4n.freechat.model.request.GetSelfInfo
-import com.ti4n.freechat.model.request.GetToken
+import com.ti4n.freechat.model.request.Login
 import com.ti4n.freechat.model.request.Register
-import com.ti4n.freechat.model.response.FaceImageInfo
+import com.ti4n.freechat.model.request.SendVerifyCode
+import com.ti4n.freechat.model.response.freechat.FaceImageInfo
 import com.ti4n.freechat.network.FreeChatApiService
 import com.ti4n.freechat.network.FreeChatIMService
+import com.ti4n.freechat.toast
 import com.ti4n.freechat.util.EthUtil
 import com.ti4n.freechat.util.IM
 import com.ti4n.freechat.util.IM.DEFAULT_FACEURL
-import com.ti4n.freechat.util.address
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.launch
-import org.kethereum.bip39.model.MnemonicWords
 import javax.inject.Inject
 
 private const val TAG = "RegisterViewModel"
@@ -45,26 +40,17 @@ class RegisterViewModel @Inject constructor(
     val clickedWords = MutableStateFlow(emptyList<String>())
 
     // For set Self UserInfo
-    val faceURL = MutableStateFlow(DEFAULT_FACEURL)
+    val faceURL = MutableStateFlow("")
     val name = MutableStateFlow("")
     val birth = MutableStateFlow(0L)
-    val gender = MutableStateFlow(2)  // 1 male 2 female
+    val gender = MutableStateFlow(0)  // 1 male 2 female
     val email = MutableStateFlow("")
 
     val faceUrls = MutableStateFlow(emptyList<FaceImageInfo>())
 
     init {
         viewModelScope.launch {
-            var selfInfo = IM.currentUserInfo.value
-            selfInfo?.let {
-                faceURL.value = if (it.faceURL == null) IM.DEFAULT_FACEURL else it.faceURL
-                name.value = if (it.nickname == null) "" else it.nickname
-                gender.value = it.gender
-                birth.value = it.birth
-                email.value = if (it.email == null) "" else it.email
-            }
-            faceUrls.value =
-                freeChatApiService.getAvatars().data ?: emptyList()
+            faceUrls.value = freeChatApiService.getAvatars().data ?: emptyList()
         }
     }
 
@@ -100,30 +86,43 @@ class RegisterViewModel @Inject constructor(
 
     fun canRegister() = words.value == clickedWords.value
 
-    fun registerFreeChat(
-        context: Context,
-        userID: String,
-        email: String,
-    ) {
+    fun sendVerifyCode(userId: String) {
+        if (email.value.isNotEmpty()) {
+            viewModelScope.launch {
+                try {
+                    if (imService.sendVerifyCode(
+                            SendVerifyCode(
+                                1, userId, email.value
+                            )
+                        ).errCode == 0
+                    ) {
+                        setEmailRoute.emit(Route.VerifyEmailRegister.jump(userId, email.value))
+                    }
+
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                }
+
+            }
+        }
+    }
+
+    fun registerFreeChat(userID: String, verifyCode: String) {
         viewModelScope.launch {
             try {
                 val response = imService.register(
                     Register(
                         userID = userID,
-                        email = email,
+                        email = email.value,
+                        verificationCode = verifyCode
                     )
                 )
                 if (response.errCode == 0 && response.data != null) {
-//                    context.dataStore.edit {
-//                        it[stringPreferencesKey("userId")] = response.data.userID
-//                        it[stringPreferencesKey("token")] = response.data.token
-//                        it[stringPreferencesKey("expiredTime")] = response.data.expiredTime.toString()
-//                    }
                     db.userBaseInfoDao().insert(
                         UserBaseInfo(
                             userID = response.data.userID,
                             token = response.data.token,
-                            email = email,
+                            email = email.value,
                             expiredTime = response.data.expiredTime
                         )
                     )
@@ -132,39 +131,36 @@ class RegisterViewModel @Inject constructor(
                     IM.login(userID, response.data.token)
                     setEmailRoute.emit(Route.CompleteProfile.route)
                 } else {
-                    Toast.makeText(context, R.string.set_email_failed, Toast.LENGTH_SHORT).show()
+                    toast.emit(R.string.set_email_failed)
                 }
             } catch (e: Exception) {
                 // network error or userID registered
-                Toast.makeText(context, R.string.set_email_failed, Toast.LENGTH_SHORT).show()
+                toast.emit(R.string.set_email_failed)
                 Log.w(TAG, "registerFreeChat: ", e)
             }
         }
     }
 
 
-    fun login(address: String) {
+    fun login(address: String, verifyCode: String) {
         viewModelScope.launch {
             try {
-                val token = imService.getToken(GetToken(address)).data
-                token?.let {
-                    val response = imService.getSelfInfo(GetSelfInfo(it.userID), it.token)
-                    Log.w("Login", "resp-getselfuserinfo " + response)
-                    if (response.errCode == 0 && response.data != null) {
-                        val selfInfo = response.data
+                val response = imService.login(Login(address, verifyCode))
+                if (response.errCode == 0) {
+                    response.data?.let {
                         db.userBaseInfoDao().insert(
                             UserBaseInfo(
                                 userID = address,
-                                nickname = selfInfo.nickname,
-                                faceURL = selfInfo.faceURL,
-                                birth = selfInfo.birth,
-                                gender = selfInfo.gender,
-                                email = selfInfo.email,
-                                token = token.token,
-                                expiredTime = token.expiredTime
+                                token = it.token,
+                                expiredTime = it.expiredTime
                             )
                         )
+                        IM.logout()
+                        IM.login(address, it.token)
                     }
+                    setEmailRoute.emit(Route.Home.route)
+                } else {
+                    toast.emit(R.string.wrong_password)
                 }
             } catch (e: Exception) {
                 Log.w("Login", "Error :  ", e)

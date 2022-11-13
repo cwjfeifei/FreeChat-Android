@@ -197,10 +197,11 @@ fun MainLoginView(navController: NavController) {
 
 @Composable
 fun LoginCommonView(
-    @StringRes title: Int,
+    title: String,
     @StringRes tip: Int? = null,
     @StringRes back: Int = R.string.back,
     @StringRes next: Int = R.string.next,
+    titleEndContent: @Composable RowScope.() -> Unit = {},
     backClick: () -> Unit,
     nextClick: () -> Unit,
     content: @Composable ColumnScope.() -> Unit
@@ -216,7 +217,7 @@ fun LoginCommonView(
         modifier = Modifier
             .fillMaxSize()
             .background(Color.White)
-            .statusBarsPadding()
+            .systemBarsPadding()
     ) {
         IconButton(onClick = { backClick() }, modifier = Modifier.align(Alignment.Start)) {
             Image(mipmap = R.mipmap.nav_back)
@@ -225,13 +226,18 @@ fun LoginCommonView(
         Spacer(modifier = Modifier.height(3.dp))
         Image(R.mipmap.register_freechat)
         Spacer(modifier = Modifier.height(44.dp))
-        Text(
-            text = stringResource(id = title),
-            color = Color(0xFF1A1A1A),
-            fontSize = 14.sp,
-            fontWeight = FontWeight.Bold,
-            textAlign = TextAlign.Center
-        )
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            Text(
+                text = title,
+                color = Color(0xFF1A1A1A),
+                fontSize = 14.sp,
+                fontWeight = FontWeight.Bold,
+                textAlign = TextAlign.Center
+            )
+            Spacer(modifier = Modifier.width(8.dp))
+            titleEndContent()
+        }
+
         Spacer(modifier = Modifier.height(24.dp))
         Column(Modifier.padding(horizontal = 24.dp)) {
             content()
@@ -270,7 +276,7 @@ fun LoginCommonView(
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(top=20.dp, bottom = 60.dp), // adjust bottom bar
+                .padding(top = 20.dp), // adjust bottom bar
             horizontalArrangement = Arrangement.spacedBy(3.dp)
         ) {
             TextButton(

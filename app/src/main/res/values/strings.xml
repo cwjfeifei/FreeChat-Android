@@ -197,4 +197,9 @@
     <string name="new_password">新密码</string>
     <string name="confirm_again">再次确认</string>
     <string name="confirm_password_fit">确保您的密码有大写字母、小写字母等，位数大于8位。</string>
+
+    <string name="chinese">中文</string>
+    <string name="english">English</string>
+
+    <string name="reset">重置</string>
 </resources>

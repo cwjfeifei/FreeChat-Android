@@ -116,7 +116,25 @@ fun PermissionView(navController: NavController, exitApp: () -> Unit) {
             horizontalArrangement = Arrangement.spacedBy(3.dp)
         ) {
             TextButton(
-                onClick = { exitApp() },
+                onClick = {
+                    scope.launch {
+                        context.dataStore.edit {
+                            it[booleanPreferencesKey("agreePermission")] = true
+                        }
+                        val isLogin =
+                            !context.dataStore.data.map { it[stringPreferencesKey("address")] }
+                                .firstOrNull().isNullOrEmpty()
+                        if (isLogin) {
+                            navController.navigate(Route.Home.route) {
+                                popUpTo(Route.PermissionIntro.route) { inclusive = true }
+                            }
+                        } else {
+                            navController.navigate(Route.MainLogin.route) {
+                                popUpTo(Route.PermissionIntro.route) { inclusive = true }
+                            }
+                        }
+                    }
+                },
                 shape = RoundedCornerShape(0.dp),
                 modifier = Modifier
                     .weight(1f)

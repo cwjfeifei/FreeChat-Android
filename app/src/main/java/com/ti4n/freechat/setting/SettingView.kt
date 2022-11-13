@@ -23,9 +23,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -34,11 +36,20 @@ import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.ti4n.freechat.BuildConfig
 import com.ti4n.freechat.R
 import com.ti4n.freechat.Route
+import com.ti4n.freechat.db.UserBaseInfoDao
+import com.ti4n.freechat.util.EthUtil
 import com.ti4n.freechat.widget.HomeTitle
 import com.ti4n.freechat.widget.Image
+import kotlinx.coroutines.launch
 
 @Composable
-fun SettingView(navController: NavController) {
+fun SettingView(
+    navController: NavController,
+    userBaseInfoDao: UserBaseInfoDao,
+    globeNavController: NavController
+) {
+    val context = LocalContext.current
+    val scope = rememberCoroutineScope()
     val systemUiController = rememberSystemUiController()
     SideEffect {
         systemUiController.setSystemBarsColor(
@@ -85,7 +96,14 @@ fun SettingView(navController: NavController) {
         }
         Spacer(modifier = Modifier.height(8.dp))
         TextButton(
-            onClick = { },
+            onClick = {
+                scope.launch {
+                    EthUtil.deleteWallet(context, userBaseInfoDao)
+                    globeNavController.navigate(Route.MainLogin.route) {
+                        popUpTo(Route.Home.route) { inclusive = true }
+                    }
+                }
+            },
             Modifier
                 .fillMaxWidth()
                 .height(50.dp),

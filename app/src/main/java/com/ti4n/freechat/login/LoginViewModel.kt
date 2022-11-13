@@ -9,7 +9,6 @@ import androidx.lifecycle.viewModelScope
 import com.ti4n.freechat.Route
 import com.ti4n.freechat.db.AppDataBase
 import com.ti4n.freechat.di.dataStore
-import com.ti4n.freechat.model.request.GetToken
 import com.ti4n.freechat.network.FreeChatIMService
 import com.ti4n.freechat.util.EthUtil
 import com.ti4n.freechat.util.IM
@@ -25,7 +24,6 @@ private const val TAG = "LoginViewModel XXX"
 
 @HiltViewModel
 class LoginViewModel @Inject constructor(
-    val imService: FreeChatIMService,
     val db: AppDataBase
 ) : ViewModel() {
 
@@ -80,17 +78,17 @@ class LoginViewModel @Inject constructor(
                         // 自动登录时刷新token 时间
                         val OneWeekDuration = 7 * OneDayDuration
                         if (toExpiredDuration < OneWeekDuration) {
-                            try {
-                                val token = imService.getToken(GetToken(address)).data
-                                token?.let {
-                                    dbUserInfo.token = token.token
-                                    dbUserInfo.expiredTime = token.expiredTime
-
-                                    db.userBaseInfoDao().insert(dbUserInfo)
-                                }
-                            } catch (e: java.lang.Exception) {
-                                Log.w(TAG, "update token Exception: ", e)
-                            }
+//                            try {
+//                                val token = imService.getToken(GetToken(address)).data
+//                                token?.let {
+//                                    dbUserInfo.token = token.token
+//                                    dbUserInfo.expiredTime = token.expiredTime
+//
+//                                    db.userBaseInfoDao().insert(dbUserInfo)
+//                                }
+//                            } catch (e: java.lang.Exception) {
+//                                Log.w(TAG, "update token Exception: ", e)
+//                            }
                         }
                     }
                 }

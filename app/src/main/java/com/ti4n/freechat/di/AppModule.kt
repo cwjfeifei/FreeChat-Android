@@ -5,12 +5,7 @@ import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.preferencesDataStore
 import androidx.room.Room
-import com.alibaba.sdk.android.oss.OSSClient
-import com.alibaba.sdk.android.oss.common.auth.OSSAuthCredentialsProvider
-import com.alibaba.sdk.android.oss.common.auth.OSSCredentialProvider
-import com.google.gson.Gson
 import com.ti4n.freechat.db.AppDataBase
-import com.ti4n.freechat.erc20.ERC20Tokens
 import com.ti4n.freechat.network.EthScanApiService
 import com.ti4n.freechat.network.FreeChatApiService
 import com.ti4n.freechat.network.FreeChatIMService

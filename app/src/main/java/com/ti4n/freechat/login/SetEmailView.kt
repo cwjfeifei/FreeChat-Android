@@ -12,7 +12,6 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.ti4n.freechat.R
 import com.ti4n.freechat.util.EmailAddressRegex
@@ -25,12 +24,9 @@ import kotlinx.coroutines.launch
 fun SetEmailView(
     navController: NavController,
     userID: String,
-    viewModel: RegisterViewModel = hiltViewModel()
+    viewModel: RegisterViewModel
 ) {
-    var email1 by remember {
-        mutableStateOf("")
-    }
-    var email2 by remember {
+    var email by remember {
         mutableStateOf("")
     }
     val context = LocalContext.current
@@ -42,28 +38,23 @@ fun SetEmailView(
         }
     }
     LoginCommonView(
-        R.string.title_set_email,
+        stringResource(id = R.string.title_set_email),
         backClick = { navController.navigateUp() },
-        next = R.string.create_freechat,
+        next = R.string.next,
         nextClick = {
-            if (!email1.matches(EmailAddressRegex)) {
+            if (!email.matches(EmailAddressRegex)) {
                 emailCheck = context.getString(R.string.email_invalid)
-            } else if (email1 == email2) {
-                scope.launch {
-                    viewModel.registerFreeChat(
-                        context,
-                        userID = userID,
-                        email = email1,
-                    )
-                }
             } else {
-                emailCheck = context.getString(R.string.set_email_not_same)
+                scope.launch {
+                    viewModel.setEmail(email)
+                    viewModel.sendVerifyCode(userID)
+                }
             }
         }, tip = R.string.email_tip
     ) {
         TextField(
-            value = email1,
-            onValueChange = { email1 = it.trim() },
+            value = email,
+            onValueChange = { email = it.trim() },
             modifier = Modifier
                 .fillMaxWidth(),
             maxLines = 1,
@@ -81,34 +72,6 @@ fun SetEmailView(
             placeholder = {
                 Text(
                     text = stringResource(id = R.string.set_email),
-                    color = Color(0xFF999999),
-                    fontSize = 14.sp,
-                    textAlign = TextAlign.Center,
-                    modifier = Modifier.fillMaxWidth()
-                )
-            }
-        )
-        Spacer(Modifier.height(20.dp))
-        TextField(
-            value = email2,
-            onValueChange = { email2 = it.trim() },
-            modifier = Modifier
-                .fillMaxWidth(),
-            maxLines = 1,
-            colors = TextFieldDefaults.textFieldColors(
-                focusedIndicatorColor = Color.Transparent,
-                unfocusedIndicatorColor = Color.Transparent,
-                backgroundColor = Color(0xFFF5F5F5)
-            ),
-            shape = RoundedCornerShape(4.dp),
-            textStyle = TextStyle(
-                fontSize = 14.sp,
-                color = Color.Black,
-                textAlign = TextAlign.Center
-            ),
-            placeholder = {
-                Text(
-                    text = stringResource(id = R.string.set_email2),
                     color = Color(0xFF999999),
                     fontSize = 14.sp,
                     textAlign = TextAlign.Center,

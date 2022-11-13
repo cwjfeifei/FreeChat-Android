@@ -46,7 +46,7 @@ fun SetPasswordView(
             navController.navigate(it)
         }
     }
-    LoginCommonView(R.string.set_password, backClick = { navController.navigateUp() }, nextClick = {
+    LoginCommonView(stringResource(id = R.string.set_password), backClick = { navController.navigateUp() }, nextClick = {
         if (password1 == password2) {
             scope.launch {
                 EthUtil.createWalletFile(context, password1, words)

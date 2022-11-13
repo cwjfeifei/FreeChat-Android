@@ -48,7 +48,7 @@ fun Register1View(
     val view = LocalView.current
     val clipboardManager = LocalClipboardManager.current
     LoginCommonView(
-        R.string.keep_mnemonic_to_find_account,
+        stringResource(id = R.string.keep_mnemonic_to_find_account),
         backClick = { navController.navigateUp() },
         nextClick = { navController.navigate(Route.Register2.route) },
         tip = R.string.register_tip

@@ -1,28 +1,26 @@
 package com.ti4n.freechat.network
 
-import com.ti4n.freechat.model.request.GetSelfInfo
-import com.ti4n.freechat.model.request.GetToken
+import com.ti4n.freechat.model.request.Login
 import com.ti4n.freechat.model.request.Register
 import com.ti4n.freechat.model.response.BaseResponse
 import com.ti4n.freechat.model.response.UserToken
 import com.ti4n.freechat.model.response.freechat.SelfInfo
+import com.ti4n.freechat.model.request.SendVerifyCode
+import com.ti4n.freechat.model.response.freechat.Account
 import retrofit2.http.Body
 import retrofit2.http.Header
 import retrofit2.http.POST
 
-const val freeChatIMUrl = "http://8.218.80.2:10002/"
+const val freeChatIMUrl = "http://8.218.80.2:10004/"
 
 interface FreeChatIMService {
 
-    @POST("auth/user_register")
+    @POST("auth/password")
     suspend fun register(@Body register: Register): BaseResponse<UserToken>
 
-    @POST("auth/user_token")
-    suspend fun getToken(@Body getToken: GetToken): BaseResponse<UserToken>
+    @POST("auth/code")
+    suspend fun sendVerifyCode(@Body sendVerifyCode: SendVerifyCode): BaseResponse<Account>
 
-    @POST("user/get_self_user_info")
-    suspend fun getSelfInfo(
-        @Body getSelfInfo: GetSelfInfo,
-        @Header("token") token: String
-    ): BaseResponse<SelfInfo>
+    @POST("auth/login")
+    suspend fun login(@Body login: Login): BaseResponse<UserToken>
 }
