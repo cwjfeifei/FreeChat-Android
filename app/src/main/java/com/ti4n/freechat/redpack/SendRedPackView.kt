@@ -124,9 +124,14 @@ fun SendRedPackView(
                 fontWeight = FontWeight.Medium
             )
             Spacer(modifier = Modifier.width(6.dp))
-            Image(
-                mipmap = if (toUserInfo?.gender == 1) R.mipmap.male else R.mipmap.female,
-            )
+            when (toUserInfo?.gender) {
+                1 -> Image(mipmap = R.mipmap.male)
+
+                2 -> Image(mipmap = R.mipmap.female)
+
+                3 -> Image(mipmap = R.mipmap.transgender)
+            }
+
         }
         Spacer(modifier = Modifier.height(8.dp))
         Text(

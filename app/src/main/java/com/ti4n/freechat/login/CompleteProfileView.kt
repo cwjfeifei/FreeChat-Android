@@ -155,6 +155,12 @@ fun CompleteProfileView(controller: NavController, viewModel: RegisterViewModel 
                 ) {
                     viewModel.setGender(2)
                 }
+                Spacer(modifier = Modifier.width(2.dp))
+                GenderItem(
+                    title = stringResource(id = R.string.transgender), isSelected = gender == 3
+                ) {
+                    viewModel.setGender(3)
+                }
             }
         }
         Divider(color = Color(0xFFEBEBEB), thickness = 0.5.dp, startIndent = 16.dp)

@@ -384,7 +384,13 @@ fun ProfileInfoItem(
                     modifier = Modifier.widthIn(0.dp, 240.dp),
                 )
                 Spacer(modifier = Modifier.width(6.dp))
-                Image(mipmap = if (gender == 1) R.mipmap.male else R.mipmap.female)
+                when (gender) {
+                    1 -> Image(mipmap = R.mipmap.male)
+
+                    2 -> Image(mipmap = R.mipmap.female)
+
+                    3 -> Image(mipmap = R.mipmap.transgender)
+                }
             }
             Spacer(modifier = Modifier.weight(1f))
             if (mark.isNotEmpty()) Text(

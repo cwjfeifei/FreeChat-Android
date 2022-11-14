@@ -173,16 +173,37 @@ fun MeInfoItem(
             overflow = TextOverflow.Ellipsis,
             color = Color.Black
         )
+        when (gender) {
+            1 -> Image(
+                mipmap = R.mipmap.male,
+                modifier = Modifier
+                    .constrainAs(genderView) {
+                        top.linkTo(faceView.top)
+                        start.linkTo(nicknameView.end, margin = 6.dp)
+                    }
+                    .size(16.dp)
+            )
 
-        Image(
-            mipmap = if (gender == 1) R.mipmap.male else R.mipmap.female,
-            modifier = Modifier
-                .constrainAs(genderView) {
-                    top.linkTo(faceView.top)
-                    start.linkTo(nicknameView.end, margin = 6.dp)
-                }
-                .size(16.dp)
-        )
+            2 -> Image(
+                mipmap = R.mipmap.female,
+                modifier = Modifier
+                    .constrainAs(genderView) {
+                        top.linkTo(faceView.top)
+                        start.linkTo(nicknameView.end, margin = 6.dp)
+                    }
+                    .size(16.dp)
+            )
+
+            3 -> Image(
+                mipmap = R.mipmap.transgender,
+                modifier = Modifier
+                    .constrainAs(genderView) {
+                        top.linkTo(faceView.top)
+                        start.linkTo(nicknameView.end, margin = 6.dp)
+                    }
+                    .size(16.dp)
+            )
+        }
 
         Text(
             text = "FCID: $userID",
