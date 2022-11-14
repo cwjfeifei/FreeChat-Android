@@ -1,12 +1,10 @@
 package com.ti4n.freechat.network
 
-import com.ti4n.freechat.erc20.ERC20Tokens
 import com.ti4n.freechat.model.response.swap.Allowance
 import com.ti4n.freechat.model.response.swap.Quote
 import com.ti4n.freechat.model.response.swap.SwapResponse
 import retrofit2.http.GET
 import retrofit2.http.Query
-import retrofit2.http.Url
 
 
 const val swapBaseUrl = "https://api.1inch.io/v4.0/1/"

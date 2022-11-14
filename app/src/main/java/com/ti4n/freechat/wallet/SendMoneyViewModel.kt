@@ -8,15 +8,12 @@ import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import com.ti4n.freechat.db.AppDataBase
 import com.ti4n.freechat.db.RecentTransfer
-import com.ti4n.freechat.di.dataStore
-import com.ti4n.freechat.erc20.ERC20Token
-import com.ti4n.freechat.erc20.ERC20Tokens
-import com.ti4n.freechat.erc20.ethereum
-import com.ti4n.freechat.erc20.wethereum
+import com.ti4n.freechat.model.response.freechat.ERC20Token
+import com.ti4n.freechat.model.response.freechat.ethereum
+import com.ti4n.freechat.model.response.freechat.wethereum
 import com.ti4n.freechat.network.FreeChatApiService
 import com.ti4n.freechat.util.EthUtil
 import com.ti4n.freechat.util.IM
-import com.ti4n.freechat.util.address
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import io.openim.android.sdk.models.UserInfo
@@ -25,15 +22,9 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.flow.filter
-import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
-import org.kethereum.bip39.model.MnemonicWords
-import java.math.RoundingMode
 import java.util.Date
 import javax.inject.Inject
-import kotlin.math.pow
 
 @HiltViewModel
 class SendMoneyViewModel @Inject constructor(

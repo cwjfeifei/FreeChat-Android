@@ -1,4 +1,4 @@
-package com.ti4n.freechat.erc20
+package com.ti4n.freechat.model.response.freechat
 
 import android.os.Parcelable
 import kotlinx.parcelize.Parcelize

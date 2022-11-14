@@ -5,8 +5,8 @@ import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ti4n.freechat.di.dataStore
-import com.ti4n.freechat.erc20.ERC20Token
-import com.ti4n.freechat.erc20.ethereum
+import com.ti4n.freechat.model.response.freechat.ERC20Token
+import com.ti4n.freechat.model.response.freechat.ethereum
 import com.ti4n.freechat.network.FreeChatApiService
 import com.ti4n.freechat.network.SwapApiService
 import com.ti4n.freechat.util.EthUtil

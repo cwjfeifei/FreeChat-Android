@@ -51,6 +51,7 @@ class RegisterViewModel @Inject constructor(
     init {
         viewModelScope.launch {
             faceUrls.value = freeChatApiService.getAvatars().data ?: emptyList()
+            faceURL.value = freeChatApiService.getAvatars().data?.firstOrNull()?.small ?: ""
         }
     }
 

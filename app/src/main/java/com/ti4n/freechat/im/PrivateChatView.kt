@@ -432,7 +432,7 @@ fun ToUserMessage(message: Message, navController: NavController) {
                                 )
                                 transferBg?.draw(drawContext.canvas.nativeCanvas)
                             }
-                            .clickable { uriHandler.openUri("https://goerli.etherscan.io/tx/${transfer.txHash}") }
+                            .clickable { uriHandler.openUri("https://mainnet.etherscan.io/tx/${transfer.txHash}") }
                             .padding(horizontal = 12.dp, vertical = 4.dp)
                             .weight(1f)
                         ) {
@@ -566,7 +566,7 @@ fun MineMessage(message: Message, navController: NavController) {
                                 )
                                 transferBg?.draw(drawContext.canvas.nativeCanvas)
                             }
-                            .clickable { uriHandler.openUri("https://goerli.etherscan.io/tx/${transfer.txHash}") }
+                            .clickable { uriHandler.openUri("https://mainnet.etherscan.io/tx/${transfer.txHash}") }
                             .padding(horizontal = 12.dp, vertical = 4.dp)
                             .weight(1f)
                         ) {

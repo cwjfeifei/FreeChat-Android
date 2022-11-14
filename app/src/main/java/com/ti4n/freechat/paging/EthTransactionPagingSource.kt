@@ -2,13 +2,12 @@ package com.ti4n.freechat.paging
 
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
-import com.ti4n.freechat.erc20.ethereum
+import com.ti4n.freechat.model.response.freechat.ethereum
 import com.ti4n.freechat.model.response.Transaction
 import com.ti4n.freechat.network.EthScanApiService
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
-import javax.inject.Inject
 
 class EthTransactionPagingSource @AssistedInject constructor(
     val ethScanApiService: EthScanApiService,

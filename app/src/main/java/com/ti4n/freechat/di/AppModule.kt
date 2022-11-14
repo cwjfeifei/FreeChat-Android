@@ -24,10 +24,6 @@ import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.create
-import java.io.IOException
-import javax.inject.Singleton
-
-typealias PreferencesDataStore = DataStore<Preferences>
 
 val Context.dataStore by preferencesDataStore(name = "account")
 

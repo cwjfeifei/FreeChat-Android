@@ -25,14 +25,11 @@ import androidx.compose.material.Divider
 import androidx.compose.material.DropdownMenu
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.ExposedDropdownMenuBox
-import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.Text
 import androidx.compose.material.TextButton
 import androidx.compose.material.TextFieldDefaults
 import androidx.compose.material.TopAppBar
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.rememberBottomSheetScaffoldState
 import androidx.compose.material.rememberBottomSheetState
 import androidx.compose.runtime.Composable
@@ -66,8 +63,7 @@ import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.ti4n.freechat.R
-import com.ti4n.freechat.Route
-import com.ti4n.freechat.erc20.ERC20Token
+import com.ti4n.freechat.model.response.freechat.ERC20Token
 import com.ti4n.freechat.wallet.InputPasswordBottomSheet
 import com.ti4n.freechat.widget.HomeTitle
 import com.ti4n.freechat.widget.Image
@@ -211,7 +207,8 @@ fun SwapView(navController: NavController, viewModel: SwapViewModel = hiltViewMo
                                 colors = TextFieldDefaults.textFieldColors(
                                     backgroundColor = Color.Transparent,
                                     focusedIndicatorColor = Color.Transparent,
-                                    unfocusedIndicatorColor = Color.Transparent
+                                    unfocusedIndicatorColor = Color.Transparent,
+                                    textColor = Color(0xFF4D4D4D)
                                 ),
                                 placeholder = {
                                     Text(
@@ -284,7 +281,8 @@ fun SwapView(navController: NavController, viewModel: SwapViewModel = hiltViewMo
                                 colors = TextFieldDefaults.textFieldColors(
                                     backgroundColor = Color.Transparent,
                                     focusedIndicatorColor = Color.Transparent,
-                                    unfocusedIndicatorColor = Color.Transparent
+                                    unfocusedIndicatorColor = Color.Transparent,
+                                    textColor = Color(0xFF4D4D4D)
                                 ),
                                 placeholder = {
                                     Text(

@@ -1,6 +1,6 @@
 package com.ti4n.freechat.network
 
-import com.ti4n.freechat.erc20.ERC20Tokens
+import com.ti4n.freechat.model.response.freechat.ERC20Tokens
 import com.ti4n.freechat.model.response.BaseResponse
 import com.ti4n.freechat.model.response.freechat.FaceImageInfo
 import com.ti4n.freechat.model.response.freechat.FreeChatBaseResponse

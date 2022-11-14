@@ -384,7 +384,7 @@ fun ConfirmTransactionView(
                             modifier = Modifier
                                 .weight(1f)
                                 .clickable {
-                                    uriHandler.openUri("https://goerli.etherscan.io/tx/$transactionHash")
+                                    uriHandler.openUri("https://mainnet.etherscan.io/tx/$transactionHash")
                                 }
                                 .padding(vertical = 12.dp),
                             style = TextStyle(textAlign = TextAlign.Center)

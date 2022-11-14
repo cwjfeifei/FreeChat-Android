@@ -154,7 +154,7 @@ fun ChatListView(
             }
         } else {
             LazyColumn(state = scrollState, modifier = Modifier.background(Color.White)) {
-                items(IM.conversations.sortedBy { !it.isPinned }, key = { it.conversationID }) {
+                items(IM.conversations.sortedBy { !it.isPinned }) {
                     val message = Gson().fromJson(it.latestMsg, Message::class.java)
                     ChatItem(
                         scrollState,

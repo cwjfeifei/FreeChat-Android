@@ -6,7 +6,7 @@ import androidx.datastore.preferences.core.stringPreferencesKey
 import com.ti4n.freechat.R
 import com.ti4n.freechat.db.UserBaseInfoDao
 import com.ti4n.freechat.di.dataStore
-import com.ti4n.freechat.erc20.ERC20Token
+import com.ti4n.freechat.model.response.freechat.ERC20Token
 import com.ti4n.freechat.toast
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
@@ -53,9 +53,9 @@ import kotlin.math.pow
 object EthUtil {
 
     val web3 =
-        Web3j.build(HttpService("https://goerli.infura.io/v3/a36c7f54cb3244a3b352f922daad690c"))
+        Web3j.build(HttpService("https://mainnet.infura.io/v3/a36c7f54cb3244a3b352f922daad690c"))
 
-    val rpc = HttpEthereumRPC("https://goerli.infura.io/v3/a36c7f54cb3244a3b352f922daad690c")
+    val rpc = HttpEthereumRPC("https://mainnet.infura.io/v3/a36c7f54cb3244a3b352f922daad690c")
 
     fun mnemonicWordsExist(words: String) =
         WalletUtils.isValidAddress(MnemonicWords(words).address().hex)
