@@ -26,7 +26,8 @@ class MeEditViewModel @Inject constructor(
     // For set Self UserInfo
     val faceURL = MutableStateFlow(IM.DEFAULT_FACEURL)
     val nickname = MutableStateFlow("")
-    val gender = MutableStateFlow(2)  // 1 male 2 femaledb
+    val gender = MutableStateFlow(2)  // 1 male 2 female 3-跨性别 db
+    val birth = MutableStateFlow<Long>(0)
     val email = MutableStateFlow("")
 
     init {
@@ -36,6 +37,7 @@ class MeEditViewModel @Inject constructor(
                 faceURL.value = if (it.faceURL == null) IM.DEFAULT_FACEURL else it.faceURL
                 nickname.value = if (it.nickname == null) "" else it.nickname
                 gender.value = it.gender
+                birth.value = it.birth
                 email.value = if (it.email == null) "" else it.email
             }
         }
