@@ -87,40 +87,40 @@ fun MeEditView(
 
     SideEffect {
         systemUiController.setStatusBarColor(
-            color = Color.Transparent
+            color = Color(0xFFF5F5F5)
         )
-        systemUiController.setNavigationBarColor(Color(0xFFF0F0F0))
     }
     Scaffold(
         topBar = {
             ConstraintLayout(
                 modifier = Modifier
                     .fillMaxWidth()
+                    .statusBarsPadding()
                     .height(65.dp)
                     .background(color = Color(0xFFF5F5F5))
-                    ) {
+            ) {
                 val (back, title) = createRefs()
                 IconButton(
                     onClick = { navController.navigateUp() },
                     modifier = Modifier.constrainAs(back) {
-                        top.linkTo(parent.top, margin = 20.dp)
-                        bottom.linkTo(parent.bottom, margin = 0.dp)
-                        start.linkTo(parent.start, margin = 16.dp)
+                        top.linkTo(parent.top)
+                        bottom.linkTo(parent.bottom)
                     }
                 ) {
                     Image(mipmap = R.mipmap.nav_back)
                 }
 
                 Text(
-                    text = stringResource(id = R.string.faceurl),
+                    text = stringResource(id = R.string.person_info),
                     color = Color.Black,
                     fontSize = 14.sp,
                     modifier = Modifier.constrainAs(title) {
-                        top.linkTo(parent.top, margin = 20.dp)
+                        top.linkTo(parent.top)
                         bottom.linkTo(parent.bottom)
                         start.linkTo(parent.start)
                         end.linkTo(parent.end)
-                    }
+                    },
+                    fontWeight = FontWeight.SemiBold
                 )
             }
         },
@@ -129,7 +129,7 @@ fun MeEditView(
                 onClick = {
                     scope.launch {
                         // must be IM.login
-                        val result = IM.setUserInfo(faceURL, nickname, gender, 0, email, null)
+                        val result = IM.setUserInfo(faceURL, nickname, gender, birth, email, null)
                         if (result is Unit) {
                             // success
                             navController.navigateUp()
@@ -167,7 +167,7 @@ fun MeEditView(
                     item {
                         me?.let {
                             MePropertyFace(faceURL = faceURL) {
-                                navController.navigate(Route.PickFaceImage.route)
+                                navController.navigate(Route.EditPickFaceImage.route)
                             }
 
                             MePropertyItem(
@@ -270,13 +270,15 @@ fun MePropertyFace(
         }
 
 
-        Divider(color = Color(0xFFEBEBEB),
+        Divider(
+            color = Color(0xFFEBEBEB),
             modifier = Modifier
                 .constrainAs(divider) {
                     bottom.linkTo(parent.bottom, margin = 0.dp)
                     start.linkTo(parent.start, margin = 16.dp)
                     end.linkTo(parent.end)
-                }, thickness = 0.5.dp)
+                }, thickness = 0.5.dp
+        )
     }
 }
 
@@ -346,12 +348,14 @@ fun MePropertyItem(
             )
         }
 
-        Divider(color = Color(0xFFEBEBEB),
+        Divider(
+            color = Color(0xFFEBEBEB),
             modifier = Modifier
                 .constrainAs(divider) {
                     bottom.linkTo(parent.bottom, margin = 0.dp)
                     start.linkTo(parent.start, margin = 16.dp)
                     end.linkTo(parent.end)
-                }, thickness = 0.5.dp)
+                }, thickness = 0.5.dp
+        )
     }
 }

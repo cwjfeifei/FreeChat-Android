@@ -40,6 +40,7 @@
     <string name="set_avatar">请选择您的头像</string>
     <string name="set_faceurl">选择头像</string>
     <string name="faceurl">头像</string>
+    <string name="person_info">个人信息</string>
     <string name="preview_profile">预览</string>
     <string name="send_message">发消息</string>
     <string name="name">昵称</string>

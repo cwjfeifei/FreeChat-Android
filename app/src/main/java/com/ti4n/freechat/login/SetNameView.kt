@@ -2,6 +2,7 @@ package com.ti4n.freechat.login
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
@@ -62,10 +63,15 @@ fun SetNameView(navController: NavController, viewModel: RegisterViewModel) {
                     }
                     .padding(horizontal = 16.dp, vertical = 4.dp))
         }
-    }, backgroundColor = Color(0xFFF0F0F0)) {
-        Column(Modifier.fillMaxSize()) {
-            Spacer(modifier = Modifier.height(8.dp))
-            TextField(value = temName,
+    }, backgroundColor = Color.White) {
+        Column(
+            Modifier
+                .fillMaxSize()
+                .padding(horizontal = 24.dp)
+        ) {
+            Spacer(modifier = Modifier.height(12.dp))
+            TextField(
+                value = temName,
                 onValueChange = { temName = it },
                 modifier = Modifier
                     .padding(it)
@@ -74,7 +80,7 @@ fun SetNameView(navController: NavController, viewModel: RegisterViewModel) {
                 colors = TextFieldDefaults.textFieldColors(
                     focusedIndicatorColor = Color.Transparent,
                     unfocusedIndicatorColor = Color.Transparent,
-                    backgroundColor = Color.White
+                    backgroundColor = Color(0xFFF7F7F7)
                 ),
                 trailingIcon = {
                     if (temName != "") Image(mipmap = R.mipmap.close,
@@ -87,7 +93,8 @@ fun SetNameView(navController: NavController, viewModel: RegisterViewModel) {
                         color = Color(0xFFB3B3B3),
                         fontSize = 16.sp
                     )
-                })
+                }, shape = RoundedCornerShape(8.dp)
+            )
         }
     }
 }

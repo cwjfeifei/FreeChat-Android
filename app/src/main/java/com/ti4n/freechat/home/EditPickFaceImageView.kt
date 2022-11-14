@@ -6,6 +6,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.IconButton
@@ -33,6 +34,7 @@ import coil.request.ImageRequest
 import com.ti4n.freechat.R
 import com.ti4n.freechat.Route
 import com.ti4n.freechat.login.GenderItem
+import com.ti4n.freechat.login.ItemFaceImage
 import com.ti4n.freechat.util.AnimatedPngDecoder
 import com.ti4n.freechat.widget.Image
 
@@ -44,12 +46,8 @@ fun EditPickFaceImageView(
 ) {
     val context = LocalContext.current
 
-    var faceURL by remember {
-        mutableStateOf(viewModel.faceURL.value)
-    }
-    var gender by remember {
-        mutableStateOf(viewModel.gender.value)
-    }
+    val faceURL by viewModel.faceURL.collectAsState()
+    val faceUrls by viewModel.faceUrls.collectAsState()
 
     val imageLoader = ImageLoader.Builder(context).components {
         if (Build.VERSION.SDK_INT >= 28) {
@@ -59,10 +57,6 @@ fun EditPickFaceImageView(
         }
         add(AnimatedPngDecoder.Factory())
     }.build()
-
-    LaunchedEffect(Unit) {
-        // TODO viewMode-> request face images List
-    }
 
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -110,7 +104,7 @@ fun EditPickFaceImageView(
 
         androidx.compose.foundation.Image(
             painter = rememberAsyncImagePainter(
-                ImageRequest.Builder(context).data(data = "https://freechat.world/images/face.apng")
+                ImageRequest.Builder(context).data(data = faceURL)
                     .build(),
 //              ImageRequest.Builder(context).data(data = "https://pic-go-bed.oss-cn-beijing.aliyuncs.com/img/20220316151929.png")
 //                    .build(),
@@ -122,67 +116,21 @@ fun EditPickFaceImageView(
                 .weight(1f),
             contentScale = ContentScale.Crop
         )
-
-        Row(
+//        Divider(color = Color(0xFFEBEBEB), thickness = 0.5.dp, startIndent = 2.dp)
+        Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .height(50.dp)
+                .height(96.dp)
         ) {
-            GenderItem(
-                title = stringResource(id = R.string.male), isSelected = gender == 1
-            ) {
-                viewModel.setGender(1)
-            }
-            Spacer(modifier = Modifier.width(2.dp))
-            GenderItem(
-                title = stringResource(id = R.string.female), isSelected = gender == 2
-            ) {
-                viewModel.setGender(2)
-            }
-        }
-//        Divider(color = Color(0xFFEBEBEB), thickness = 0.5.dp, startIndent = 2.dp)
-        Box(modifier = Modifier
-            .fillMaxWidth()
-            .height(96.dp)) {
-//            val items by viewModel.faceImagesData.collectAsState()
             LazyRow(modifier = Modifier.background(Color.White)) {
-                item(10) {
-                    // FIXME show list
-//                    items.forEach {
-                    ItemFaceImage() {
+                items(faceUrls) {
+                    ItemFaceImage(it.small) {
+                        viewModel.setFaceURL(it.small)
                     }
-                    ItemFaceImage() {
-                    }
-                    ItemFaceImage() {
-                    }
-                    ItemFaceImage() {
-                    }
-                    ItemFaceImage() {
-                    }
-//                    }
                 }
             }
         }
         Spacer(modifier = Modifier.height(2.dp))
-    }
-}
-
-@Composable
-fun ItemFaceImage(click: () -> Unit) {
-    Column(
-        Modifier
-            .fillMaxSize()
-            .clickable { click() }
-            .padding(horizontal = 2.dp),
-        horizontalAlignment = Alignment.CenterHorizontally) {
-        AsyncImage(
-            model = "https://freechat.world/images/face.apng", contentDescription = null,
-            Modifier
-                .size(96.dp)
-                .clip(
-                    RoundedCornerShape(4.dp)
-                )
-        )
     }
 }
 

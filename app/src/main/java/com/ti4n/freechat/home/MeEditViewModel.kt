@@ -4,6 +4,8 @@ import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ti4n.freechat.db.AppDataBase
+import com.ti4n.freechat.model.response.freechat.FaceImageInfo
+import com.ti4n.freechat.network.FreeChatApiService
 import com.ti4n.freechat.network.FreeChatIMService
 import com.ti4n.freechat.util.IM
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -18,7 +20,7 @@ private const val TAG = "MeViewModel"
 @HiltViewModel
 class MeEditViewModel @Inject constructor(
     val db: AppDataBase,
-    val imService: FreeChatIMService,
+    val freeChatApiService: FreeChatApiService,
     @ApplicationContext context: Context
 ) :
     ViewModel() {
@@ -30,6 +32,8 @@ class MeEditViewModel @Inject constructor(
     val birth = MutableStateFlow<Long>(0)
     val email = MutableStateFlow("")
 
+    val faceUrls = MutableStateFlow(emptyList<FaceImageInfo>())
+
     init {
         viewModelScope.launch {
             var selfInfo = IM.currentUserInfo.value
@@ -40,6 +44,7 @@ class MeEditViewModel @Inject constructor(
                 birth.value = it.birth
                 email.value = if (it.email == null) "" else it.email
             }
+            faceUrls.value = freeChatApiService.getAvatars().data ?: emptyList()
         }
     }
 
