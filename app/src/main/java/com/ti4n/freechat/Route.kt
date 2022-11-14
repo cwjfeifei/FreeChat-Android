@@ -40,6 +40,7 @@ sealed class Route(val route: String) {
     object EditPickFaceImage : Route("editPickFaceImage")
     object EditEmail : Route("editEmail")
     object EditNickName : Route("editNickName")
+    object EditGender : Route("editGender")
     object Wallet : Route("Wallet")
     object SendMoney : Route("sendMoney")
     object SendRedPack : Route("sendMoney") {

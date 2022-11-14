@@ -179,9 +179,9 @@ fun MeEditView(
 
                             MePropertyItem(
                                 label = stringResource(id = R.string.gender),
-                                value = if (gender == 1) "男" else if (gender == 2) "女" else "跨性别",
+                                value = stringResource(id = if (gender == 1) R.string.male else if (gender == 2) R.string.female else R.string.transgender),
                             ) {
-                                navController.navigate(Route.SetName.route)
+                                navController.navigate(Route.EditGender.route)
                             }
 
                             MePropertyItem(
@@ -197,7 +197,7 @@ fun MeEditView(
                                 value = me!!.userID,
                                 arrow = false,
                             ) {
-                                navController.navigate(Route.SetName.route)
+//                                navController.navigate(Route.SetName.route)
                             }
 
 //                            MePropertyItem(

@@ -39,6 +39,7 @@
     <string name="complete_profile_tip_2">预计将耗时1分钟时间</string>
     <string name="set_avatar">请选择您的头像</string>
     <string name="set_faceurl">选择头像</string>
+    <string name="select_gender">选择性别</string>
     <string name="faceurl">头像</string>
     <string name="person_info">个人信息</string>
     <string name="preview_profile">预览</string>
