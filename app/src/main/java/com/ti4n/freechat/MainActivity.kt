@@ -140,10 +140,11 @@ class MainActivity : AppCompatActivity() {
                                 PickFaceImageView(navController, hiltViewModel(backStackEntry))
                             }
                             aniComposable(route = Route.ProfilePreview.route) {
-                                val backStackEntry = remember {
-                                    navController.getBackStackEntry(Route.SetPassword.route)
-                                }
-                                ProfilePreview(navController, hiltViewModel(backStackEntry))
+                                ProfilePreview(navController,
+                                    it.arguments?.getString("xfaceURL", "") ?: "",
+                                    it.arguments?.getString("nickname", "") ?: "",
+                                    it.arguments?.getInt("gender")!!
+                                )
                             }
                             aniComposable(route = Route.Register1.route) {
                                 Register1View(navController)

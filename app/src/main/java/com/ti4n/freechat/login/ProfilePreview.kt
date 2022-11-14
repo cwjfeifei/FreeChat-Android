@@ -35,27 +35,22 @@ import com.ti4n.freechat.R
 import com.ti4n.freechat.util.AnimatedPngDecoder
 import com.ti4n.freechat.util.IM
 import com.ti4n.freechat.widget.Image
+import java.net.URLDecoder
+import java.nio.charset.StandardCharsets
 
 // Self Preview
 @Composable
 fun ProfilePreview(
     navController: NavController,
-    viewModel: RegisterViewModel
+    xfaceURL: String,  // need encode
+    nickname: String,
+    gender: Int
 ) {
 
     val userID by lazy {
         IM.currentUserInfo.value?.userID
     }
-    var faceURL by remember {
-        mutableStateOf(viewModel.faceURL.value)
-    }
-    var gender by remember {
-        mutableStateOf(viewModel.gender.value)
-    }
-
-    var nickname by remember {
-        mutableStateOf(viewModel.name.value)
-    }
+    val faceURL = URLDecoder.decode(xfaceURL, StandardCharsets.UTF_8.toString())
 
     val context = LocalContext.current
     val imageLoader = ImageLoader.Builder(context).components {

@@ -13,7 +13,9 @@ sealed class Route(val route: String) {
     }
 
     object PickFaceImage : Route("pickFaceImage")
-    object ProfilePreview : Route("profilePreview")
+    object ProfilePreview : Route("profilePreview/{xfaceURL}/{nickname}/{gender}") {
+        fun jump(xfaceURL: String, nickname:String, gender:Int) = "profilePreview/$xfaceURL/$nickname/$gender"
+    }
     object Register1 : Route("register1")
     object Register2 : Route("register2")
     object CompleteProfile : Route("completeProfile")

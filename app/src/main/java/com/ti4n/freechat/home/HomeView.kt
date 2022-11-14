@@ -29,6 +29,7 @@ import com.ti4n.freechat.contact.NewContactView
 import com.ti4n.freechat.db.UserBaseInfoDao
 import com.ti4n.freechat.im.PrivateChatView
 import com.ti4n.freechat.login.EditEmailView
+import com.ti4n.freechat.login.ProfilePreview
 import com.ti4n.freechat.profile.ApproveFriendApplicationView
 import com.ti4n.freechat.profile.ProfileView
 import com.ti4n.freechat.profile.SendFriendApplicationView
@@ -163,6 +164,20 @@ fun HomeView(userBaseInfoDao: UserBaseInfoDao, globleNavController: NavControlle
                     navController.getBackStackEntry(Route.MeEdit.route)
                 }
                 EditPickFaceImageView(navController = navController, hiltViewModel(backStackEntry))
+            }
+            aniComposable(route = Route.ProfilePreview.route) {
+                ProfilePreview(navController,
+                    it.arguments?.getString("xfaceURL", "") ?: "",
+                    it.arguments?.getString("nickname", "") ?: "",
+                    it.arguments?.getInt("gender")!!
+                )
+            }
+            aniComposable(route = Route.ProfilePreview.route) {
+                ProfilePreview(navController,
+                    it.arguments?.getString("xfaceURL", "") ?: "",
+                    it.arguments?.getString("nickname", "") ?: "",
+                    it.arguments?.getInt("gender")!!
+                )
             }
             aniComposable(Route.EditEmail.route) { _ ->
                 val backStackEntry = remember {

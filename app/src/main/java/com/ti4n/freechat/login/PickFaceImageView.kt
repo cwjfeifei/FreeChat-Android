@@ -35,6 +35,8 @@ import com.ti4n.freechat.R
 import com.ti4n.freechat.Route
 import com.ti4n.freechat.util.AnimatedPngDecoder
 import com.ti4n.freechat.widget.Image
+import java.net.URLEncoder
+import java.nio.charset.StandardCharsets
 
 // Select Face
 @Composable
@@ -88,7 +90,17 @@ fun PickFaceImageView(
                     .weight(1f)
             )
             OutlinedButton(
-                onClick = { navController.navigate(Route.ProfilePreview.route) },
+                onClick = {
+                    faceURL?.let {
+                        navController.navigate(
+                            Route.ProfilePreview.jump(
+                                URLEncoder.encode(faceURL, StandardCharsets.UTF_8.toString()),
+                                viewModel.name.value,
+                                viewModel.gender.value
+                            )
+                        )
+                    }
+                },
                 border = BorderStroke(0.dp, Color.Transparent),
                 modifier = Modifier
                     .height(36.dp),
@@ -140,7 +152,7 @@ fun PickFaceImageView(
                 .fillMaxWidth()
                 .height(96.dp)
         ) {
-            LazyRow(modifier = Modifier.background(Color.White)) {
+            LazyRow(modifier = Modifier.background(Color.White).padding(top = 8.dp)) {
                 items(faceUrls) {
                     ItemFaceImage(it.small) {
                         viewModel.setFaceURL(it.small)
