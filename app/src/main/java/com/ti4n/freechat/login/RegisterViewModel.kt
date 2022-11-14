@@ -1,7 +1,6 @@
 package com.ti4n.freechat.login
 
 import android.util.Log
-import androidx.compose.runtime.mutableStateListOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ti4n.freechat.R
@@ -17,6 +16,7 @@ import com.ti4n.freechat.network.FreeChatIMService
 import com.ti4n.freechat.toast
 import com.ti4n.freechat.util.EthUtil
 import com.ti4n.freechat.util.IM
+import com.ti4n.freechat.util.IM.DEFAULT_FACEURL
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -36,9 +36,8 @@ class RegisterViewModel @Inject constructor(
 
     // wallet
     val words = MutableStateFlow(EthUtil.getMnemonicCode().words)
-//    val shuffledWord = MutableStateFlow(emptyList<String>())
-//    val clickedWords = MutableStateFlow(emptyList<String>())
-    val inputWords = mutableStateListOf<String>()
+    val shuffledWord = MutableStateFlow(emptyList<String>())
+    val clickedWords = MutableStateFlow(emptyList<String>())
 
     // For set Self UserInfo
     val faceURL = MutableStateFlow("")
@@ -52,9 +51,6 @@ class RegisterViewModel @Inject constructor(
     init {
         viewModelScope.launch {
             faceUrls.value = freeChatApiService.getAvatars().data ?: emptyList()
-        }
-        for (i in 0 until  12) {
-            inputWords.add("")
         }
     }
 
@@ -74,21 +70,21 @@ class RegisterViewModel @Inject constructor(
         this.email.value = email
     }
 
-//    fun addWord(word: String) {
-//        clickedWords.value = clickedWords.value + word
-//        shuffledWord.value = shuffledWord.value - word
-//    }
-//
-//    fun deleteWord(word: String) {
-//        clickedWords.value = clickedWords.value - word
-//        shuffledWord.value = shuffledWord.value + word
-//    }
-//
-//    fun shuffleWord() {
-//        shuffledWord.value = words.value.shuffled() - clickedWords.value.toSet()
-//    }
+    fun addWord(word: String) {
+        clickedWords.value = clickedWords.value + word
+        shuffledWord.value = shuffledWord.value - word
+    }
 
-    fun canRegister() = words.value == inputWords
+    fun deleteWord(word: String) {
+        clickedWords.value = clickedWords.value - word
+        shuffledWord.value = shuffledWord.value + word
+    }
+
+    fun shuffleWord() {
+        shuffledWord.value = words.value.shuffled() - clickedWords.value.toSet()
+    }
+
+    fun canRegister() = words.value == clickedWords.value
 
     fun sendVerifyCode(userId: String) {
         if (email.value.isNotEmpty()) {
