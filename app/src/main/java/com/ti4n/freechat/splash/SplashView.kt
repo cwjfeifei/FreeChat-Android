@@ -58,17 +58,17 @@ fun SplashView(navController: NavController, viewModel: LoginViewModel = hiltVie
         }
     }
     LaunchedEffect(Unit) {
-        launch {
-            val launchTime = System.currentTimeMillis()
-            viewModel.autoLoginRoute.filter { it.isNotEmpty() }.collectLatest {
-                var duration = System.currentTimeMillis() - launchTime
-                if (duration < 1000) {
-                    delay(1000 - duration)
-                }
-                navController.navigate(it)
+        val launchTime = System.currentTimeMillis()
+        viewModel.autoLoginRoute.filter { it.isNotEmpty() }.collectLatest {
+            var duration = System.currentTimeMillis() - launchTime
+            if (duration < 1000) {
+                delay(1000 - duration)
             }
+            navController.navigate(it)
         }
+    }
 
+    LaunchedEffect(Unit) {
         val agree = context.dataStore.data.map { it[booleanPreferencesKey("agreePermission")] }
             .firstOrNull() ?: false
         if (agree) {
