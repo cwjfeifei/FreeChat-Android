@@ -55,7 +55,6 @@ class LoginViewModel @Inject constructor(
             if (address == null) {
                 // go to Login : login or register
                 autoLoginRoute.emit(Route.MainLogin.route)
-                cancel()
             } else {
                 var dbUserInfo = db.userBaseInfoDao().getUserInfo(address).firstOrNull()
 

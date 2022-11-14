@@ -48,7 +48,8 @@ fun Register2View(
     Column(
         Modifier
             .fillMaxSize()
-            .background(Color.White)) {
+            .background(Color.White)
+    ) {
         LoginCommonView(
             stringResource(
                 id = when (type) {
@@ -70,57 +71,50 @@ fun Register2View(
                 } else {
                     Toast.makeText(context, "顺序不对", Toast.LENGTH_SHORT).show()
                 }
-            }) {
+            }, tip = R.string.register_tip
+        ) {
             Column() {
                 Spacer(Modifier.height(20.dp))
-                Card(
-                    shape = RoundedCornerShape(8.dp),
-                    modifier = Modifier.fillMaxWidth(),
-                    elevation = 4.dp,
-                    backgroundColor = Color.White
+
+                LazyVerticalGrid(
+                    columns = GridCells.Fixed(3),
+                    verticalArrangement = Arrangement.spacedBy(8.dp),
+                    horizontalArrangement = Arrangement.spacedBy(20.dp),
+                    userScrollEnabled = false,
+                    modifier = Modifier
+                        .fillMaxWidth()
                 ) {
-                    LazyVerticalGrid(
-                        columns = GridCells.Fixed(3),
-                        verticalArrangement = Arrangement.spacedBy(8.dp),
-                        horizontalArrangement = Arrangement.spacedBy(20.dp),
-                        userScrollEnabled = false,
-                        modifier = Modifier
-                            .height(150.dp)
-                            .fillMaxWidth()
-                    ) {
-                        itemsIndexed(inputWords) { index, data ->
-                            Card(
-                                backgroundColor = Color.White,
-                                shape = RoundedCornerShape(8.dp),
-                                elevation = 0.dp,
-                            ) {
-                                Row(verticalAlignment = Alignment.CenterVertically) {
-                                    Text(
-                                        text = if (index + 1 < 10) "0" + (index + 1) else (index + 1).toString(),
-                                        color = Color(0xFF4B6AF7),
+                    itemsIndexed(inputWords) { index, data ->
+                        Card(
+                            backgroundColor = Color.White,
+                            elevation = 0.dp,
+                        ) {
+                            Row(verticalAlignment = Alignment.CenterVertically) {
+                                Text(
+                                    text = if (index + 1 < 10) "0" + (index + 1) else (index + 1).toString(),
+                                    color = Color(0xFF4B6AF7),
+                                    fontSize = 12.sp,
+                                    fontWeight = FontWeight.Medium
+                                )
+                                CustomPaddingTextField(
+                                    value = data,
+                                    onValueChange = { inputWords[index] = it.trim() },
+                                    singleLine = true,
+                                    modifier = Modifier
+                                        .height(32.dp)
+                                        .padding(start = 6.dp),
+                                    colors = TextFieldDefaults.textFieldColors(
+                                        focusedIndicatorColor = Color.Transparent,
+                                        unfocusedIndicatorColor = Color.Transparent,
+                                        backgroundColor = Color(0xFFF5F5F5)
+                                    ),
+                                    shape = RoundedCornerShape(1.dp),
+                                    textStyle = TextStyle(
                                         fontSize = 12.sp,
-                                        fontWeight = FontWeight.Medium
+                                        color = Color(0xFF1A1A1A),
+                                        textAlign = TextAlign.Center
                                     )
-                                    CustomPaddingTextField(
-                                        value = data,
-                                        onValueChange = { inputWords[index] = it.trim() },
-                                        singleLine = true,
-                                        modifier = Modifier
-                                            .height(32.dp)
-                                            .padding(start = 6.dp),
-                                        colors = TextFieldDefaults.textFieldColors(
-                                            focusedIndicatorColor = Color.Transparent,
-                                            unfocusedIndicatorColor = Color.Transparent,
-                                            backgroundColor = Color(0xFFF5F5F5)
-                                        ),
-                                        shape = RoundedCornerShape(1.dp),
-                                        textStyle = TextStyle(
-                                            fontSize = 12.sp,
-                                            color = Color(0xFF1A1A1A),
-                                            textAlign = TextAlign.Center
-                                        )
-                                    )
-                                }
+                                )
                             }
                         }
                     }
