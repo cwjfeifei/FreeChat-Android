@@ -38,6 +38,7 @@ import com.ti4n.freechat.redpack.TransferRiskView
 import com.ti4n.freechat.setting.AccountSecurityView
 import com.ti4n.freechat.setting.ChangeLanguageView
 import com.ti4n.freechat.setting.ChangePasswordView
+import com.ti4n.freechat.setting.ClearCacheView
 import com.ti4n.freechat.setting.SettingView
 import com.ti4n.freechat.swap.SwapView
 import com.ti4n.freechat.util.EthUtil
@@ -303,6 +304,9 @@ fun HomeView(userBaseInfoDao: UserBaseInfoDao, globleNavController: NavControlle
             }
             aniComposable(Route.LanguageSetting.route) {
                 ChangeLanguageView(navController = navController)
+            }
+            aniComposable(Route.ClearCache.route) {
+                ClearCacheView(navController = navController)
             }
         }
     }

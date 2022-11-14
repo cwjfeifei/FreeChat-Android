@@ -72,16 +72,18 @@ class RegisterViewModel @Inject constructor(
 
     fun addWord(word: String) {
         clickedWords.value = clickedWords.value + word
-        shuffledWord.value = shuffledWord.value - word
     }
 
     fun deleteWord(word: String) {
         clickedWords.value = clickedWords.value - word
-        shuffledWord.value = shuffledWord.value + word
     }
 
     fun shuffleWord() {
-        shuffledWord.value = words.value.shuffled() - clickedWords.value.toSet()
+        shuffledWord.value = words.value.shuffled()
+    }
+
+    fun resetWord() {
+        clickedWords.value = emptyList()
     }
 
     fun canRegister() = words.value == clickedWords.value

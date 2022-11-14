@@ -18,6 +18,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
@@ -84,7 +85,13 @@ fun ChatListView(
                         offset = DpOffset(0.dp, 12.dp)
                     ) {
                         DropdownMenuItem(onClick = { navController.navigate(Route.AddFriend.route) }) {
-                            Text(text = "添加好友", fontSize = 16.sp, color = Color.White)
+                            Image(mipmap = R.mipmap.icon_addfriend)
+                            Spacer(modifier = Modifier.width(10.dp))
+                            Text(
+                                text = stringResource(id = R.string.add_friend),
+                                fontSize = 16.sp,
+                                color = Color.White
+                            )
                         }
 //                        Divider(color = Color(0xFF5F5F5F))
 //                        DropdownMenuItem(onClick = { }) {
@@ -92,7 +99,13 @@ fun ChatListView(
 //                        }
                         Divider(color = Color(0xFF5F5F5F))
                         DropdownMenuItem(onClick = { navController.navigate(Route.Wallet.route) }) {
-                            Text(text = "钱包", fontSize = 16.sp, color = Color.White)
+                            Image(mipmap = R.mipmap.icon_wallet)
+                            Spacer(modifier = Modifier.width(10.dp))
+                            Text(
+                                text = stringResource(id = R.string.wallet),
+                                fontSize = 16.sp,
+                                color = Color.White
+                            )
                         }
 //                        Divider(color = Color(0xFF5F5F5F))
 //                        DropdownMenuItem(onClick = { }) {

@@ -51,30 +51,30 @@ fun Register1View(
         stringResource(id = R.string.keep_mnemonic_to_find_account),
         backClick = { navController.navigateUp() },
         nextClick = { navController.navigate(Route.Register2.route) },
-        tip = R.string.register_tip
+        tip = R.string.login_tip
     ) {
         Column(Modifier.verticalScroll(scrollState)) {
             LazyVerticalGrid(
-                columns = GridCells.Fixed(3),
-                verticalArrangement = Arrangement.spacedBy(8.dp),
-                horizontalArrangement = Arrangement.spacedBy(20.dp),
+                columns = GridCells.Fixed(4),
+                verticalArrangement = Arrangement.spacedBy(20.dp),
+                horizontalArrangement = Arrangement.spacedBy(13.dp),
                 userScrollEnabled = false,
                 modifier = Modifier
-                    .height(150.dp)
+                    .height(136.dp)
                     .fillMaxWidth()
             ) {
                 items(words) {
                     Card(
                         backgroundColor = Color(0xFFF4F6FA),
-                        shape = RoundedCornerShape(8.dp),
-                        modifier = Modifier.height(30.dp),
+                        shape = RoundedCornerShape(4.dp),
+                        modifier = Modifier.height(32.dp),
                         elevation = 0.dp,
                     ) {
                         Box(contentAlignment = Alignment.Center) {
                             Text(
                                 text = it,
-                                color = Color(0xFF4D4D4D),
-                                fontSize = 12.sp,
+                                color = Color(0xFF1A1A1A),
+                                fontSize = 14.sp,
                                 fontWeight = FontWeight.Medium
                             )
                         }

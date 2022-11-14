@@ -89,10 +89,13 @@ fun ContactView(
         Spacer(modifier = Modifier.height(6.dp))
         Box(modifier = Modifier.weight(1f)) {
             val items = friends.groupBy {
-                it.remark.ifEmpty {
+                val pinyin = it.remark.ifEmpty {
                     it.nickname.ifEmpty { "*" }  // empty cause exception
                 }.pinyin.first()
-            }
+                if (pinyin in letters) {
+                    pinyin
+                } else '#'
+            }.toSortedMap()
             LazyColumn(modifier = Modifier.background(Color.White)) {
                 item {
                     ItemNewFriend {

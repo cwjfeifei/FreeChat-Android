@@ -53,7 +53,7 @@ fun SendFriendApplicationView(navController: NavController, viewModel: ProfileVi
             backgroundColor = Color.White, elevation = 0.dp,
             modifier = Modifier.statusBarsPadding()
         )
-    }) {
+    }, backgroundColor = Color.White) {
         Column(
             Modifier
                 .fillMaxSize()
@@ -81,7 +81,8 @@ fun SendFriendApplicationView(navController: NavController, viewModel: ProfileVi
                     backgroundColor = Color(0xFFF7F7F7)
                 ),
                 textStyle = TextStyle(fontSize = 16.sp, color = Color.Black),
-                padding = PaddingValues(horizontal = 20.dp, vertical = 12.dp)
+                padding = PaddingValues(horizontal = 20.dp, vertical = 12.dp),
+                shape = RoundedCornerShape(8.dp)
             )
             Spacer(modifier = Modifier.height(16.dp))
             Text(
@@ -110,7 +111,8 @@ fun SendFriendApplicationView(navController: NavController, viewModel: ProfileVi
                         fontSize = 16.sp,
                         color = Color(0xFFB3B3B3)
                     )
-                })
+                }, shape = RoundedCornerShape(8.dp)
+            )
             Spacer(modifier = Modifier.weight(1f))
             TextButton(
                 onClick = {

@@ -27,7 +27,6 @@ import com.ti4n.freechat.R
 import com.ti4n.freechat.Route
 import com.ti4n.freechat.widget.CustomPaddingTextField
 
-@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun LoginView(
     navController: NavController,
@@ -71,18 +70,6 @@ fun LoginView(
                     R.string.wrong_mnemonic,
                     Toast.LENGTH_SHORT
                 ).show()
-            }
-        }, titleEndContent = {
-            Chip(
-                onClick = { words.forEach { it.component2()("") } },
-                shape = RoundedCornerShape(0.5f),
-                modifier = Modifier.height(28.dp),
-                colors = ChipDefaults.chipColors(
-                    backgroundColor = Color(0xFFEFF1F5),
-                    contentColor = Color(0xFF3879FD)
-                )
-            ) {
-                Text(text = stringResource(id = R.string.reset))
             }
         }
     ) {
