@@ -1,6 +1,7 @@
 package com.ti4n.freechat.home
 
 import android.content.Context
+import androidx.compose.runtime.LaunchedEffect
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ti4n.freechat.db.AppDataBase
@@ -13,6 +14,7 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.launch
+import java.util.*
 import javax.inject.Inject
 
 private const val TAG = "MeViewModel"
@@ -64,7 +66,9 @@ class MeEditViewModel @Inject constructor(
         this.email.value = email
     }
 
-    fun setBirth(birth: Long) {
-        this.birth.value = birth
+    fun setBirth(year:Int, month: Int, day:Int) {
+        val c = Calendar.getInstance()
+        c.set(year, month, day)
+        this.birth.value = c.timeInMillis
     }
 }

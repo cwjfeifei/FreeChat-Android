@@ -5,6 +5,8 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.material.Divider
 import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
@@ -16,11 +18,17 @@ import kotlin.collections.ArrayList
 
 @Composable
 fun DataTimePicker(
+    selectYear: MutableState<Int>,
+    selectMonth: MutableState<Int>,
+    selectDay: MutableState<Int>,
     viewModel: MeEditViewModel
 ) {
-    val date = if (viewModel.birth.value >0) Date(viewModel.birth.value) else Date()
-    val itemHeight = 50.dp
+//    val date = if (viewModel.birth.value >0) Date(viewModel.birth.value) else Date()
+//    val selectYear = rememberSaveable { mutableStateOf(date.getYearr()) }
+//    val selectMonth = rememberSaveable { mutableStateOf(date.getMonthh()) }
+//    val selectDay = rememberSaveable { mutableStateOf(date.getDayOfMonth()) }
 
+    val itemHeight = 50.dp
     Box(
         modifier = Modifier
             .wrapContentHeight()
@@ -35,18 +43,16 @@ fun DataTimePicker(
             Arrangement.SpaceEvenly,
             Alignment.CenterVertically
         ) {
-            val year = date.getYearr()
-            val selectYear = rememberSaveable { mutableStateOf(year) }
+
             val years = LinkedList<Pair<Int, String>>().apply {
-                for (i in year downTo 1980) {
+                for (i in Date().getYearr() downTo 1980) {
                     add(Pair(i, "${i}年"))
                 }
             }
             DatePickerColumn(years, itemHeight, 70.dp, selectYear)
 
             //  月份
-            val month = date.getMonthh()
-            val selectMonth = rememberSaveable { mutableStateOf(month) }
+
             val months = ArrayList<Pair<Int, String>>(12).apply {
                 for (i in 1..12) {
                     add(Pair(i, "${i}月"))
@@ -55,8 +61,6 @@ fun DataTimePicker(
             DatePickerColumn(months, itemHeight, 50.dp, selectMonth)
 
             //  月份的天数
-            val dayOfMon = date.getDayOfMonth()
-            val selectDay = rememberSaveable { mutableStateOf(dayOfMon) }
             val dayCountOfMonth = DateUtil.getDayCountOfMonth(selectYear.value, selectMonth.value)
 
             //  提前定义好

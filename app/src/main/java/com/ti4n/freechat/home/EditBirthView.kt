@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
@@ -16,6 +17,9 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.ti4n.freechat.R
+import com.ti4n.freechat.util.getDayOfMonth
+import com.ti4n.freechat.util.getMonthh
+import com.ti4n.freechat.util.getYearr
 import com.ti4n.freechat.widget.Image
 import java.text.SimpleDateFormat
 import java.util.*
@@ -28,9 +32,15 @@ fun EditBirthView(navController: NavController, viewModel: MeEditViewModel) {
             color = Color.White
         )
     }
-    var birth by remember {
-        mutableStateOf(viewModel.birth.value)
-    }
+//    var birth by remember {
+//        mutableStateOf(viewModel.birth.value)
+//    }
+
+    val date = if (viewModel.birth.value > 0) Date(viewModel.birth.value) else Date()
+    val selectYear = rememberSaveable { mutableStateOf(date.getYearr()) }
+    val selectMonth = rememberSaveable { mutableStateOf(date.getMonthh()) }
+    val selectDay = rememberSaveable { mutableStateOf(date.getDayOfMonth()) }
+
     Scaffold(topBar = {
         TopAppBar(
             backgroundColor = Color.White, elevation = 0.dp, modifier = Modifier.statusBarsPadding()
@@ -54,14 +64,12 @@ fun EditBirthView(navController: NavController, viewModel: MeEditViewModel) {
             Spacer(modifier = Modifier.weight(1f))
             Text(text = stringResource(id = R.string.done),
                 fontSize = 14.sp,
-                color = if (birth > 0) Color(0xFF26C24F) else Color(0xFFB3B3B3),
+                color = Color(0xFF26C24F),
                 fontWeight = FontWeight.Medium,
                 modifier = Modifier
                     .clickable {
-                        if (birth > 0) {
-                            viewModel.setBirth(birth)
-                            navController.navigateUp()
-                        }
+                        viewModel.setBirth(selectYear.value, selectMonth.value, selectDay.value)
+                        navController.navigateUp()
                     }
                     .padding(horizontal = 16.dp, vertical = 4.dp))
         }
@@ -73,9 +81,7 @@ fun EditBirthView(navController: NavController, viewModel: MeEditViewModel) {
         ) {
             Spacer(modifier = Modifier.height(12.dp))
             TextField(
-                value = android.icu.text.SimpleDateFormat("yyyy-MM-dd").format(
-                    Date(birth)
-                ),
+                value = "${selectYear.value}年${selectMonth.value}月${selectDay.value}日",
                 onValueChange = { /**/ },
                 modifier = Modifier
                     .padding(it)
@@ -87,17 +93,11 @@ fun EditBirthView(navController: NavController, viewModel: MeEditViewModel) {
                     backgroundColor = Color(0xFFF7F7F7)
                 ),
                 textStyle = TextStyle(fontSize = 16.sp, color = Color.Black),
-                placeholder = {
-                    Text(
-                        text = stringResource(id = R.string.please_input_your_name),
-                        color = Color(0xFFB3B3B3),
-                        fontSize = 16.sp
-                    )
-                }, shape = RoundedCornerShape(8.dp)
+                shape = RoundedCornerShape(8.dp)
             )
             Spacer(modifier = Modifier.weight(1f))
 
-            DataTimePicker(viewModel)
+            DataTimePicker(selectYear, selectMonth, selectDay, viewModel)
         }
     }
 }

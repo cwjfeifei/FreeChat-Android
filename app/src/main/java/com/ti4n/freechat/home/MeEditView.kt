@@ -186,9 +186,7 @@ fun MeEditView(
 
                             MePropertyItem(
                                 label = stringResource(id = R.string.birthday),
-                                value = SimpleDateFormat("yyyy-MM-dd").format(
-                                    Date(birth)
-                                ),
+                                value = if (birth > 0) SimpleDateFormat("yyyy-MM-dd").format(Date(birth)) else "",
                             ) {
                                 navController.navigate(Route.EditBirth.route)
                             }
