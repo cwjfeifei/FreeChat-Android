@@ -197,6 +197,12 @@ fun HomeView(userBaseInfoDao: UserBaseInfoDao, globleNavController: NavControlle
                 }
                 EditGenderView(navController = navController, hiltViewModel(backStackEntry))
             }
+            aniComposable(Route.EditBirth.route) { _ ->
+                val backStackEntry = remember {
+                    navController.getBackStackEntry(Route.MeEdit.route)
+                }
+                EditBirthView(navController = navController, hiltViewModel(backStackEntry))
+            }
             aniComposable(Route.Wallet.route) { _ ->
                 WalletView(navController)
             }

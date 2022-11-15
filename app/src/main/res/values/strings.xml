@@ -34,6 +34,7 @@
     <string name="cancel">取消</string>
     <string name="set_name">设置名字</string>
     <string name="done">完成</string>
+    <string name="set_birth">设置生日</string>
     <string name="complete_profile_tip">恭喜您! 已成功创建FreeChat账户</string>
     <string name="complete_profile_tip_1">自由的世界还需一步，下一步将会设置您的社交资料</string>
     <string name="complete_profile_tip_2">预计将耗时1分钟时间</string>

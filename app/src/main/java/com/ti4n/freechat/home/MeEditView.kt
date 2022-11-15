@@ -190,6 +190,7 @@ fun MeEditView(
                                     Date(birth)
                                 ),
                             ) {
+                                navController.navigate(Route.EditBirth.route)
                             }
 
                             MePropertyItem(
@@ -197,7 +198,6 @@ fun MeEditView(
                                 value = me!!.userID,
                                 arrow = false,
                             ) {
-//                                navController.navigate(Route.SetName.route)
                             }
 
 //                            MePropertyItem(

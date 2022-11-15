@@ -63,4 +63,8 @@ class MeEditViewModel @Inject constructor(
     fun setEmail(email: String) {
         this.email.value = email
     }
+
+    fun setBirth(birth: Long) {
+        this.birth.value = birth
+    }
 }
