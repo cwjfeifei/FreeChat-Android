@@ -1,5 +1,9 @@
 package com.ti4n.freechat
 
+import android.net.Uri
+import com.google.gson.Gson
+import com.ti4n.freechat.model.response.freechat.ERC20Tokens
+
 sealed class Route(val route: String) {
     object Splash : Route("splash")
     object MainLogin : Route("mainLogin")
@@ -14,8 +18,10 @@ sealed class Route(val route: String) {
 
     object PickFaceImage : Route("pickFaceImage")
     object ProfilePreview : Route("profilePreview/{xfaceURL}/{nickname}/{gender}") {
-        fun jump(xfaceURL: String, nickname:String, gender:Int) = "profilePreview/$xfaceURL/$nickname/$gender"
+        fun jump(xfaceURL: String, nickname: String, gender: Int) =
+            "profilePreview/$xfaceURL/$nickname/$gender"
     }
+
     object Register1 : Route("register1")
     object Register2 : Route("register2")
     object CompleteProfile : Route("completeProfile")
@@ -88,5 +94,20 @@ sealed class Route(val route: String) {
 
     object VerifyEmailLogin : Route("verifyEmailLogin/{userID}/{email}") {
         fun jump(userId: String, email: String) = "verifyEmailLogin/$userId/$email"
+    }
+
+    object SelectTransferToken : Route("selectTransferToken/{tokens}/{select}") {
+        fun jump(tokens: ERC20Tokens, select: String) =
+            "selectTransferToken/${Uri.encode(Gson().toJson(tokens))}/$select"
+    }
+
+    object SelectSwapFromToken : Route("selectSwapFromToken/{tokens}/{select}") {
+        fun jump(tokens: ERC20Tokens, select: String) =
+            "selectSwapFromToken/${Uri.encode(Gson().toJson(tokens))}/$select"
+    }
+
+    object SelectSwapToToken : Route("selectSwapToToken/{tokens}/{select}") {
+        fun jump(tokens: ERC20Tokens, select: String) =
+            "selectSwapToToken/${Uri.encode(Gson().toJson(tokens))}/$select"
     }
 }

@@ -99,6 +99,7 @@ fun SendMoneyView(navController: NavController, viewModel: SendMoneyViewModel = 
         Column(
             modifier = Modifier
                 .fillMaxSize()
+//                .background(Color.White)
                 .systemBarsPadding()
         ) {
             CenterAlignedTopAppBar(

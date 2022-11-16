@@ -72,10 +72,11 @@
     <string name="close">关闭</string>
     <string name="token">通证</string>
     <string name="amount">数量</string>
-    <string name="input_amount_hint">请输入转账数量</string>
+    <string name="input_amount_hint">请输入转账金额</string>
     <string name="all">全部</string>
     <string name="receive_money">收款</string>
     <string name="swap">兑换</string>
+    <string name="select_token">选择币种</string>
     <string name="transaction_history">交易记录</string>
     <string name="all_money">资产</string>
     <string name="detail">详情</string>

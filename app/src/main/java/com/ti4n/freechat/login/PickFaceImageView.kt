@@ -12,6 +12,9 @@ import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.IconButton
 import androidx.compose.material.OutlinedButton
 import androidx.compose.material.Text
+import androidx.compose.material3.CenterAlignedTopAppBar
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -39,6 +42,7 @@ import java.net.URLEncoder
 import java.nio.charset.StandardCharsets
 
 // Select Face
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PickFaceImageView(
     navController: NavController,
@@ -69,52 +73,48 @@ fun PickFaceImageView(
             .background(Color.White)
             .systemBarsPadding()
     ) {
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier
-                .fillMaxWidth()
-                .background(Color.White)
-                .padding(horizontal = 24.dp)
-                .systemBarsPadding()
-        ) {
-            IconButton(onClick = { navController.navigateUp() }) {
-                Image(mipmap = R.mipmap.nav_back)
-            }
-            Text(
-                text = stringResource(id = R.string.set_faceurl),
-                color = Color(0xFF1A1A1A),
-                fontSize = 14.sp,
-                fontWeight = FontWeight.Bold,
-                textAlign = TextAlign.Center,
-                modifier = Modifier
-                    .weight(1f)
-            )
-            OutlinedButton(
-                onClick = {
-                    faceURL?.let {
-                        navController.navigate(
-                            Route.ProfilePreview.jump(
-                                URLEncoder.encode(faceURL, StandardCharsets.UTF_8.toString()),
-                                viewModel.name.value,
-                                viewModel.gender.value
-                            )
-                        )
-                    }
-                },
-                border = BorderStroke(0.dp, Color.Transparent),
-                modifier = Modifier
-                    .height(36.dp),
-                colors = ButtonDefaults.buttonColors(
-                    backgroundColor = Color.White, contentColor = Color(0xFF1A1A1A)
-                )
-            ) {
+        CenterAlignedTopAppBar(
+            colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
+                containerColor = Color.White
+            ), title = {
                 Text(
-                    text = stringResource(id = R.string.preview_profile),
+                    text = stringResource(id = R.string.set_faceurl),
+                    color = Color(0xFF1A1A1A),
                     fontSize = 14.sp,
-                    fontWeight = FontWeight.Medium
+                    fontWeight = FontWeight.Bold
                 )
+            }, navigationIcon = {
+                IconButton(onClick = { navController.navigateUp() }) {
+                    Image(mipmap = R.mipmap.nav_back)
+                }
+            }, actions = {
+                OutlinedButton(
+                    onClick = {
+                        faceURL?.let {
+                            navController.navigate(
+                                Route.ProfilePreview.jump(
+                                    URLEncoder.encode(faceURL, StandardCharsets.UTF_8.toString()),
+                                    viewModel.name.value,
+                                    viewModel.gender.value
+                                )
+                            )
+                        }
+                    },
+                    border = BorderStroke(0.dp, Color.Transparent),
+                    modifier = Modifier
+                        .height(36.dp),
+                    colors = ButtonDefaults.buttonColors(
+                        backgroundColor = Color.White, contentColor = Color(0xFF1A1A1A)
+                    )
+                ) {
+                    Text(
+                        text = stringResource(id = R.string.preview_profile),
+                        fontSize = 14.sp,
+                        fontWeight = FontWeight.Medium
+                    )
+                }
             }
-        }
+        )
 
         androidx.compose.foundation.Image(
             painter = rememberAsyncImagePainter(
@@ -152,7 +152,11 @@ fun PickFaceImageView(
                 .fillMaxWidth()
                 .height(96.dp)
         ) {
-            LazyRow(modifier = Modifier.background(Color.White).padding(top = 8.dp)) {
+            LazyRow(
+                modifier = Modifier
+                    .background(Color.White)
+                    .padding(top = 8.dp)
+            ) {
                 items(faceUrls) {
                     ItemFaceImage(it.small) {
                         viewModel.setFaceURL(it.small)

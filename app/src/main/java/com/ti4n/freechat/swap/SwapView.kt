@@ -65,7 +65,9 @@ import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.ti4n.freechat.R
+import com.ti4n.freechat.Route
 import com.ti4n.freechat.model.response.freechat.ERC20Token
+import com.ti4n.freechat.model.response.freechat.ERC20Tokens
 import com.ti4n.freechat.wallet.InputPasswordBottomSheet
 import com.ti4n.freechat.widget.HomeTitle
 import com.ti4n.freechat.widget.Image
@@ -84,12 +86,7 @@ fun SwapView(navController: NavController, viewModel: SwapViewModel = hiltViewMo
     val amount by viewModel.amount.collectAsState()
     val toAmount by viewModel.toAmount.collectAsState()
     val gasUSD by viewModel.gasUSD.collectAsState()
-    var fromExpanded by remember {
-        mutableStateOf(false)
-    }
-    var toExpanded by remember {
-        mutableStateOf(false)
-    }
+
     val showSuccessDialog by viewModel.transactionSend.collectAsState(initial = false)
     val transactionHash by viewModel.transactionHash.collectAsState()
 
@@ -106,6 +103,22 @@ fun SwapView(navController: NavController, viewModel: SwapViewModel = hiltViewMo
     val sheetstate = rememberBottomSheetState(initialValue = BottomSheetValue.Collapsed)
     val scaffoldState = rememberBottomSheetScaffoldState(bottomSheetState = sheetstate)
     val scope = rememberCoroutineScope()
+
+    navController.currentBackStackEntry
+        ?.savedStateHandle?.getStateFlow<String?>("swapFromToken", "")
+        ?.collectAsState()?.value?.let { result ->
+            tokens.find { it.symbol == result }?.let {
+                viewModel.setFromToken(it)
+            }
+        }
+
+    navController.currentBackStackEntry
+        ?.savedStateHandle?.getStateFlow<String?>("swapToToken", "")
+        ?.collectAsState()?.value?.let { result ->
+            tokens.find { it.symbol == result }?.let {
+                viewModel.setToToken(it)
+            }
+        }
 
     BottomSheetScaffold(
         scaffoldState = scaffoldState,
@@ -157,43 +170,40 @@ fun SwapView(navController: NavController, viewModel: SwapViewModel = hiltViewMo
                             .padding(16.dp)
                     ) {
                         Column(Modifier.weight(1f)) {
-                            ExposedDropdownMenuBox(
-                                expanded = fromExpanded,
-                                onExpandedChange = { fromExpanded = !fromExpanded }) {
-                                Row(verticalAlignment = CenterVertically) {
-                                    AsyncImage(
-                                        model = fromToken?.LogoURI,
-                                        contentDescription = null,
-                                        modifier = Modifier.size(38.dp)
-                                    )
-                                    Spacer(modifier = Modifier.width(5.dp))
-                                    Column {
-                                        Row(verticalAlignment = CenterVertically) {
-                                            Text(
-                                                text = fromToken?.symbol ?: "",
-                                                color = Color(0xFF1A1A1A)
-                                            )
-                                            Spacer(modifier = Modifier.width(4.dp))
-                                            Image(mipmap = R.mipmap.push, Modifier.clickable {
-                                                fromExpanded = true
-                                            })
-                                        }
+                            Row(
+                                verticalAlignment = CenterVertically,
+                            ) {
+                                AsyncImage(
+                                    model = fromToken?.LogoURI,
+                                    contentDescription = null,
+                                    modifier = Modifier.size(38.dp)
+                                )
+                                Spacer(modifier = Modifier.width(5.dp))
+                                Column {
+                                    Row(verticalAlignment = CenterVertically) {
                                         Text(
-                                            text = "转出数量",
-                                            color = Color(0xFF999999),
-                                            fontSize = 12.sp
+                                            text = fromToken?.symbol ?: "",
+                                            color = Color(0xFF1A1A1A)
                                         )
+                                        Spacer(modifier = Modifier.width(4.dp))
+                                        Image(mipmap = R.mipmap.push, Modifier.clickable {
+                                            navController.navigate(
+                                                Route.SelectSwapFromToken.jump(
+                                                    ERC20Tokens(
+                                                        tokens.toMutableList().apply {
+                                                            removeAll { it.symbol == toToken?.symbol }
+                                                        }
+                                                    ),
+                                                    fromToken?.symbol ?: ""
+                                                )
+                                            )
+                                        })
                                     }
-                                }
-                                DropdownMenu(
-                                    expanded = fromExpanded,
-                                    onDismissRequest = { fromExpanded = false }) {
-                                    tokens.forEach {
-                                        ItemSupportToken(token = it) {
-                                            viewModel.setFromToken(it)
-                                            fromExpanded = false
-                                        }
-                                    }
+                                    Text(
+                                        text = "转出数量",
+                                        color = Color(0xFF999999),
+                                        fontSize = 12.sp
+                                    )
                                 }
                             }
                             Spacer(modifier = Modifier.height(20.dp))
@@ -232,43 +242,38 @@ fun SwapView(navController: NavController, viewModel: SwapViewModel = hiltViewMo
                         )
                         Spacer(modifier = Modifier.width(6.dp))
                         Column(Modifier.weight(1f)) {
-                            ExposedDropdownMenuBox(
-                                expanded = toExpanded,
-                                onExpandedChange = { toExpanded = !toExpanded }) {
-                                Row(verticalAlignment = CenterVertically) {
-                                    AsyncImage(
-                                        model = toToken?.LogoURI,
-                                        contentDescription = null,
-                                        modifier = Modifier.size(38.dp)
-                                    )
-                                    Spacer(modifier = Modifier.width(5.dp))
-                                    Column {
-                                        Row(verticalAlignment = CenterVertically) {
-                                            Text(
-                                                text = toToken?.symbol ?: "",
-                                                color = Color(0xFF1A1A1A)
-                                            )
-                                            Spacer(modifier = Modifier.width(4.dp))
-                                            Image(mipmap = R.mipmap.push, Modifier.clickable {
-                                                toExpanded = true
-                                            })
-                                        }
+                            Row(verticalAlignment = CenterVertically) {
+                                AsyncImage(
+                                    model = toToken?.LogoURI,
+                                    contentDescription = null,
+                                    modifier = Modifier.size(38.dp)
+                                )
+                                Spacer(modifier = Modifier.width(5.dp))
+                                Column {
+                                    Row(verticalAlignment = CenterVertically) {
                                         Text(
-                                            text = "转入数量",
-                                            color = Color(0xFF999999),
-                                            fontSize = 12.sp
+                                            text = toToken?.symbol ?: "",
+                                            color = Color(0xFF1A1A1A)
                                         )
+                                        Spacer(modifier = Modifier.width(4.dp))
+                                        Image(mipmap = R.mipmap.push, Modifier.clickable {
+                                            navController.navigate(
+                                                Route.SelectSwapToToken.jump(
+                                                    ERC20Tokens(
+                                                        tokens.toMutableList().apply {
+                                                            removeAll { it.symbol == fromToken?.symbol }
+                                                        }
+                                                    ),
+                                                    toToken?.symbol ?: ""
+                                                )
+                                            )
+                                        })
                                     }
-                                }
-                                DropdownMenu(
-                                    expanded = toExpanded,
-                                    onDismissRequest = { toExpanded = false }) {
-                                    tokens.forEach {
-                                        ItemSupportToken(token = it) {
-                                            viewModel.setToToken(it)
-                                            toExpanded = false
-                                        }
-                                    }
+                                    Text(
+                                        text = "转入数量",
+                                        color = Color(0xFF999999),
+                                        fontSize = 12.sp
+                                    )
                                 }
                             }
                             Spacer(modifier = Modifier.height(20.dp))

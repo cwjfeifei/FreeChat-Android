@@ -36,7 +36,8 @@ data class ERC20Token(
     val whitepaper: String,
 ) : Parcelable
 
-data class ERC20Tokens(val result: List<ERC20Token>)
+@Parcelize
+data class ERC20Tokens(val result: List<ERC20Token>) : Parcelable
 
 val ethereum = ERC20Token(
     Abi = "",

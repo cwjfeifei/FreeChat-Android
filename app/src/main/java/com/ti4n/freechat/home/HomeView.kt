@@ -16,6 +16,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import androidx.navigation.NavType
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.navArgument
 import com.google.accompanist.navigation.animation.AnimatedNavHost
@@ -30,6 +31,7 @@ import com.ti4n.freechat.db.UserBaseInfoDao
 import com.ti4n.freechat.im.PrivateChatView
 import com.ti4n.freechat.login.EditEmailView
 import com.ti4n.freechat.login.ProfilePreview
+import com.ti4n.freechat.model.response.freechat.ERC20Tokens
 import com.ti4n.freechat.profile.ApproveFriendApplicationView
 import com.ti4n.freechat.profile.ProfileView
 import com.ti4n.freechat.profile.SendFriendApplicationView
@@ -41,6 +43,8 @@ import com.ti4n.freechat.setting.ChangeLanguageView
 import com.ti4n.freechat.setting.ChangePasswordView
 import com.ti4n.freechat.setting.ClearCacheView
 import com.ti4n.freechat.setting.SettingView
+import com.ti4n.freechat.swap.SelectTokenType
+import com.ti4n.freechat.swap.SelectTokenView
 import com.ti4n.freechat.swap.SwapView
 import com.ti4n.freechat.util.EthUtil
 import com.ti4n.freechat.util.IM
@@ -166,14 +170,16 @@ fun HomeView(userBaseInfoDao: UserBaseInfoDao, globleNavController: NavControlle
                 EditPickFaceImageView(navController = navController, hiltViewModel(backStackEntry))
             }
             aniComposable(route = Route.ProfilePreview.route) {
-                ProfilePreview(navController,
+                ProfilePreview(
+                    navController,
                     it.arguments?.getString("xfaceURL", "") ?: "",
                     it.arguments?.getString("nickname", "") ?: "",
                     it.arguments?.getInt("gender")!!
                 )
             }
             aniComposable(route = Route.ProfilePreview.route) {
-                ProfilePreview(navController,
+                ProfilePreview(
+                    navController,
                     it.arguments?.getString("xfaceURL", "") ?: "",
                     it.arguments?.getString("nickname", "") ?: "",
                     it.arguments?.getInt("gender")!!
@@ -334,6 +340,57 @@ fun HomeView(userBaseInfoDao: UserBaseInfoDao, globleNavController: NavControlle
             }
             aniComposable(Route.ClearCache.route) {
                 ClearCacheView(navController = navController)
+            }
+            aniComposable(
+                Route.SelectTransferToken.route,
+                arguments = listOf(navArgument("tokens") {
+                    type = SelectTokenType
+                    defaultValue = ERC20Tokens(emptyList())
+                }, navArgument("select") {
+                    type = NavType.StringType
+                    defaultValue = ""
+                })
+            ) {
+                SelectTokenView(
+                    navController = navController,
+                    erC20Tokens = it.arguments?.getParcelable("tokens") ?: ERC20Tokens(emptyList()),
+                    selected = it.arguments?.getString("select", "") ?: "",
+                    fromType = "transferToken"
+                )
+            }
+            aniComposable(
+                Route.SelectSwapFromToken.route,
+                arguments = listOf(navArgument("tokens") {
+                    type = SelectTokenType
+                    defaultValue = ERC20Tokens(emptyList())
+                }, navArgument("select") {
+                    type = NavType.StringType
+                    defaultValue = ""
+                })
+            ) {
+                SelectTokenView(
+                    navController = navController,
+                    erC20Tokens = it.arguments?.getParcelable("tokens") ?: ERC20Tokens(emptyList()),
+                    selected = it.arguments?.getString("select", "") ?: "",
+                    fromType = "swapFromToken"
+                )
+            }
+            aniComposable(
+                Route.SelectSwapToToken.route,
+                arguments = listOf(navArgument("tokens") {
+                    type = SelectTokenType
+                    defaultValue = ERC20Tokens(emptyList())
+                }, navArgument("select") {
+                    type = NavType.StringType
+                    defaultValue = ""
+                })
+            ) {
+                SelectTokenView(
+                    navController = navController,
+                    erC20Tokens = it.arguments?.getParcelable("tokens") ?: ERC20Tokens(emptyList()),
+                    selected = it.arguments?.getString("select", "") ?: "",
+                    fromType = "swapToToken"
+                )
             }
         }
     }
