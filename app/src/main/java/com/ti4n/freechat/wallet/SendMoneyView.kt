@@ -33,10 +33,9 @@ import androidx.compose.material.Text
 import androidx.compose.material.TextButton
 import androidx.compose.material.TextField
 import androidx.compose.material.TextFieldDefaults
-import androidx.compose.material.TopAppBar
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material.swipeable
+import androidx.compose.material3.CenterAlignedTopAppBar
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.collectAsState
@@ -70,6 +69,7 @@ import com.ti4n.freechat.widget.HomeTitle
 import com.ti4n.freechat.widget.Image
 
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SendMoneyView(navController: NavController, viewModel: SendMoneyViewModel = hiltViewModel()) {
     val address by viewModel.toAddress.collectAsState()
@@ -101,13 +101,17 @@ fun SendMoneyView(navController: NavController, viewModel: SendMoneyViewModel = 
                 .fillMaxSize()
                 .systemBarsPadding()
         ) {
-            TopAppBar(backgroundColor = Color.Transparent, title = {
-                HomeTitle(R.string.transfer)
-            }, navigationIcon = {
-                IconButton(onClick = { navController.navigateUp() }) {
-                    Image(mipmap = R.mipmap.nav_back)
+            CenterAlignedTopAppBar(
+                colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
+                    containerColor = Color.Transparent
+                ), title = {
+                    HomeTitle(R.string.transfer)
+                }, navigationIcon = {
+                    IconButton(onClick = { navController.navigateUp() }) {
+                        Image(mipmap = R.mipmap.nav_back)
+                    }
                 }
-            }, elevation = 0.dp)
+            )
             Spacer(modifier = Modifier.height(20.dp))
             Card(
                 modifier = Modifier

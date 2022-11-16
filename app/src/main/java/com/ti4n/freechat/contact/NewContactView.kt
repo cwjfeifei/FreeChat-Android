@@ -17,13 +17,13 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Badge
-import androidx.compose.material.BadgedBox
 import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.IconButton
 import androidx.compose.material.Text
 import androidx.compose.material.TextButton
-import androidx.compose.material.TopAppBar
+import androidx.compose.material3.CenterAlignedTopAppBar
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.collectAsState
@@ -43,6 +43,7 @@ import com.ti4n.freechat.Route
 import com.ti4n.freechat.widget.Image
 import io.openim.android.sdk.models.FriendApplicationInfo
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun NewContactView(navController: NavController, viewModel: NewContactViewModel = hiltViewModel()) {
     val friendApplications by viewModel.friendApplications.collectAsState()
@@ -58,18 +59,21 @@ fun NewContactView(navController: NavController, viewModel: NewContactViewModel 
             .background(Color.White)
             .statusBarsPadding()
     ) {
-        TopAppBar(navigationIcon = {
-            IconButton(onClick = { navController.navigateUp() }) {
-                Image(mipmap = R.mipmap.nav_back)
-            }
-        }, title = {
-            Text(
-                text = stringResource(id = R.string.new_friend),
-                fontSize = 17.sp,
-                color = Color(0xFF1A1A1A),
-                fontWeight = FontWeight.SemiBold
-            )
-        }, backgroundColor = Color.White, elevation = 0.dp)
+        CenterAlignedTopAppBar(
+            colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
+                containerColor = Color(0xFFF0F0F0)
+            ), navigationIcon = {
+                IconButton(onClick = { navController.navigateUp() }) {
+                    Image(mipmap = R.mipmap.nav_back)
+                }
+            }, title = {
+                Text(
+                    text = stringResource(id = R.string.new_friend),
+                    fontSize = 17.sp,
+                    color = Color(0xFF1A1A1A),
+                    fontWeight = FontWeight.SemiBold
+                )
+            })
         LazyColumn {
             items(friendApplications) {
                 ItemFriendApplication(friendApplicationInfo = it, navController)

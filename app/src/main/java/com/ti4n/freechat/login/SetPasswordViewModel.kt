@@ -33,7 +33,7 @@ class SetPasswordViewModel @Inject constructor(
         viewModelScope.launch {
             try {
                 val response = imService.sendVerifyCode(SendVerifyCode(2, address, ""))
-                if (response.errCode == 0 && response.data != null) {
+                if ((response.errCode == 0 || response.errCode == 10006) && response.data != null) {
                     navigationRoute.emit(
                         Route.VerifyEmailLogin.jump(
                             address,

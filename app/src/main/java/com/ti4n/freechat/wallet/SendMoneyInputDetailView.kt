@@ -27,9 +27,11 @@ import androidx.compose.material.Text
 import androidx.compose.material.TextButton
 import androidx.compose.material.TextField
 import androidx.compose.material.TextFieldDefaults
-import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowDropDown
+import androidx.compose.material3.CenterAlignedTopAppBar
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.collectAsState
@@ -58,6 +60,7 @@ import com.ti4n.freechat.model.response.freechat.ERC20Token
 import com.ti4n.freechat.widget.HomeTitle
 import com.ti4n.freechat.widget.Image
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SendMoneyInputDetailView(
     navController: NavController,
@@ -78,13 +81,16 @@ fun SendMoneyInputDetailView(
             .fillMaxSize()
             .systemBarsPadding()
     ) {
-        TopAppBar(backgroundColor = Color(0xFFF0F0F0), title = {
-            HomeTitle(R.string.transfer)
-        }, navigationIcon = {
-            IconButton(onClick = { navController.navigateUp() }) {
-                Image(mipmap = R.mipmap.nav_back)
-            }
-        })
+        CenterAlignedTopAppBar(
+            colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
+                containerColor = Color(0xFFF0F0F0)
+            ), title = {
+                HomeTitle(R.string.transfer)
+            }, navigationIcon = {
+                IconButton(onClick = { navController.navigateUp() }) {
+                    Image(mipmap = R.mipmap.nav_back)
+                }
+            })
         Spacer(modifier = Modifier.height(20.dp))
         Card(
             modifier = Modifier

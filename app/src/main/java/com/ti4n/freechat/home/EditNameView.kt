@@ -4,6 +4,9 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
+import androidx.compose.material3.CenterAlignedTopAppBar
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -18,6 +21,7 @@ import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.ti4n.freechat.R
 import com.ti4n.freechat.widget.Image
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun EditNameView(navController: NavController, viewModel: MeEditViewModel) {
     val systemUiController = rememberSystemUiController()
@@ -30,39 +34,40 @@ fun EditNameView(navController: NavController, viewModel: MeEditViewModel) {
         mutableStateOf(viewModel.nickname.value)
     }
     Scaffold(topBar = {
-        TopAppBar(
-            backgroundColor = Color.White, elevation = 0.dp, modifier = Modifier.statusBarsPadding()
-        ) {
-            Text(text = stringResource(id = R.string.cancel),
-                color = Color(0xFF181818),
-                fontSize = 14.sp,
-                modifier = Modifier
-                    .clickable {
-                        navController.navigateUp()
-                    }
-                    .padding(horizontal = 16.dp, vertical = 4.dp),
-                textAlign = TextAlign.Center)
-            Spacer(modifier = Modifier.weight(1f))
-            Text(
-                text = stringResource(id = R.string.set_name),
-                color = Color.Black,
-                fontSize = 17.sp,
-                fontWeight = FontWeight.Medium
-            )
-            Spacer(modifier = Modifier.weight(1f))
-            Text(text = stringResource(id = R.string.done),
-                fontSize = 14.sp,
-                color = if (nickname.isNotEmpty()) Color(0xFF26C24F) else Color(0xFFB3B3B3),
-                fontWeight = FontWeight.Medium,
-                modifier = Modifier
-                    .clickable {
-                        if (nickname.isNotEmpty()) {
-                            viewModel.setNickname(nickname)
+        CenterAlignedTopAppBar(
+            colors = TopAppBarDefaults.centerAlignedTopAppBarColors(containerColor = Color.White),
+            modifier = Modifier.statusBarsPadding(),
+            title = {
+                Text(
+                    text = stringResource(id = R.string.set_name),
+                    color = Color.Black,
+                    fontSize = 17.sp,
+                    fontWeight = FontWeight.Medium
+                )
+            }, navigationIcon = {
+                Text(text = stringResource(id = R.string.cancel),
+                    color = Color(0xFF181818),
+                    fontSize = 14.sp,
+                    modifier = Modifier
+                        .clickable {
                             navController.navigateUp()
                         }
-                    }
-                    .padding(horizontal = 16.dp, vertical = 4.dp))
-        }
+                        .padding(horizontal = 16.dp, vertical = 4.dp))
+            }, actions = {
+                Text(text = stringResource(id = R.string.done),
+                    fontSize = 14.sp,
+                    color = if (nickname.isNotEmpty()) Color(0xFF26C24F) else Color(0xFFB3B3B3),
+                    fontWeight = FontWeight.Medium,
+                    modifier = Modifier
+                        .clickable {
+                            if (nickname.isNotEmpty()) {
+                                viewModel.setNickname(nickname)
+                                navController.navigateUp()
+                            }
+                        }
+                        .padding(horizontal = 16.dp, vertical = 4.dp))
+            }
+        )
     }, backgroundColor = Color.White) {
         Column(
             Modifier

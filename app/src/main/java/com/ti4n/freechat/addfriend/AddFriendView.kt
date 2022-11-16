@@ -21,7 +21,9 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.material.Divider
 import androidx.compose.material.IconButton
 import androidx.compose.material.Text
-import androidx.compose.material.TopAppBar
+import androidx.compose.material3.CenterAlignedTopAppBar
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -48,6 +50,7 @@ import com.ti4n.freechat.widget.Image
 import com.ti4n.freechat.widget.SearchView
 import kotlinx.coroutines.launch
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AddFriendView(navController: NavController) {
     val meInfo by IM.currentUserInfo.collectAsState()
@@ -82,31 +85,34 @@ fun AddFriendView(navController: NavController) {
         AnimatedVisibility(
             visible = !showSearchView.value, enter = expandVertically(), exit = shrinkVertically()
         ) {
-            TopAppBar(backgroundColor = Color(0xFFF0F0F0), title = {
-                HomeTitle(R.string.add_friend)
-            }, elevation = 0.dp, modifier = Modifier.statusBarsPadding(), navigationIcon = {
-                IconButton(onClick = { navController.navigateUp() }) {
-                    Image(mipmap = R.mipmap.nav_back)
-                }
-            }, actions = {
-                Image(mipmap = R.mipmap.scan_black, modifier = Modifier
-                    .clickable {
-                        barcodeLauncher.launch(
-                            ScanOptions()
-                                .setDesiredBarcodeFormats(
-                                    ScanOptions.QR_CODE
-                                )
-                                .setOrientationLocked(false)
-                        )
+            CenterAlignedTopAppBar(
+                colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
+                    containerColor = Color(0xFFF0F0F0)
+                ), title = {
+                    HomeTitle(R.string.add_friend)
+                }, modifier = Modifier.statusBarsPadding(), navigationIcon = {
+                    IconButton(onClick = { navController.navigateUp() }) {
+                        Image(mipmap = R.mipmap.nav_back)
                     }
-                    .padding(14.dp))
-            })
+                }, actions = {
+                    Image(mipmap = R.mipmap.scan_black, modifier = Modifier
+                        .clickable {
+                            barcodeLauncher.launch(
+                                ScanOptions()
+                                    .setDesiredBarcodeFormats(
+                                        ScanOptions.QR_CODE
+                                    )
+                                    .setOrientationLocked(false)
+                            )
+                        }
+                        .padding(14.dp))
+                })
         }
         Spacer(modifier = Modifier.height(8.dp))
         SearchView(
             showSearchView = showSearchView,
             searchText = searchText,
-            hintText = "FCID",
+            hintText = stringResource(id = R.string.input_fcid),
             onSearchClick = {
                 scope.launch {
                     onSearchFriend(context = context, searchText.value, navController)

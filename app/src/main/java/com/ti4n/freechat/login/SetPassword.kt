@@ -93,7 +93,7 @@ fun SetPasswordView(
             ),
             shape = RoundedCornerShape(4.dp),
             textStyle = TextStyle(
-                fontSize = 16.sp, color = Color.Black, textAlign = TextAlign.Center
+                fontSize = 14.sp, color = Color.Black, textAlign = TextAlign.Center
             ),
             placeholder = {
                 Text(

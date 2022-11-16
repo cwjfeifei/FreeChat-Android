@@ -28,9 +28,11 @@ import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.Text
 import androidx.compose.material.TextButton
-import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material3.CenterAlignedTopAppBar
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.SideEffect
@@ -66,6 +68,7 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import java.io.OutputStream
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ReceiveMoneyView(navController: NavController) {
     val scope = rememberCoroutineScope()
@@ -92,13 +95,16 @@ fun ReceiveMoneyView(navController: NavController) {
             .systemBarsPadding(),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        TopAppBar(backgroundColor = Color.Transparent, title = {
-            HomeTitle(R.string.receive_money)
-        }, navigationIcon = {
-            IconButton(onClick = { navController.navigateUp() }) {
-                com.ti4n.freechat.widget.Image(mipmap = R.mipmap.nav_back)
-            }
-        }, elevation = 0.dp)
+        CenterAlignedTopAppBar(
+            colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
+                containerColor = Color.White
+            ), title = {
+                HomeTitle(R.string.receive_money)
+            }, navigationIcon = {
+                IconButton(onClick = { navController.navigateUp() }) {
+                    com.ti4n.freechat.widget.Image(mipmap = R.mipmap.nav_back)
+                }
+            })
         Spacer(modifier = Modifier.height(40.dp))
         Text(text = stringResource(id = R.string.scan_qrcode_to_send_me), color = Color(0xFF666666))
         Spacer(modifier = Modifier.height(20.dp))

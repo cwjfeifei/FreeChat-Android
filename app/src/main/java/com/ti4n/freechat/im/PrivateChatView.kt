@@ -41,9 +41,9 @@ import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.Text
 import androidx.compose.material.TextFieldDefaults
-import androidx.compose.material.TopAppBar
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material3.CenterAlignedTopAppBar
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.collectAsState
@@ -102,8 +102,9 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import java.io.File
 
-@OptIn(ExperimentalPermissionsApi::class, ExperimentalLayoutApi::class,
-    ExperimentalComposeUiApi::class
+@OptIn(
+    ExperimentalPermissionsApi::class, ExperimentalLayoutApi::class,
+    ExperimentalComposeUiApi::class, ExperimentalMaterial3Api::class
 )
 @Composable
 fun PrivateChatView(
@@ -157,13 +158,17 @@ fun PrivateChatView(
             .fillMaxSize()
             .background(Color(0xFFF0F0F0))
     ) {
-        TopAppBar(backgroundColor = Color(0xFFF0F0F0), title = {
-            HomeTitle(toUserInfo?.nickname ?: "")
-        }, navigationIcon = {
-            IconButton(onClick = { navController.navigateUp() }) {
-                Image(mipmap = R.mipmap.nav_back)
-            }
-        }, modifier = Modifier.statusBarsPadding(), elevation = 0.dp)
+        CenterAlignedTopAppBar(
+            colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
+                containerColor = Color(0xFFF0F0F0)
+            ), title = {
+                HomeTitle(toUserInfo?.nickname ?: "")
+            }, navigationIcon = {
+                IconButton(onClick = { navController.navigateUp() }) {
+                    Image(mipmap = R.mipmap.nav_back)
+                }
+            }, modifier = Modifier.statusBarsPadding()
+        )
         LazyColumn(
             Modifier
                 .weight(1f)

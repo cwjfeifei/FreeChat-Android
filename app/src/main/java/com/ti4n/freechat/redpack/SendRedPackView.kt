@@ -25,9 +25,11 @@ import androidx.compose.material.IconButton
 import androidx.compose.material.Text
 import androidx.compose.material.TextButton
 import androidx.compose.material.TextFieldDefaults
-import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowDropDown
+import androidx.compose.material3.CenterAlignedTopAppBar
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.collectAsState
@@ -58,6 +60,7 @@ import com.ti4n.freechat.widget.CustomPaddingTextField
 import com.ti4n.freechat.widget.HomeTitle
 import com.ti4n.freechat.widget.Image
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SendRedPackView(
     navController: NavController,
@@ -88,13 +91,16 @@ fun SendRedPackView(
             .statusBarsPadding(),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        TopAppBar(backgroundColor = Color.Transparent, title = {
-            HomeTitle("")
-        }, navigationIcon = {
-            IconButton(onClick = { navController.navigateUp() }) {
-                Image(mipmap = R.mipmap.nav_back)
-            }
-        }, elevation = 0.dp)
+        CenterAlignedTopAppBar(
+            colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
+                containerColor = Color.White
+            ), title = {
+                HomeTitle("")
+            }, navigationIcon = {
+                IconButton(onClick = { navController.navigateUp() }) {
+                    Image(mipmap = R.mipmap.nav_back)
+                }
+            })
         Spacer(modifier = Modifier.height(20.dp))
         AsyncImage(
             model = toUserInfo?.faceURL,

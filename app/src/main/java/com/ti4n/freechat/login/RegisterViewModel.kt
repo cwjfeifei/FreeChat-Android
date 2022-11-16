@@ -92,13 +92,13 @@ class RegisterViewModel @Inject constructor(
     fun sendVerifyCode(userId: String) {
         if (email.value.isNotEmpty()) {
             viewModelScope.launch {
+                val response = imService.sendVerifyCode(
+                    SendVerifyCode(
+                        1, userId, email.value
+                    )
+                )
                 try {
-                    if (imService.sendVerifyCode(
-                            SendVerifyCode(
-                                1, userId, email.value
-                            )
-                        ).errCode == 0
-                    ) {
+                    if (response.errCode == 0 || response.errCode == 10006) {
                         setEmailRoute.emit(Route.VerifyEmailRegister.jump(userId, email.value))
                     }
 

@@ -18,7 +18,9 @@ import androidx.compose.material.Divider
 import androidx.compose.material.IconButton
 import androidx.compose.material.Text
 import androidx.compose.material.TextButton
-import androidx.compose.material.TopAppBar
+import androidx.compose.material3.CenterAlignedTopAppBar
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.collectAsState
@@ -38,13 +40,14 @@ import com.ti4n.freechat.util.IM
 import com.ti4n.freechat.widget.HomeTitle
 import com.ti4n.freechat.widget.Image
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AccountSecurityView(navController: NavController) {
     val userInfo by IM.currentUserInfo.collectAsState()
     val systemUiController = rememberSystemUiController()
     SideEffect {
         systemUiController.setSystemBarsColor(
-            color = Color(0xFFF0F0F0)
+            color = Color(0xFFF5F5F5)
         )
     }
     Column(
@@ -53,13 +56,16 @@ fun AccountSecurityView(navController: NavController) {
             .background(Color(0xFFF5F5F5))
             .systemBarsPadding()
     ) {
-        TopAppBar(backgroundColor = Color(0xFFF0F0F0), title = {
-            HomeTitle(R.string.account_security)
-        }, navigationIcon = {
-            IconButton(onClick = { navController.navigateUp() }) {
-                Image(mipmap = R.mipmap.nav_back)
-            }
-        })
+        CenterAlignedTopAppBar(
+            colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
+                containerColor = Color(0xFFF5F5F5)
+            ), title = {
+                HomeTitle(R.string.account_security)
+            }, navigationIcon = {
+                IconButton(onClick = { navController.navigateUp() }) {
+                    Image(mipmap = R.mipmap.nav_back)
+                }
+            })
         SettingItem(R.string.account, endContent = {
             Text(
                 text = userInfo?.userID ?: "",

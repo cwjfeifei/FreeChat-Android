@@ -169,6 +169,7 @@ fun InputCodeField(
         keyboardOptions = keyboardOptions,
         decorationBox = {
             Row(Modifier.fillMaxWidth()) {
+
                 repeat(length) {
                     Box(
                         Modifier

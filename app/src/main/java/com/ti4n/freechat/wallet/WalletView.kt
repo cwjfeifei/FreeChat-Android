@@ -23,7 +23,9 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.IconButton
 import androidx.compose.material.Text
-import androidx.compose.material.TopAppBar
+import androidx.compose.material3.CenterAlignedTopAppBar
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.collectAsState
@@ -48,6 +50,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
 import com.ti4n.freechat.Route
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun WalletView(navController: NavController, viewModel: WalletViewModel = hiltViewModel()) {
     val systemUiController = rememberSystemUiController()
@@ -64,7 +67,10 @@ fun WalletView(navController: NavController, viewModel: WalletViewModel = hiltVi
             .background(Color.White)
             .systemBarsPadding()
     ) {
-        TopAppBar(backgroundColor = Color(0xFFF0F0F0), title = {
+        CenterAlignedTopAppBar(
+            colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
+                containerColor = Color(0xFFF0F0F0)
+            ), title = {
             HomeTitle(R.string.wallet)
         }, navigationIcon = {
             IconButton(onClick = { navController.navigateUp() }) {

@@ -29,9 +29,11 @@ import androidx.compose.material.IconButton
 import androidx.compose.material.Text
 import androidx.compose.material.TextButton
 import androidx.compose.material.TextFieldDefaults
-import androidx.compose.material.TopAppBar
 import androidx.compose.material.rememberBottomSheetScaffoldState
 import androidx.compose.material.rememberBottomSheetState
+import androidx.compose.material3.CenterAlignedTopAppBar
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.collectAsState
@@ -70,6 +72,7 @@ import com.ti4n.freechat.widget.Image
 import com.ti4n.freechat.widget.CustomPaddingTextField
 import kotlinx.coroutines.launch
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SwapView(navController: NavController, viewModel: SwapViewModel = hiltViewModel()) {
     val tokens by viewModel.supportTokens.collectAsState()
@@ -131,13 +134,16 @@ fun SwapView(navController: NavController, viewModel: SwapViewModel = hiltViewMo
                     .fillMaxSize()
                     .systemBarsPadding()
             ) {
-                TopAppBar(backgroundColor = Color.Transparent, title = {
-                    HomeTitle("闪兑")
-                }, navigationIcon = {
-                    IconButton(onClick = { navController.navigateUp() }) {
-                        Image(mipmap = R.mipmap.nav_back)
-                    }
-                }, elevation = 0.dp)
+                CenterAlignedTopAppBar(
+                    colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
+                        containerColor = Color.Transparent
+                    ), title = {
+                        HomeTitle("闪兑")
+                    }, navigationIcon = {
+                        IconButton(onClick = { navController.navigateUp() }) {
+                            Image(mipmap = R.mipmap.nav_back)
+                        }
+                    })
                 Card(
                     backgroundColor = Color.White,
                     shape = RoundedCornerShape(12.dp),

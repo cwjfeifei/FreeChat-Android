@@ -64,7 +64,9 @@ fun SplashView(navController: NavController, viewModel: LoginViewModel = hiltVie
             if (duration < 1000) {
                 delay(1000 - duration)
             }
-            navController.navigate(it)
+            navController.navigate(it) {
+                popUpTo(Route.Splash.route) { inclusive = true }
+            }
         }
     }
 

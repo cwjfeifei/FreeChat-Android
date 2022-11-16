@@ -10,6 +10,9 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
+import androidx.compose.material3.CenterAlignedTopAppBar
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -45,6 +48,7 @@ private const val TAG = "MeEditView"
 /**
  * Edit self profile view
  */
+@OptIn(ExperimentalMaterial3Api::class)
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
 fun MeEditView(
@@ -92,44 +96,32 @@ fun MeEditView(
     }
     Scaffold(
         topBar = {
-            ConstraintLayout(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .statusBarsPadding()
-                    .height(65.dp)
-                    .background(color = Color(0xFFF5F5F5))
-            ) {
-                val (back, title) = createRefs()
-                IconButton(
-                    onClick = { navController.navigateUp() },
-                    modifier = Modifier.constrainAs(back) {
-                        top.linkTo(parent.top)
-                        bottom.linkTo(parent.bottom)
+            CenterAlignedTopAppBar(
+                colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
+                    containerColor = Color(0xFFF5F5F5)
+                ), title = {
+                    Text(
+                        text = stringResource(id = R.string.person_info),
+                        color = Color.Black,
+                        fontSize = 14.sp,
+                        fontWeight = FontWeight.SemiBold
+                    )
+                }, navigationIcon = {
+                    IconButton(
+                        onClick = { navController.navigateUp() }
+                    ) {
+                        Image(mipmap = R.mipmap.nav_back)
                     }
-                ) {
-                    Image(mipmap = R.mipmap.nav_back)
                 }
-
-                Text(
-                    text = stringResource(id = R.string.person_info),
-                    color = Color.Black,
-                    fontSize = 14.sp,
-                    modifier = Modifier.constrainAs(title) {
-                        top.linkTo(parent.top)
-                        bottom.linkTo(parent.bottom)
-                        start.linkTo(parent.start)
-                        end.linkTo(parent.end)
-                    },
-                    fontWeight = FontWeight.SemiBold
-                )
-            }
+            )
         },
         bottomBar = {
             TextButton(
                 onClick = {
                     scope.launch {
                         // must be IM.login
-                        val result = IM.setUserInfo(faceURL, nickname, gender, birth, email, null)
+                        val result =
+                            IM.setUserInfo(faceURL, nickname, gender, birth / 1000, email, null)
                         if (result is Unit) {
                             // success
                             navController.navigateUp()
@@ -186,7 +178,11 @@ fun MeEditView(
 
                             MePropertyItem(
                                 label = stringResource(id = R.string.birthday),
-                                value = if (birth > 0) SimpleDateFormat("yyyy-MM-dd").format(Date(birth)) else "",
+                                value = if (birth > 0) SimpleDateFormat("yyyy-MM-dd").format(
+                                    Date(
+                                        birth
+                                    )
+                                ) else "",
                             ) {
                                 navController.navigate(Route.EditBirth.route)
                             }

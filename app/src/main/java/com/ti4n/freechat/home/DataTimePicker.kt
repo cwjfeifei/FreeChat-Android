@@ -21,13 +21,7 @@ fun DataTimePicker(
     selectYear: MutableState<Int>,
     selectMonth: MutableState<Int>,
     selectDay: MutableState<Int>,
-    viewModel: MeEditViewModel
 ) {
-//    val date = if (viewModel.birth.value >0) Date(viewModel.birth.value) else Date()
-//    val selectYear = rememberSaveable { mutableStateOf(date.getYearr()) }
-//    val selectMonth = rememberSaveable { mutableStateOf(date.getMonthh()) }
-//    val selectDay = rememberSaveable { mutableStateOf(date.getDayOfMonth()) }
-
     val itemHeight = 50.dp
     Box(
         modifier = Modifier

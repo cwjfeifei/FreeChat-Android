@@ -16,7 +16,9 @@ import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.IconButton
 import androidx.compose.material.Text
 import androidx.compose.material.TextButton
-import androidx.compose.material.TopAppBar
+import androidx.compose.material3.CenterAlignedTopAppBar
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.CenterHorizontally
@@ -36,6 +38,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.io.File
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ClearCacheView(navController: NavController) {
     val scope = rememberCoroutineScope()
@@ -58,7 +61,7 @@ fun ClearCacheView(navController: NavController) {
             .background(Color.White)
             .systemBarsPadding()
     ) {
-        TopAppBar(title = {
+        CenterAlignedTopAppBar(title = {
             Text(
                 text = stringResource(id = R.string.clear_cache),
                 color = Color(0xFF1A1A1A),
@@ -66,8 +69,7 @@ fun ClearCacheView(navController: NavController) {
                 fontWeight = FontWeight.SemiBold
             )
         },
-            backgroundColor = Color.White,
-            elevation = 0.dp,
+            colors = TopAppBarDefaults.centerAlignedTopAppBarColors(containerColor = Color.White),
             navigationIcon = {
                 IconButton(onClick = { navController.navigateUp() }) {
                     Image(mipmap = R.mipmap.nav_back)

@@ -38,7 +38,6 @@ fun VerifyEmailView(
         tip = R.string.verify_email_tip,
         backClick = { navController.navigateUp() },
         nextClick = {
-            Log.e("TAG", "VerifyEmailView:$isRegister ")
             if (isRegister) viewModel.registerFreeChat(
                 userId,
                 verifyCode

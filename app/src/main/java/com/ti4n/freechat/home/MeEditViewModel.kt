@@ -43,7 +43,7 @@ class MeEditViewModel @Inject constructor(
                 faceURL.value = if (it.faceURL == null) IM.DEFAULT_FACEURL else it.faceURL
                 nickname.value = if (it.nickname == null) "" else it.nickname
                 gender.value = it.gender
-                birth.value = it.birth
+                birth.value = it.birth * 1000
                 email.value = if (it.email == null) "" else it.email
             }
             faceUrls.value = freeChatApiService.getAvatars().data ?: emptyList()
@@ -66,9 +66,9 @@ class MeEditViewModel @Inject constructor(
         this.email.value = email
     }
 
-    fun setBirth(year:Int, month: Int, day:Int) {
+    fun setBirth(year: Int, month: Int, day: Int) {
         val c = Calendar.getInstance()
-        c.set(year, month, day)
+        c.set(year, month - 1, day)
         this.birth.value = c.timeInMillis
     }
 }

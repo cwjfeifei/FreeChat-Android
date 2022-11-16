@@ -2,6 +2,7 @@ package com.ti4n.freechat.login
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
@@ -9,6 +10,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -77,7 +79,8 @@ fun SetEmailView(
                     textAlign = TextAlign.Center,
                     modifier = Modifier.fillMaxWidth()
                 )
-            }
+            },
+            keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Email)
         )
         Spacer(Modifier.height(12.dp))
         Text(

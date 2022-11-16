@@ -10,7 +10,9 @@ import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.material.Divider
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
-import androidx.compose.material.TopAppBar
+import androidx.compose.material3.CenterAlignedTopAppBar
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.mutableStateOf
@@ -38,6 +40,7 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ChangeLanguageView(navController: NavController) {
     val systemUiController = rememberSystemUiController()
@@ -56,41 +59,46 @@ fun ChangeLanguageView(navController: NavController) {
         )
     }
     Scaffold(topBar = {
-        TopAppBar(
-            backgroundColor = Color(0xFFF5F5F5), elevation = 0.dp, modifier = Modifier.statusBarsPadding()
-        ) {
-            Text(text = stringResource(id = R.string.cancel),
-                color = Color(0xFF1B1B1B),
-                fontSize = 14.sp,
-                modifier = Modifier
-                    .clickable {
-                        navController.navigateUp()
-                    }
-                    .padding(horizontal = 16.dp, vertical = 4.dp),
-                textAlign = TextAlign.Center)
-            Spacer(modifier = Modifier.weight(1f))
-            Text(
-                text = stringResource(id = R.string.language_setting),
-                color = Color.Black,
-                fontSize = 17.sp,
-                fontWeight = FontWeight.Medium
-            )
-            Spacer(modifier = Modifier.weight(1f))
-            Text(text = stringResource(id = R.string.done),
-                fontSize = 14.sp,
-                color = Color(0xFF26C24F),
-                fontWeight = FontWeight.Medium,
-                modifier = Modifier
-                    .clickable {
-                        scope.launch {
-                            context.dataStore.edit {
-                                it[stringPreferencesKey("language")] = currentLanguage
-                            }
+        CenterAlignedTopAppBar(
+            colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
+                containerColor = Color(
+                    0xFFF5F5F5
+                )
+            ), modifier = Modifier.statusBarsPadding(),
+            title = {
+                Text(
+                    text = stringResource(id = R.string.language_setting),
+                    color = Color.Black,
+                    fontSize = 17.sp,
+                    fontWeight = FontWeight.Medium
+                )
+            }, navigationIcon = {
+                Text(text = stringResource(id = R.string.cancel),
+                    color = Color(0xFF1B1B1B),
+                    fontSize = 14.sp,
+                    modifier = Modifier
+                        .clickable {
                             navController.navigateUp()
                         }
-                    }
-                    .padding(horizontal = 16.dp, vertical = 4.dp))
-        }
+                        .padding(horizontal = 16.dp, vertical = 4.dp),
+                    textAlign = TextAlign.Center)
+            }, actions = {
+                Text(text = stringResource(id = R.string.done),
+                    fontSize = 14.sp,
+                    color = Color(0xFF26C24F),
+                    fontWeight = FontWeight.Medium,
+                    modifier = Modifier
+                        .clickable {
+                            scope.launch {
+                                context.dataStore.edit {
+                                    it[stringPreferencesKey("language")] = currentLanguage
+                                }
+                                navController.navigateUp()
+                            }
+                        }
+                        .padding(horizontal = 16.dp, vertical = 4.dp))
+            }
+        )
     }, backgroundColor = Color.White) {
         Column(modifier = Modifier.padding(it)) {
             LanguageItem(

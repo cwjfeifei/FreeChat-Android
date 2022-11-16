@@ -1,11 +1,11 @@
 <resources>
-    <string name="app_name">FreeChat</string>
+    <string name="app_name">Freechat</string>
 
-    <string name="welcome">欢迎使用FreeChat\n享受自由的世界</string>
+    <string name="welcome">欢迎使用Freechat\n享受自由的世界</string>
     <string name="login">登录</string>
-    <string name="create_account">创建FreeChat账户</string>
+    <string name="create_account">创建Freechat账户</string>
     <string name="agree_app_terms">我已阅读并同意</string>
-    <string name="user_term">《FreeChat用户协议》</string>
+    <string name="user_term">《Freechat用户协议》</string>
     <string name="privacy">《隐私政策》</string>
     <string name="permission_list">《设备权限使用清单》</string>
     <string name="avoid_abuse">《防止滥用政策》</string>
@@ -13,9 +13,9 @@
     <string name="etc_term">等协议。</string>
     <string name="and">和</string>
     <string name="agree_app_terms_tip">请阅读并同意相关协议才能进行注册或登录。</string>
-    <string name="input_mnemonic">请输入您的助记词 登录您的FreeChat</string>
+    <string name="input_mnemonic">请输入您的助记词 登录您的Freechat</string>
     <string name="back">返回</string>
-    <string name="login_freechat">登录FreeChat</string>
+    <string name="login_freechat">登录Freechat</string>
     <string name="wrong_mnemonic">助记词不正确</string>
     <string name="keep_mnemonic_to_find_account">请妥善保管您的助记词 便于您找回账户</string>
     <string name="next">下一步</string>
@@ -35,7 +35,8 @@
     <string name="set_name">设置名字</string>
     <string name="done">完成</string>
     <string name="set_birth">设置生日</string>
-    <string name="complete_profile_tip">恭喜您! 已成功创建FreeChat账户</string>
+    <string name="set_birth_tip">您的年龄信息仅被用于为您推荐更适合您的广告和推送，我们不会暴露您的年龄信息。</string>
+    <string name="complete_profile_tip">恭喜您! 已成功创建Freechat账户</string>
     <string name="complete_profile_tip_1">自由的世界还需一步，下一步将会设置您的社交资料</string>
     <string name="complete_profile_tip_2">预计将耗时1分钟时间</string>
     <string name="set_avatar">请选择您的头像</string>
@@ -74,7 +75,7 @@
     <string name="input_amount_hint">请输入转账数量</string>
     <string name="all">全部</string>
     <string name="receive_money">收款</string>
-    <string name="swap">闪兑</string>
+    <string name="swap">兑换</string>
     <string name="transaction_history">交易记录</string>
     <string name="all_money">资产</string>
     <string name="detail">详情</string>
@@ -135,14 +136,14 @@
 
     <string name="please_input_your_name">请输入您的名字</string>
 
-    <string name="create_freechat">创建FreeChat</string>
+    <string name="create_Freechat">创建Freechat</string>
 
     <string name="new_friend">新的朋友</string>
     <string name="copy">复制</string>
     <string name="save_to_gallery">保存为图片</string>
     <string name="tip">注意</string>
-    <string name="login_tip">FreeChat并不保存您的任何私钥及助记词，在您输入密钥等敏感关键信息时，请注意安全，也请您妥善保管好您的助记词及密钥相关安全信息，否则将会造成资产遗失或被盗。</string>
-    <string name="register_tip">FreeChat为去中心化的社交应用，你的安全措施由助记词进行保护，如果助记词遗失或泄漏，您的账户及财产将会失去保护，请妥善保管。</string>
+    <string name="login_tip">Freechat并不保存您的任何私钥及助记词，在您输入密钥等敏感关键信息时，请注意安全，也请您妥善保管好您的助记词及密钥相关安全信息，否则将会造成资产遗失或被盗。</string>
+    <string name="register_tip">Freechat为去中心化的社交应用，你的安全措施由助记词进行保护，如果助记词遗失或泄漏，您的账户及财产将会失去保护，请妥善保管。</string>
     <string name="email_tip">电子邮箱是确认您Freechat社交身份的唯一方式，保护您的社交信息，只能设置一次，不允许进行更改。</string>
     <string name="password_tip">账户密码并不能找回您的账户，您依然需要助记词进行账户重置。再次提醒您请保护好您的助记词，助记词是唯一恢复您账户及资产的方式。</string>
 
@@ -155,6 +156,7 @@
     <string name="send_request">发送申请</string>
 
     <string name="search">搜索</string>
+    <string name="input_fcid">请输入好友的 FCID</string>
     <string name="search_uid_invalid">请输入有效的用户ID</string>
     <string name="user_not_exist">用户不存在</string>
     <string name="three_day">三天内</string>
@@ -192,10 +194,13 @@
     <string name="clear_cache">清除缓存</string>
     <string name="version">版本</string>
     <string name="logout">退出登录</string>
+    <string name="logout_tip">退出登录不会删除您的数据，在您再次登录后数据依然存在。</string>
+    <string name="confirm_logout">确认退出</string>
 
     <string name="account">账户</string>
     <string name="backup_mnemonic">备份助记词</string>
     <string name="change_password">修改密码</string>
+    <string name="old_password_wrong">原密码错误，请重新输入。</string>
     <string name="email">邮箱</string>
 
     <string name="old_password">原密码</string>

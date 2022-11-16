@@ -23,12 +23,10 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Divider
-import androidx.compose.material.DropdownMenu
-import androidx.compose.material.DropdownMenuItem
-import androidx.compose.material.Slider
 import androidx.compose.material.Text
-import androidx.compose.material.TopAppBar
+import androidx.compose.material3.CenterAlignedTopAppBar
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.collectAsState
@@ -61,7 +59,7 @@ import io.openim.android.sdk.models.FriendInfo
 import projekt.cloud.piece.c2.pinyin.C2Pinyin.pinyin
 import java.util.Locale
 
-@OptIn(ExperimentalFoundationApi::class)
+@OptIn(ExperimentalFoundationApi::class, ExperimentalMaterial3Api::class)
 @Composable
 fun ContactView(
     navController: NavController,
@@ -83,9 +81,13 @@ fun ContactView(
             .fillMaxSize()
             .background(Color(0xFFF0F0F0))
     ) {
-        TopAppBar(backgroundColor = Color(0xFFF0F0F0), title = {
-            HomeTitle(R.string.contact)
-        }, elevation = 0.dp, modifier = Modifier.statusBarsPadding())
+        CenterAlignedTopAppBar(
+            colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
+                containerColor = Color(0xFFF0F0F0)
+            ), title = {
+                HomeTitle(R.string.contact)
+            }, modifier = Modifier.statusBarsPadding()
+        )
         Spacer(modifier = Modifier.height(6.dp))
         Box(modifier = Modifier.weight(1f)) {
             val items = friends.groupBy {

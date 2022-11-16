@@ -28,11 +28,13 @@ import androidx.compose.material.IconButton
 import androidx.compose.material.OutlinedButton
 import androidx.compose.material.Text
 import androidx.compose.material.TextButton
-import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.rememberBottomSheetScaffoldState
 import androidx.compose.material.rememberBottomSheetState
+import androidx.compose.material3.CenterAlignedTopAppBar
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.collectAsState
@@ -61,7 +63,7 @@ import com.ti4n.freechat.widget.HomeTitle
 import com.ti4n.freechat.widget.Image
 import kotlinx.coroutines.launch
 
-@OptIn(ExperimentalMaterialApi::class)
+@OptIn(ExperimentalMaterialApi::class, ExperimentalMaterial3Api::class)
 @Composable
 fun ConfirmTransactionView(
     navController: NavController,
@@ -112,13 +114,17 @@ fun ConfirmTransactionView(
                 .systemBarsPadding(),
             horizontalAlignment = CenterHorizontally
         ) {
-            TopAppBar(backgroundColor = Color.Transparent, title = {
-                HomeTitle(R.string.confirm_transaction)
-            }, navigationIcon = {
-                IconButton(onClick = { navController.navigateUp() }) {
-                    Image(mipmap = R.mipmap.nav_back)
+            CenterAlignedTopAppBar(
+                colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
+                    containerColor = Color.White
+                ), title = {
+                    HomeTitle(R.string.confirm_transaction)
+                }, navigationIcon = {
+                    IconButton(onClick = { navController.navigateUp() }) {
+                        Image(mipmap = R.mipmap.nav_back)
+                    }
                 }
-            }, elevation = 0.dp)
+            )
             Spacer(modifier = Modifier.height(40.dp))
             Box(Modifier.align(CenterHorizontally)) {
                 Image(

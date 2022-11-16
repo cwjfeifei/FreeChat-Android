@@ -13,6 +13,9 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
+import androidx.compose.material3.CenterAlignedTopAppBar
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -38,6 +41,7 @@ import io.openim.android.sdk.enums.MessageType
 import io.openim.android.sdk.models.Message
 import java.util.Date
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ChatListView(
     navController: NavController,
@@ -71,50 +75,54 @@ fun ChatListView(
         AnimatedVisibility(
             visible = !showSearchView.value, enter = expandVertically(), exit = shrinkVertically()
         ) {
-            TopAppBar(backgroundColor = Color(0xFFF0F0F0), title = {
-                HomeTitle(R.string.app_name)
-            }, actions = {
-                Box {
-                    Image(mipmap = R.mipmap.add, modifier = Modifier.clickable {
-                        showAddView = true
-                    })
-                    DropdownMenu(
-                        expanded = showAddView,
-                        onDismissRequest = { showAddView = false },
-                        modifier = Modifier.background(Color(0xFF4B4B4B)),
-                        offset = DpOffset(0.dp, 12.dp)
-                    ) {
-                        DropdownMenuItem(onClick = { navController.navigate(Route.AddFriend.route) }) {
-                            Image(mipmap = R.mipmap.icon_addfriend)
-                            Spacer(modifier = Modifier.width(10.dp))
-                            Text(
-                                text = stringResource(id = R.string.add_friend),
-                                fontSize = 16.sp,
-                                color = Color.White
-                            )
-                        }
+            CenterAlignedTopAppBar(
+                colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
+                    containerColor = Color(0xFFF0F0F0)
+                ), title = {
+                    HomeTitle(R.string.app_name)
+                }, actions = {
+                    Box {
+                        Image(mipmap = R.mipmap.add, modifier = Modifier.clickable {
+                            showAddView = true
+                        })
+                        DropdownMenu(
+                            expanded = showAddView,
+                            onDismissRequest = { showAddView = false },
+                            modifier = Modifier.background(Color(0xFF4B4B4B)),
+                            offset = DpOffset(0.dp, 12.dp)
+                        ) {
+                            DropdownMenuItem(onClick = { navController.navigate(Route.AddFriend.route) }) {
+                                Image(mipmap = R.mipmap.icon_addfriend)
+                                Spacer(modifier = Modifier.width(10.dp))
+                                Text(
+                                    text = stringResource(id = R.string.add_friend),
+                                    fontSize = 16.sp,
+                                    color = Color.White
+                                )
+                            }
 //                        Divider(color = Color(0xFF5F5F5F))
 //                        DropdownMenuItem(onClick = { }) {
 //                            Text(text = "创建圈子", fontSize = 16.sp, color = Color.White)
 //                        }
-                        Divider(color = Color(0xFF5F5F5F))
-                        DropdownMenuItem(onClick = { navController.navigate(Route.Wallet.route) }) {
-                            Image(mipmap = R.mipmap.icon_wallet)
-                            Spacer(modifier = Modifier.width(10.dp))
-                            Text(
-                                text = stringResource(id = R.string.wallet),
-                                fontSize = 16.sp,
-                                color = Color.White
-                            )
-                        }
+                            Divider(color = Color(0xFF5F5F5F))
+                            DropdownMenuItem(onClick = { navController.navigate(Route.Wallet.route) }) {
+                                Image(mipmap = R.mipmap.icon_wallet)
+                                Spacer(modifier = Modifier.width(10.dp))
+                                Text(
+                                    text = stringResource(id = R.string.wallet),
+                                    fontSize = 16.sp,
+                                    color = Color.White
+                                )
+                            }
 //                        Divider(color = Color(0xFF5F5F5F))
 //                        DropdownMenuItem(onClick = { }) {
 //                            Text(text = "扫一扫", fontSize = 16.sp, color = Color.White)
 //                        }
+                        }
                     }
-                }
-                Spacer(modifier = Modifier.width(24.dp))
-            }, elevation = 0.dp, modifier = Modifier.statusBarsPadding())
+                    Spacer(modifier = Modifier.width(24.dp))
+                }, modifier = Modifier.statusBarsPadding()
+            )
         }
         Spacer(modifier = Modifier.height(6.dp))
         SearchView(showSearchView = showSearchView, searchText = searchText)

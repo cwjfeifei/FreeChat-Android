@@ -17,7 +17,9 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.IconButton
 import androidx.compose.material.Text
-import androidx.compose.material.TopAppBar
+import androidx.compose.material3.CenterAlignedTopAppBar
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.collectAsState
@@ -38,6 +40,7 @@ import com.ti4n.freechat.R
 import com.ti4n.freechat.widget.HomeTitle
 import com.ti4n.freechat.widget.Image
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TokenDetailView(
     navController: NavController,
@@ -54,15 +57,20 @@ fun TokenDetailView(
     Column(
         modifier = Modifier
             .fillMaxSize()
+            .background(Color.White)
             .systemBarsPadding(),
     ) {
-        TopAppBar(backgroundColor = Color.White, title = {
-            HomeTitle(token?.Name ?: "")
-        }, navigationIcon = {
-            IconButton(onClick = { navController.navigateUp() }) {
-                Image(mipmap = R.mipmap.nav_back)
+        CenterAlignedTopAppBar(
+            colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
+                containerColor = Color.White
+            ), title = {
+                HomeTitle(token?.Name ?: "")
+            }, navigationIcon = {
+                IconButton(onClick = { navController.navigateUp() }) {
+                    Image(mipmap = R.mipmap.nav_back)
+                }
             }
-        }, elevation = 0.dp)
+        )
         LazyColumn(
             verticalArrangement = Arrangement.spacedBy(20.dp),
             modifier = Modifier.padding(vertical = 40.dp, horizontal = 20.dp)

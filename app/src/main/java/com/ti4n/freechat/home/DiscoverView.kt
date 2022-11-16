@@ -8,7 +8,9 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.Divider
 import androidx.compose.material.Text
-import androidx.compose.material.TopAppBar
+import androidx.compose.material3.CenterAlignedTopAppBar
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.SideEffect
 import androidx.compose.ui.Alignment
@@ -23,6 +25,7 @@ import com.ti4n.freechat.widget.Image
 import com.ti4n.freechat.R
 import com.ti4n.freechat.Route
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DiscoverView(modifier: Modifier = Modifier, navController: NavController) {
     val systemUiController = rememberSystemUiController()
@@ -36,20 +39,22 @@ fun DiscoverView(modifier: Modifier = Modifier, navController: NavController) {
             .fillMaxWidth()
             .background(Color(0xFFF0F0F0))
     ) {
-        TopAppBar(
-            backgroundColor = Color(0xFFF0F0F0),
-            elevation = 0.dp,
+        CenterAlignedTopAppBar(
+            colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
+                containerColor = Color(
+                    0xFFF0F0F0
+                )
+            ),
+            title = {
+                Text(
+                    text = "发现",
+                    color = Color.Black,
+                    fontSize = 17.sp,
+                    fontWeight = FontWeight.Medium
+                )
+            },
             modifier = Modifier.statusBarsPadding()
-        ) {
-            Spacer(modifier = Modifier.weight(1f))
-            Text(
-                text = "发现",
-                color = Color.Black,
-                fontSize = 17.sp,
-                fontWeight = FontWeight.Medium
-            )
-            Spacer(modifier = Modifier.weight(1f))
-        }
+        )
         LazyColumn(Modifier.background(Color.White)) {
             items(discoverItems) {
                 DiscoverItem(icon = it.icon, title = it.title) {
