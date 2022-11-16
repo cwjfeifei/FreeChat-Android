@@ -145,7 +145,7 @@ fun HomeView(userBaseInfoDao: UserBaseInfoDao, globleNavController: NavControlle
             noAniComposable(
                 HomeTab.Contact.route
             ) { _ ->
-                ContactView(navController = navController)
+                ContactView(navController = navController, Modifier.padding(it))
             }
 //            noAniComposable(
 //                HomeTab.Square.route

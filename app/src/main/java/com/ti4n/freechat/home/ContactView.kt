@@ -1,12 +1,14 @@
 package com.ti4n.freechat.home
 
 import android.icu.text.SimpleDateFormat
+import android.util.Log
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.expandVertically
 import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.hoverable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -15,6 +17,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
@@ -22,24 +25,32 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Text
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.capitalize
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.toUpperCase
 import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
@@ -49,13 +60,13 @@ import coil.compose.AsyncImage
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.ti4n.freechat.R
 import com.ti4n.freechat.Route
-import com.ti4n.freechat.contact.NewContactView
 import com.ti4n.freechat.model.im.BaseInfo
-import com.ti4n.freechat.model.im.IFriendInfo
 import com.ti4n.freechat.util.IM
 import com.ti4n.freechat.widget.HomeTitle
 import com.ti4n.freechat.widget.Image
-import io.openim.android.sdk.models.FriendInfo
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.filter
+import kotlinx.coroutines.launch
 import projekt.cloud.piece.c2.pinyin.C2Pinyin.pinyin
 import java.util.Locale
 
@@ -68,6 +79,31 @@ fun ContactView(
     val scrollState = rememberLazyListState()
     val systemUiController = rememberSystemUiController()
     val friends by IM.friends.collectAsState()
+    var letter by remember {
+        mutableStateOf("")
+    }
+    var y by remember {
+        mutableStateOf(0.dp)
+    }
+    var showLetter by remember {
+        mutableStateOf(false)
+    }
+    val items = buildList {
+        friends.groupBy {
+            val pinyin = it.remark.ifEmpty {
+                it.nickname.ifEmpty { "*" }  // empty cause exception
+            }.pinyin.first().uppercase()
+            if (pinyin in letters) {
+                pinyin
+            } else "#"
+        }.toSortedMap().mapKeys {
+            add(ItemLetterData(it.key.toString()))
+            addAll(it.value.map { ItemContactData(it) })
+        }
+    }
+    val itemLetters = items.filterIsInstance<ItemLetterData>().map { it.letter }
+    val scope = rememberCoroutineScope()
+    val density = LocalDensity.current
     SideEffect {
         systemUiController.setStatusBarColor(
             color = Color(0xFFF0F0F0)
@@ -75,6 +111,23 @@ fun ContactView(
         systemUiController.setNavigationBarColor(
             color = Color.White
         )
+    }
+    LaunchedEffect(Unit) {
+        snapshotFlow { scrollState.firstVisibleItemIndex }.filter { items.isNotEmpty() }
+            .collectLatest {
+                letter = when (val l = items[it]) {
+                    is ItemContactData -> {
+                        val p = l.contact.remark.ifEmpty {
+                            l.contact.nickname.ifEmpty { "*" }  // empty cause exception
+                        }.pinyin.first().uppercase()
+                        if (p in letters) {
+                            p
+                        } else "#"
+                    }
+
+                    is ItemLetterData -> l.letter
+                }
+            }
     }
     Column(
         modifier = modifier
@@ -90,40 +143,94 @@ fun ContactView(
         )
         Spacer(modifier = Modifier.height(6.dp))
         Box(modifier = Modifier.weight(1f)) {
-            val items = friends.groupBy {
-                val pinyin = it.remark.ifEmpty {
-                    it.nickname.ifEmpty { "*" }  // empty cause exception
-                }.pinyin.first()
-                if (pinyin in letters) {
-                    pinyin
-                } else '#'
-            }.toSortedMap()
-            LazyColumn(modifier = Modifier.background(Color.White)) {
+            LazyColumn(modifier = Modifier.background(Color.White), state = scrollState) {
                 item {
                     ItemNewFriend {
                         navController.navigate(Route.NewContact.route)
                     }
                 }
                 items.forEach {
-                    stickyHeader(key = it.key) {
-                        ItemLetter(letter = it.key)
-                    }
-                    items(it.value) {
-                        ItemFriend(friendInfo = it) {
-                            navController.navigate(Route.Profile.jump(it.userID))
+                    when (it) {
+                        is ItemContactData -> item {
+                            ItemFriend(friendInfo = it.contact) {
+                                navController.navigate(Route.Profile.jump(it.contact.userID))
+                            }
+                        }
+
+                        is ItemLetterData -> stickyHeader(key = it.letter) {
+                            ItemLetter(letter = it.letter)
                         }
                     }
                 }
             }
-            Column(modifier = Modifier.align(Alignment.CenterEnd)) {
-                items.map { it.key }.forEach {
-                    Text(
-                        text = it.uppercase(),
-                        color = Color(0xFF4D4D4D),
-                        fontSize = 9.sp,
-                        modifier = modifier
-                            .padding(horizontal = 4.dp, vertical = 1.dp)
-                    )
+            Row(
+                modifier = Modifier
+                    .align(Alignment.CenterEnd)
+                    .padding(end = 8.dp)
+            ) {
+                if (showLetter && letter.isNotEmpty())
+                    Box(
+                        contentAlignment = Alignment.Center,
+                        modifier = Modifier.offset(y = y)
+                    ) {
+                        Image(mipmap = R.mipmap.letter_bg)
+                        Spacer(modifier = Modifier.width(8.dp))
+                        Text(
+                            text = letter,
+                            color = Color.White,
+                            fontSize = 12.sp,
+                            modifier = Modifier.padding(end = 5.dp)
+                        )
+                    }
+                Spacer(modifier = Modifier.width(8.dp))
+                Column(
+                    modifier = Modifier
+                        .padding(vertical = 10.dp)
+                        .height((itemLetters.size * 16).dp)
+                        .pointerInput(Unit) {
+                            detectDragGestures(
+                                onDragStart = {
+                                    showLetter = true
+                                    if (it.y.toDp() in 0.dp..(itemLetters.size * 14).dp) {
+                                        letter =
+                                            itemLetters[(it.y.toDp().value / 14).toInt()]
+                                        y = it.y.toDp()
+                                    }
+                                },
+                                onDragCancel = {
+                                    showLetter = false
+                                },
+                                onDragEnd = {
+                                    showLetter = false
+
+                                }) { change, dragAmount ->
+                                with(density) {
+                                    if (change.position.y.toDp() in 0.dp..(itemLetters.size * 14).dp) {
+                                        letter =
+                                            itemLetters[(change.position.y.toDp().value / 14).toInt()]
+                                        y = change.position.y.toDp()
+                                        scope.launch {
+                                            scrollState.animateScrollToItem(items.indexOfFirst { it is ItemLetterData && it.letter == letter })
+                                        }
+                                    }
+                                }
+                            }
+                        }) {
+                    itemLetters.forEach {
+                        Text(
+                            text = it,
+                            color = if (letter == it) Color.White else Color(0xFF4D4D4D),
+                            fontSize = 9.sp,
+                            textAlign = TextAlign.Center,
+                            modifier = Modifier
+                                .size(14.dp)
+                                .background(
+                                    if (letter == it) Color(0xFF3879FD) else Color.Transparent,
+                                    CircleShape
+                                )
+                                .padding(horizontal = 2.dp, vertical = 2.dp)
+                        )
+                    }
                 }
             }
         }
@@ -178,7 +285,7 @@ fun ItemFriend(friendInfo: BaseInfo, click: () -> Unit) {
 }
 
 @Composable
-fun ItemLetter(letter: Char) {
+fun ItemLetter(letter: String) {
     Row(
         Modifier
             .fillMaxWidth()
@@ -194,8 +301,8 @@ fun ItemLetter(letter: Char) {
 }
 
 val letters = listOf(
-    'A',
-    'B',
+    "A",
+    "B",
     "C",
     "D",
     "E",
@@ -221,4 +328,8 @@ val letters = listOf(
     "Y",
     "Z"
 )
+
+sealed interface ItemContact
+data class ItemLetterData(val letter: String) : ItemContact
+data class ItemContactData(val contact: BaseInfo) : ItemContact
 

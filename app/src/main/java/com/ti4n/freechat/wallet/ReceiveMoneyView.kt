@@ -119,10 +119,10 @@ fun ReceiveMoneyView(navController: NavController) {
                     .padding(6.dp)
             )
             Spacer(modifier = Modifier.height(24.dp))
-            Text(text = "账户名", color = Color(0xFF333333))
+            Text(text = "FCID", color = Color(0xFF333333))
             Spacer(modifier = Modifier.height(10.dp))
             Row(verticalAlignment = Alignment.CenterVertically) {
-                Text(text = address, color = Color(0xFF333333))
+                Text(text = address, color = Color(0xFF333333), fontSize = 12.sp)
                 Spacer(modifier = Modifier.width(4.dp))
                 com.ti4n.freechat.widget.Image(mipmap = R.mipmap.copy_nor)
             }
