@@ -27,6 +27,7 @@
     <string name="set_email">请输入您的电子邮箱</string>
     <string name="set_email2">再次确认您的电子邮箱</string>
     <string name="set_email_failed">设置电子邮箱失败!</string>
+    <string name="verify_code_error">验证码错误</string>
     <string name="set_email_not_same">两次输入的电子邮箱不一致!</string>
     <string name="email_invalid">请输入正确的电子邮箱!</string>
     <string name="edit_email">修改邮箱</string>
@@ -215,4 +216,8 @@
     <string name="reset">重置</string>
     <string name="cache">缓存</string>
     <string name="cache_tip">缓存是使用过程中产生的临时数据，清理缓存不会影响您的正常使用</string>
+
+    <string name="email_been_used">该邮箱已被绑定</string>
+    <string name="send_verify_code">发送验证码</string>
+    <string name="resend_verify_code">重新发送%ss</string>
 </resources>

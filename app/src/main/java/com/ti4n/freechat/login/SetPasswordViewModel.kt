@@ -23,7 +23,6 @@ private const val TAG = "SetPasswordViewModel XXX"
 class SetPasswordViewModel @Inject constructor(
     val imService: FreeChatIMService,
     val db: AppDataBase,
-    @ApplicationContext val context: Context
 ) : ViewModel() {
 
     val navigationRoute = MutableSharedFlow<String>(replay = 0, extraBufferCapacity = 1)
@@ -32,7 +31,7 @@ class SetPasswordViewModel @Inject constructor(
     fun onSetPassword(address: String) {
         viewModelScope.launch {
             try {
-                val response = imService.sendVerifyCode(SendVerifyCode(2, address, ""))
+                val response = imService.sendVerifyCode(SendVerifyCode(3, address, ""))
                 if ((response.errCode == 0 || response.errCode == 10006) && response.data != null) {
                     navigationRoute.emit(
                         Route.VerifyEmailLogin.jump(

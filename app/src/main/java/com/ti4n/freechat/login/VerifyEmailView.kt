@@ -1,14 +1,19 @@
 package com.ti4n.freechat.login
 
-import android.util.Log
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.material.ButtonDefaults
+import androidx.compose.material.Text
+import androidx.compose.material.TextButton
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.navigation.NavController
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.dp
 import com.ti4n.freechat.R
 import com.ti4n.freechat.widget.InputCodeField
 import kotlinx.coroutines.flow.collectLatest
@@ -23,6 +28,7 @@ fun VerifyEmailView(
     viewModel: RegisterViewModel
 ) {
     var verifyCode = ""
+    val passedTime by viewModel.passedTime.collectAsState()
     LaunchedEffect(Unit) {
         viewModel.setEmailRoute.filter { it.isNotEmpty() }.collectLatest {
             navController.navigate(it)
@@ -52,5 +58,24 @@ fun VerifyEmailView(
                 ) else viewModel.login(userId, verifyCode)
             }, modifier = Modifier.align(CenterHorizontally)
         )
+        Spacer(modifier = Modifier.height(24.dp))
+        TextButton(
+            onClick = { viewModel.resendCode(userId, email, isRegister) },
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(40.dp),
+            colors = ButtonDefaults.textButtonColors(
+                backgroundColor = Color(0xFF141B33),
+                contentColor = Color.White,
+                disabledContentColor = Color(0x80FFFFFF)
+            ),
+            enabled = passedTime >= 60
+        ) {
+            Text(
+                text = if (passedTime >= 60) stringResource(id = R.string.send_verify_code) else stringResource(
+                    id = R.string.resend_verify_code, "${60 - passedTime}"
+                )
+            )
+        }
     }
 }

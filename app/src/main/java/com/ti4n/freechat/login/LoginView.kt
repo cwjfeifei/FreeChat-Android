@@ -14,6 +14,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
@@ -27,6 +28,7 @@ import com.ti4n.freechat.R
 import com.ti4n.freechat.Route
 import com.ti4n.freechat.widget.CustomPaddingTextField
 
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun LoginView(
     navController: NavController,
@@ -53,9 +55,7 @@ fun LoginView(
     var word by remember {
         mutableStateOf("")
     }
-//    LaunchedEffect(key1 = word) {
-//        preWords = if (word.isNotEmpty()) WORDLIST_ENGLISH.filter { it.startsWith(word) } else emptyList()
-//    }
+    val clipboardManager = LocalClipboardManager.current
     LoginCommonView(
         stringResource(id = R.string.input_mnemonic),
         next = R.string.login_freechat,
@@ -70,6 +70,29 @@ fun LoginView(
                     R.string.wrong_mnemonic,
                     Toast.LENGTH_SHORT
                 ).show()
+            }
+        }, titleEndContent = {
+            Chip(
+                onClick = {
+                    clipboardManager
+                        .getText()
+                        ?.let {
+                            val pastedText = it.toString().split(" ")
+                            if (pastedText.size == 12) {
+                                pastedText.zip(words).forEach {
+                                    it.second.component2()(it.first)
+                                }
+                            }
+                        }
+                },
+                shape = RoundedCornerShape(50),
+                modifier = Modifier.height(28.dp),
+                colors = ChipDefaults.chipColors(
+                    backgroundColor = Color(0xFFEFF1F5),
+                    contentColor = Color(0xFF3879FD)
+                )
+            ) {
+                Text(text = stringResource(id = R.string.paste))
             }
         }
     ) {

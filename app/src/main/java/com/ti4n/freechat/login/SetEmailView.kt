@@ -46,17 +46,24 @@ fun SetEmailView(
         nextClick = {
             if (!email.matches(EmailAddressRegex)) {
                 emailCheck = context.getString(R.string.email_invalid)
+            } else if (viewModel.usedEmail.contains(email)) {
+                emailCheck = context.getString(R.string.email_been_used)
             } else {
                 scope.launch {
                     viewModel.setEmail(email)
-                    viewModel.sendVerifyCode(userID)
+                    when (viewModel.sendVerifyCode(userID)) {
+                        10002 -> emailCheck = context.getString(R.string.email_been_used)
+                    }
                 }
             }
         }, tip = R.string.email_tip
     ) {
         TextField(
             value = email,
-            onValueChange = { email = it.trim() },
+            onValueChange = {
+                emailCheck = ""
+                email = it.trim()
+            },
             modifier = Modifier
                 .fillMaxWidth(),
             maxLines = 1,
@@ -85,7 +92,7 @@ fun SetEmailView(
         Spacer(Modifier.height(12.dp))
         Text(
             text = emailCheck,
-            color = Color(0xFF808080),
+            color = Color(0xFFED5B56),
             fontSize = 12.sp
         )
     }

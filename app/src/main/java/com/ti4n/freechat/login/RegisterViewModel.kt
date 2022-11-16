@@ -16,8 +16,8 @@ import com.ti4n.freechat.network.FreeChatIMService
 import com.ti4n.freechat.toast
 import com.ti4n.freechat.util.EthUtil
 import com.ti4n.freechat.util.IM
-import com.ti4n.freechat.util.IM.DEFAULT_FACEURL
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
@@ -48,10 +48,22 @@ class RegisterViewModel @Inject constructor(
 
     val faceUrls = MutableStateFlow(emptyList<FaceImageInfo>())
 
+    val usedEmail = mutableListOf<String>()
+
+    var lastSendCodeTime = System.currentTimeMillis()
+
+    var passedTime = MutableStateFlow(0)
+
     init {
         viewModelScope.launch {
             faceUrls.value = freeChatApiService.getAvatars().data ?: emptyList()
             faceURL.value = freeChatApiService.getAvatars().data?.firstOrNull()?.small ?: ""
+        }
+        viewModelScope.launch {
+            while (true) {
+                passedTime.value = (System.currentTimeMillis() - lastSendCodeTime).toInt() / 1000
+                delay(1000)
+            }
         }
     }
 
@@ -89,29 +101,46 @@ class RegisterViewModel @Inject constructor(
 
     fun canRegister() = words.value == clickedWords.value
 
-    fun sendVerifyCode(userId: String) {
+    suspend fun sendVerifyCode(userId: String): Int {
         if (email.value.isNotEmpty()) {
-            viewModelScope.launch {
-                val response = imService.sendVerifyCode(
-                    SendVerifyCode(
-                        1, userId, email.value
-                    )
+            val response = imService.sendVerifyCode(
+                SendVerifyCode(
+                    1, userId, email.value
                 )
-                try {
-                    if (response.errCode == 0 || response.errCode == 10006) {
-                        setEmailRoute.emit(Route.VerifyEmailRegister.jump(userId, email.value))
-                    }
-
-                } catch (e: Exception) {
-                    e.printStackTrace()
+            )
+            return try {
+                if (response.errCode == 0 || response.errCode == 10006) {
+                    setEmailRoute.emit(Route.VerifyEmailRegister.jump(userId, email.value))
+                    lastSendCodeTime = System.currentTimeMillis()
+                } else if (response.errCode == 10002) {
+                    usedEmail.add(email.value)
                 }
+                response.errCode
+            } catch (e: Exception) {
+                e.printStackTrace()
+                -1
+            }
+        } else {
+            return -1
+        }
+    }
 
+    fun resendCode(userId: String, email: String, isRegister: Boolean) {
+        viewModelScope.launch {
+            val response = imService.sendVerifyCode(
+                SendVerifyCode(
+                    if (isRegister) 1 else 3, userId, email
+                )
+            )
+            if (response.errCode == 0 || response.errCode == 10006) {
+                lastSendCodeTime = System.currentTimeMillis()
             }
         }
     }
 
     fun registerFreeChat(userID: String, verifyCode: String) {
         viewModelScope.launch {
+            "equal boss muscle child music round tissue tree radio jealous arrange coyote"
             try {
                 val response = imService.register(
                     Register(
@@ -133,6 +162,8 @@ class RegisterViewModel @Inject constructor(
                     IM.logout()
                     IM.login(userID, response.data.token)
                     setEmailRoute.emit(Route.CompleteProfile.route)
+                } else if (response.errCode == 10009) {
+                    toast.emit(R.string.verify_code_error)
                 } else {
                     toast.emit(R.string.set_email_failed)
                 }
@@ -162,6 +193,8 @@ class RegisterViewModel @Inject constructor(
                         IM.login(address, it.token)
                     }
                     setEmailRoute.emit(Route.Home.route)
+                } else if (response.errCode == 10009) {
+                    toast.emit(R.string.verify_code_error)
                 } else {
                     toast.emit(R.string.wrong_password)
                 }
