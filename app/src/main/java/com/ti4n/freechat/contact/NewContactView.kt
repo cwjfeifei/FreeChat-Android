@@ -61,7 +61,7 @@ fun NewContactView(navController: NavController, viewModel: NewContactViewModel 
     ) {
         CenterAlignedTopAppBar(
             colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
-                containerColor = Color(0xFFF0F0F0)
+                containerColor = Color.White
             ), navigationIcon = {
                 IconButton(onClick = { navController.navigateUp() }) {
                     Image(mipmap = R.mipmap.nav_back)
