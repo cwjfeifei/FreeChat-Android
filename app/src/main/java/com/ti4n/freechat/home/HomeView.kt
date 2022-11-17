@@ -137,12 +137,12 @@ fun HomeView(userBaseInfoDao: UserBaseInfoDao, globleNavController: NavControlle
         AnimatedNavHost(
             navController, startDestination = HomeTab.Chat.route
         ) {
-            noAniComposable(
+            aniComposable(
                 HomeTab.Chat.route
             ) { _ ->
                 ChatListView(navController, Modifier.padding(it))
             }
-            noAniComposable(
+            aniComposable(
                 HomeTab.Contact.route
             ) { _ ->
                 ContactView(navController = navController, Modifier.padding(it))
@@ -157,7 +157,7 @@ fun HomeView(userBaseInfoDao: UserBaseInfoDao, globleNavController: NavControlle
 //            ) { _ ->
 //                DiscoverView(Modifier.padding(it), navController = navController)
 //            }
-            noAniComposable(HomeTab.Me.route) { _ ->
+            aniComposable(HomeTab.Me.route) { _ ->
                 MeView(Modifier.padding(it), navController = navController)
             }
             aniComposable(Route.MeEdit.route) { _ ->

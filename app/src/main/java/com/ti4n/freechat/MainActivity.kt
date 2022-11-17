@@ -171,6 +171,12 @@ class MainActivity : AppCompatActivity() {
                                 }
                                 SetNameView(navController, hiltViewModel(backStackEntry))
                             }
+                            aniComposable(route = Route.SetBirth.route) {
+                                val backStackEntry = remember {
+                                    navController.getBackStackEntry(Route.SetPassword.route)
+                                }
+                                SetBirthView(navController, hiltViewModel(backStackEntry))
+                            }
                             aniComposable(route = Route.Home.route) {
 //                                navController.backQueue.removeIf { it.destination.route != Route.Home.route }
                                 HomeView(db.userBaseInfoDao(), navController)

@@ -13,7 +13,7 @@ fun NavGraphBuilder.aniComposable(
     deepLinks: List<NavDeepLink> = emptyList(),
     content: @Composable AnimatedVisibilityScope.(NavBackStackEntry) -> Unit
 ) {
-    val animateTime = 400
+    val animateTime = 0
     this@aniComposable.composable(
         route,
         arguments,

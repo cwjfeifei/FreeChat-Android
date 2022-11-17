@@ -21,6 +21,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
+import java.util.Calendar
 import javax.inject.Inject
 
 private const val TAG = "RegisterViewModel"
@@ -81,6 +82,12 @@ class RegisterViewModel @Inject constructor(
 
     fun setEmail(email: String) {
         this.email.value = email
+    }
+
+    fun setBirth(year: Int, month: Int, day: Int) {
+        val c = Calendar.getInstance()
+        c.set(year, month - 1, day)
+        this.birth.value = c.timeInMillis
     }
 
     fun addWord(word: String) {

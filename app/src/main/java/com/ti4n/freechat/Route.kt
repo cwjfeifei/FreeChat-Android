@@ -26,6 +26,7 @@ sealed class Route(val route: String) {
     object Register2 : Route("register2")
     object CompleteProfile : Route("completeProfile")
     object SetName : Route("setName")
+    object SetBirth : Route("setBirth")
     object Home : Route("home")
     object Profile : Route("profile/{id}") {
         fun jump(id: String) = "profile/$id"

@@ -1,5 +1,6 @@
 package com.ti4n.freechat.login
 
+import android.icu.text.SimpleDateFormat
 import android.os.Build
 import android.widget.Toast
 import androidx.annotation.StringRes
@@ -34,6 +35,7 @@ import com.ti4n.freechat.Route
 import com.ti4n.freechat.util.AnimatedPngDecoder
 import com.ti4n.freechat.util.IM
 import kotlinx.coroutines.launch
+import java.util.Date
 
 private const val TAG = "CompleteProfileView"
 
@@ -50,6 +52,7 @@ fun CompleteProfileView(controller: NavController, viewModel: RegisterViewModel 
     val nickname by viewModel.name.collectAsState()
     val gender by viewModel.gender.collectAsState()
     val email by viewModel.email.collectAsState()
+    val birth by viewModel.birth.collectAsState()
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
 
@@ -164,12 +167,29 @@ fun CompleteProfileView(controller: NavController, viewModel: RegisterViewModel 
             }
         }
         Divider(color = Color(0xFFEBEBEB), thickness = 0.5.dp, startIndent = 16.dp)
+        CompleteProfileItem(R.string.birthday, true, click = {
+            controller.navigate(Route.SetBirth.route)
+        }) {
+            Text(
+                text = if (birth > 0) SimpleDateFormat("yyyy-MM-dd").format(
+                    Date(
+                        birth
+                    )
+                ) else "",
+                modifier = Modifier.weight(1f),
+                fontSize = 16.sp,
+                color = Color.Black,
+                fontWeight = FontWeight.Medium,
+                textAlign = TextAlign.Center
+            )
+        }
+        Divider(color = Color(0xFFEBEBEB), thickness = 0.5.dp, startIndent = 16.dp)
         Spacer(modifier = Modifier.height(40.dp))
         TextButton(
             onClick = {
                 scope.launch {
                     // must be IM.login
-                    val result = IM.setUserInfo(faceURL, nickname, gender, 0, email, null)
+                    val result = IM.setUserInfo(faceURL, nickname, gender, birth, email, null)
                     if (result is Unit) {
                         // success
                         controller.backQueue.clear()

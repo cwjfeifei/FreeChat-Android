@@ -9,6 +9,9 @@ import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.ButtonDefaults
+import androidx.compose.material.Chip
+import androidx.compose.material.ChipDefaults
+import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.IconButton
 import androidx.compose.material.OutlinedButton
 import androidx.compose.material.Text
@@ -44,7 +47,7 @@ import java.net.URLEncoder
 import java.nio.charset.StandardCharsets
 
 // Select Face
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterialApi::class)
 @Composable
 fun EditPickFaceImageView(
     navController: NavController,
@@ -86,7 +89,7 @@ fun EditPickFaceImageView(
                     Image(mipmap = R.mipmap.nav_back)
                 }
             }, actions = {
-                OutlinedButton(
+                Chip(
                     onClick = {
                         faceURL?.let {
                             navController.navigate(
@@ -98,16 +101,15 @@ fun EditPickFaceImageView(
                             )
                         }
                     },
-                    border = BorderStroke(0.dp, Color.Transparent),
                     modifier = Modifier
-                        .height(36.dp),
-                    colors = ButtonDefaults.buttonColors(
-                        backgroundColor = Color.White, contentColor = Color(0xFF1A1A1A)
+                        .height(32.dp),
+                    colors = ChipDefaults.chipColors(
+                        backgroundColor = Color(0xFFF4F6FA), contentColor = Color(0xFF1A1A1A)
                     )
                 ) {
                     Text(
                         text = stringResource(id = R.string.preview_profile),
-                        fontSize = 14.sp,
+                        fontSize = 12.sp,
                         fontWeight = FontWeight.Medium
                     )
                 }
