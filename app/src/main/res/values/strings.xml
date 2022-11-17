@@ -1,69 +1,67 @@
 <resources>
     <string name="app_name">Freechat</string>
 
-    <string name="welcome">欢迎使用Freechat\n享受自由的世界</string>
-    <string name="login">登录</string>
-    <string name="create_account">创建Freechat账户</string>
-    <string name="agree_app_terms">我已阅读并同意</string>
-    <string name="user_term">《Freechat用户协议》</string>
-    <string name="privacy">《隐私政策》</string>
-    <string name="permission_list">《设备权限使用清单》</string>
-    <string name="avoid_abuse">《防止滥用政策》</string>
-    <string name="child_protect">《儿童保护政策》</string>
+    <string name="welcome">Welcome to Freechat\nEnjoy the world of freedom</string>
+    <string name="login">Sign in</string>
+    <string name="create_account">Sign up Freechat</string>
+    <string name="agree_app_terms">I accept and agree </string>
+    <string name="user_term">《Terms of Service》</string>
+    <string name="privacy">《privacy policy》</string>
+    <string name="permission_list">《Device Permission Usage Checklist》</string>
+    <string name="avoid_abuse">《Copyright Policy》</string>
+    <string name="child_protect">《Child Protection Policy》</string>
     <string name="etc_term">等协议。</string>
     <string name="and">和</string>
     <string name="agree_app_terms_tip">请阅读并同意相关协议才能进行注册或登录。</string>
-    <string name="input_mnemonic">请输入您的助记词 登录您的Freechat</string>
-    <string name="back">返回</string>
-    <string name="login_freechat">登录Freechat</string>
+    <string name="input_mnemonic">Please verify your seed phrase in order</string>
+    <string name="back">Back</string>
+    <string name="login_freechat">Next</string>
     <string name="wrong_mnemonic">助记词不正确</string>
-    <string name="keep_mnemonic_to_find_account">请妥善保管您的助记词 便于您找回账户</string>
-    <string name="next">下一步</string>
-    <string name="input_mnemonic_by_order">请按顺序验证助记词</string>
-    <string name="title_set_password">请确认您的账户密码</string>
-    <string name="set_password">请输入您的账户密码</string>
-    <string name="set_password2">请确认您的账户密码</string>
-    <string name="title_set_email">请设置账户保护电子邮箱</string>
-    <string name="set_email">请输入您的电子邮箱</string>
-    <string name="set_email2">再次确认您的电子邮箱</string>
+    <string name="keep_mnemonic_to_find_account">Please remember your seed phrase. This is your only proof to retrieve your Freechat</string>
+    <string name="next">Next</string>
+    <string name="input_mnemonic_by_order">Please verify your seed phrase in order</string>
+    <string name="title_set_password">Set your protection password, which is used to protect the account.</string>
+    <string name="set_password">Please enter your password</string>
+    <string name="set_password2">Please confirm your password</string>
+    <string name="title_set_email">Please set up account protection email</string>
+    <string name="set_email">Please enter your email</string>
     <string name="set_email_failed">设置电子邮箱失败!</string>
     <string name="verify_code_error">验证码错误</string>
-    <string name="set_email_not_same">两次输入的电子邮箱不一致!</string>
     <string name="email_invalid">请输入正确的电子邮箱!</string>
     <string name="edit_email">修改邮箱</string>
-    <string name="save">保存</string>
-    <string name="cancel">取消</string>
-    <string name="set_name">设置名字</string>
-    <string name="done">完成</string>
-    <string name="set_birth">设置生日</string>
-    <string name="set_birth_tip">您的年龄信息仅被用于为您推荐更适合您的广告和推送，我们不会暴露您的年龄信息。</string>
-    <string name="complete_profile_tip">恭喜您! 已成功创建Freechat账户</string>
-    <string name="complete_profile_tip_1">自由的世界还需一步，下一步将会设置您的社交资料</string>
-    <string name="complete_profile_tip_2">预计将耗时1分钟时间</string>
-    <string name="set_avatar">请选择您的头像</string>
-    <string name="set_faceurl">选择头像</string>
+    <string name="save">Done</string>
+    <string name="cancel">Cancel</string>
+    <string name="set_name">Set nickname</string>
+    <string name="done">Done</string>
+    <string name="set_birth">Birthday</string>
+    <string name="set_birth_tip">Freechat uses your age to customize your experience, including ads, puch, and we won\'t reveal it.</string>
+    <string name="complete_profile_tip">Congratulations\nFreechat account has been successfully created</string>
+    <string name="complete_profile_tip_1">the world of freedom is one step away.\nNext step will be setting up your social profiles</string>
+    <string name="complete_profile_tip_2">Expected to take 1 minute.</string>
+    <string name="set_avatar">Please select your avatar</string>
+    <string name="set_faceurl">Choose Avatar</string>
     <string name="select_gender">选择性别</string>
     <string name="faceurl">头像</string>
     <string name="person_info">个人信息</string>
-    <string name="preview_profile">预览</string>
-    <string name="send_message">发消息</string>
-    <string name="name">昵称</string>
-    <string name="gender">性别</string>
-    <string name="male">男</string>
-    <string name="female">女</string>
-    <string name="transgender">跨性别</string>
-    <string name="birthday">生日</string>
+    <string name="preview_profile">Preview</string>
+    <string name="send_message">Send message</string>
+    <string name="name">Nickname</string>
+    <string name="gender">Gender</string>
+    <string name="male">Male</string>
+    <string name="female">Female</string>
+    <string name="transgender">Transgender</string>
+    <string name="birthday">Birthday</string>
     <string name="country">国家</string>
     <string name="region">地区</string>
-    <string name="complete_setting">完成设置</string>
+    <string name="complete_setting">Go to Freechat</string>
 
-    <string name="chat">聊天</string>
-    <string name="contact">通讯录</string>
-    <string name="square">广场</string>
-    <string name="discover">发现</string>
-    <string name="me">我</string>
+    <string name="chat">Chat</string>
+    <string name="contact">Contacts</string>
+    <string name="square">Square</string>
+    <string name="discover">Discover</string>
+    <string name="me">Account</string>
 
-    <string name="wallet">钱包</string>
+    <string name="wallet">Wallet</string>
     <string name="help">帮助</string>
     <string name="setting">设置</string>
 
@@ -73,29 +71,30 @@
     <string name="close">关闭</string>
     <string name="token">通证</string>
     <string name="amount">数量</string>
-    <string name="input_amount_hint">请输入转账金额</string>
+    <string name="input_amount_hint">Please enter quantity</string>
+    <string name="balance_of">Balance：%s</string>
     <string name="all">全部</string>
     <string name="receive_money">收款</string>
     <string name="swap">兑换</string>
-    <string name="select_token">选择币种</string>
+    <string name="select_token">Select Currency</string>
     <string name="transaction_history">交易记录</string>
     <string name="all_money">资产</string>
     <string name="detail">详情</string>
 
-    <string name="permission_intro">隐私权限说明</string>
-    <string name="permission_intro_detail">Freechat非常尊重用户隐私及用户安全，当您在使用Freechat的广场、社交、添加好友、存储、摄像/照相、小程序、应用下载、语音、视频相关功能时，Freechat会向您索取以下权限，以保证功能的正常使用。</string>
-    <string name="file_permission">文件存储/读取</string>
-    <string name="file_permission_detail">该权限用于您在使用Freechat社交、发送文件、下载、存储、发布内容等功能时所需要的权限。</string>
-    <string name="camera_permission">照相/摄像/麦克风</string>
-    <string name="camera_permission_detail">该权限用于您在使用Freechat社交功能时，进行摄像/照相/语音的摄制。</string>
-    <string name="contact_permission">通讯录</string>
-    <string name="contact_permission_detail">该权限用于您在使用Freechat社交功能时，查找通讯录好友是否在使用Freechat和邀请好友使用Freechat。</string>
-    <string name="data_permission">数据分析与广告</string>
-    <string name="data_permission_detail">该权限用于您使用Freechat的习惯与爱好，为您推荐相关内容，满足个性化的推荐，这项功能默认为关闭状态，您可以随时通过Freechat设置功能来开启这项功能。</string>
-    <string name="vpn_permission">加密网络</string>
-    <string name="vpn_permission_detail">该权限用于因为网络限制无法使用Freechat时，您将通过加密网络进行Freechat的使用。</string>
-    <string name="location_permission">地理位置</string>
-    <string name="location_permission_detail">该权限用于使用附近的人，查看您附近的好友发的动态。</string>
+    <string name="permission_intro">Privacy Statement</string>
+    <string name="permission_intro_detail">Freechat respects the privacy and security of its users, so when you use Freechat\'s square, social, add friends, storage, camera/photo, applet, app download, voice, and video, etc. related features, Freechat will ask you for the following permissions to ensure the proper use of the features.</string>
+    <string name="file_permission">· File storage/reading</string>
+    <string name="file_permission_detail">This permission is used when you use Freechat\'s functions such as socializing, sending files, downloading, storing, and publishing content.</string>
+    <string name="camera_permission">· Camera/Video/Microphone</string>
+    <string name="camera_permission_detail">This permission is used for video/photo/voice recording when you use Freechat social functions.</string>
+    <string name="contact_permission">· Contacts</string>
+    <string name="contact_permission_detail">This permission is used to find out whether friends in the address book are using Freechat and invite friends to use Freechat when you use Freechat social functions.</string>
+    <string name="data_permission">· Data analysis and advertising</string>
+    <string name="data_permission_detail">This permission is used to analyze your habits and preferences of using Freechat, to recommend relevant content for you, and meet personalized recommendations. This function is disabled by default, and you can enable this function at any time through the Freechat setting.</string>
+    <string name="vpn_permission">· Encrypted network</string>
+    <string name="vpn_permission_detail">This permission is used to use Freechat over an encrypted network when Freechat cannot be used due to network restrictions.</string>
+    <string name="location_permission">· Geographical location</string>
+    <string name="location_permission_detail">This permission is used to use People Nearby to view the updates posted by friends near you.</string>
     <string name="agree">同意</string>
     <string name="reject">拒绝</string>
 
@@ -104,22 +103,22 @@
     <string name="re_test">重新检测</string>
     <string name="use_vpn">使用加密网络</string>
 
-    <string name="confirm_transaction">确认交易</string>
-    <string name="send_address">转出账户</string>
-    <string name="receive_address">接收账户</string>
-    <string name="consume_gas">消耗燃料</string>
-    <string name="max_gas">最高收费: %s</string>
-    <string name="total_consume">总额</string>
-    <string name="amount_gas">金额+燃料费</string>
-    <string name="max_consume">最大金额: %s</string>
-    <string name="confirm">确认</string>
+    <string name="confirm_transaction">Confirm the Transaction</string>
+    <string name="send_address">From</string>
+    <string name="receive_address">To</string>
+    <string name="consume_gas">Gas Fee</string>
+    <string name="max_gas">Maximum Charge\n %s</string>
+    <string name="total_consume">Total Amount</string>
+    <string name="amount_gas">Amount + Gas Fee</string>
+    <string name="max_consume">Maximum Amount\n %s</string>
+    <string name="confirm">Confirm the transaction</string>
 
     <string name="look_in_etherscan">Etherscan查看</string>
 
-    <string name="finish_transaction">完成交易</string>
-    <string name="watch_detail">查看详情</string>
-    <string name="transaction_boardcasted">交易已广播</string>
-    <string name="swap_finish">兑换成功，请查收</string>
+    <string name="finish_transaction">Done</string>
+    <string name="watch_detail">View deal details</string>
+    <string name="transaction_boardcasted">Transaction has been broadcast</string>
+    <string name="swap_finish">Swap succeed, Please check</string>
 
     <string name="scan_qrcode_to_send_me">扫描二维码向我付款</string>
     <string name="save_qrcode">保存二维码</string>
@@ -136,60 +135,62 @@
     <string name="camera">拍摄</string>
     <string name="picture">照片</string>
 
-    <string name="please_input_your_name">请输入您的名字</string>
+    <string name="please_input_your_name">Please enter your nickname</string>
 
     <string name="create_Freechat">创建Freechat</string>
 
-    <string name="new_friend">新的朋友</string>
-    <string name="copy">复制</string>
-    <string name="save_to_gallery">保存为图片</string>
-    <string name="tip">注意</string>
-    <string name="login_tip">Freechat并不保存您的任何私钥及助记词，在您输入密钥等敏感关键信息时，请注意安全，也请您妥善保管好您的助记词及密钥相关安全信息，否则将会造成资产遗失或被盗。</string>
+    <string name="new_friend">New friends</string>
+    <string name="copy">Copy</string>
+    <string name="save_to_gallery">Save as image</string>
+    <string name="tip">Attention</string>
+    <string name="login_tip">Freechat does not store any of your private keys and seed phrase. So please be careful when you enter sensitive key information. Please also keep your seed phrase and key-related security information properly. Otherwise, assets may be lost or stolen</string>
     <string name="register_tip">Freechat为去中心化的社交应用，你的安全措施由助记词进行保护，如果助记词遗失或泄漏，您的账户及财产将会失去保护，请妥善保管。</string>
-    <string name="email_tip">电子邮箱是确认您Freechat社交身份的唯一方式，保护您的社交信息，只能设置一次，不允许进行更改。</string>
-    <string name="password_tip">账户密码并不能找回您的账户，您依然需要助记词进行账户重置。再次提醒您请保护好您的助记词，助记词是唯一恢复您账户及资产的方式。</string>
+    <string name="email_tip">Email is the only way to confirm your Freechat social identity, to protect your social information, it can only be set once, and changes are not allowed.</string>
+    <string name="password_tip">The account password does not retrieve your account, you still need the seed phrase to reset the account. Again, please protect your seed phrase. The seed phrase is the only way to recover your accounts and assets.</string>
 
-    <string name="apply_tobe_friend">申请加为好友</string>
-    <string name="add_friend">添加好友</string>
-    <string name="set_remark">设置备注</string>
-    <string name="request_info">申请说明</string>
-    <string name="set_friend_remark">设置好友备注</string>
+    <string name="remark">Remark</string>
+    <string name="apply_tobe_friend">Send a Friend Request</string>
+    <string name="add_friend">Add friend</string>
+    <string name="friend_verify">Friend Verification</string>
+    <string name="set_remark">Set Remark</string>
+    <string name="request_info">Self introduction</string>
+    <string name="set_friend_remark">Set Friend Remark</string>
     <string name="default_display_nickname">默认显示好友昵称</string>
-    <string name="send_request">发送申请</string>
+    <string name="send_request">Send Request</string>
 
-    <string name="search">搜索</string>
+    <string name="search">Search</string>
     <string name="input_fcid">请输入好友的 FCID</string>
     <string name="search_uid_invalid">请输入有效的用户ID</string>
     <string name="user_not_exist">用户不存在</string>
     <string name="three_day">三天内</string>
     <string name="three_day_before">三天前</string>
-    <string name="already_accept">已添加</string>
+    <string name="already_accept">Added</string>
     <string name="already_refuse">已拒绝</string>
-    <string name="have_a_look">查看</string>
-    <string name="accept">同意</string>
-    <string name="refuse">拒绝</string>
+    <string name="have_a_look">View</string>
+    <string name="accept">Agree</string>
+    <string name="refuse">Refuse</string>
 
-    <string name="reply">回复</string>
-    <string name="send">发送</string>
-    <string name="finish">完成</string>
+    <string name="reply">Reply</string>
+    <string name="send">Send</string>
+    <string name="finish">Done</string>
 
-    <string name="select_transfer_token">请选择转账币种</string>
-    <string name="select_transfer_amount">请选择转账金额</string>
+    <string name="select_transfer_token">Please select a token</string>
+    <string name="select_transfer_amount">Please enter the amount of tokens</string>
 
-    <string name="transfer_risk_tip">防欺诈提示</string>
-    <string name="transfer_risk_tip_1">尊敬的Freechat用户，请注意你正在进行转账操作，你需要确认以下事项，防止被欺诈和钓鱼攻击。</string>
-    <string name="transfer_risk_tip_2">1.请确认对方是否是你的朋友。你可以通过电话、短信等方式确认其身份，防止钓鱼攻击。</string>
-    <string name="transfer_risk_tip_3">2.如果是通过网络购买虚拟物品，请确认你是否已收到虚拟物品。如果是先付款，请确认交易是否安全。</string>
-    <string name="transfer_risk_tip_4">3.请确认对方是否冒充政府机构、执法机构向你进行钓鱼攻击。政府和执法机构不会使用Freechat向你索取费用。</string>
-    <string name="i_read_and_know">我已确认并知晓</string>
+    <string name="transfer_risk_tip">Fraud Prevention Tips</string>
+    <string name="transfer_risk_tip_1">Dear Freechat users, please note that you are transferring money. You need to confirm the following items to prevent fraud and phishing attacks.</string>
+    <string name="transfer_risk_tip_2">1. Please confirm whether the other party is your friend. You can confirm their identity through phone calls, text messages, etc. to prevent phishing attacks.</string>
+    <string name="transfer_risk_tip_3">2. If you purchase virtual items online, please confirm whether you have received the virtual items. If paying first, make sure the transaction is secure.</string>
+    <string name="transfer_risk_tip_4">3. Please confirm whether the other party is pretending to be a government agency or law enforcement agency to conduct a phishing Attack. The government and law enforcement agencies will not use Freechat to ask you for money.</string>
+    <string name="i_read_and_know">Next</string>
 
     <string name="wallet_password">钱包密码</string>
     <string name="wallet_password_hint">请输入您的钱包密码</string>
     <string name="forget_password">忘记密码</string>
     <string name="wrong_password">密码错误</string>
 
-    <string name="verify_email">验证%s邮箱收到的验证码</string>
-    <string name="verify_email_tip">电子邮箱是确认您Freechat身份的唯一方式，保护您的社交信息。</string>
+    <string name="verify_email">Verify the verification code</string>
+    <string name="verify_email_tip">Email is the only way to confirm your Freechat identity and protect your social information.</string>
 
     <string name="account_security">账号与安全</string>
     <string name="language_setting">语言设置</string>
@@ -208,16 +209,16 @@
     <string name="old_password">原密码</string>
     <string name="new_password">新密码</string>
     <string name="confirm_again">再次确认</string>
-    <string name="confirm_password_fit">确保您的密码有大写字母、小写字母等，位数大于8位。</string>
+    <string name="confirm_password_fit">Make sure your password has uppercase letters, lowercase letters, numbers, etc., with more than 8 digits.</string>
 
     <string name="chinese">中文</string>
     <string name="english">English</string>
 
-    <string name="reset">重置</string>
+    <string name="reset">Reset</string>
     <string name="cache">缓存</string>
     <string name="cache_tip">缓存是使用过程中产生的临时数据，清理缓存不会影响您的正常使用</string>
 
-    <string name="email_been_used">该邮箱已被绑定</string>
-    <string name="send_verify_code">发送验证码</string>
-    <string name="resend_verify_code">重新发送%ss</string>
+    <string name="email_been_used">The mailbox has been bound</string>
+    <string name="send_verify_code">Send verification code</string>
+    <string name="resend_verify_code">Resend %ss</string>
 </resources>

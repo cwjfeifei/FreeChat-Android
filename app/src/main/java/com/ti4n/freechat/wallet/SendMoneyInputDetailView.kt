@@ -204,7 +204,7 @@ fun SendMoneyInputDetailView(
                     padding = PaddingValues(vertical = 14.dp, horizontal = 16.dp)
                 )
                 Spacer(modifier = Modifier.height(6.dp))
-                Text(text = "可用: $remainAmount", color = Color(0xFF1B1B1B))
+                Text(text = stringResource(id = R.string.balance_of, remainAmount), color = Color(0xFF1B1B1B))
             }
         }
         Spacer(modifier = Modifier.weight(1f))

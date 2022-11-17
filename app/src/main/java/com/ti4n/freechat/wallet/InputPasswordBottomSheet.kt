@@ -43,7 +43,6 @@ fun InputPasswordBottomSheet(
         mutableStateOf("")
     }
     val focusManager = LocalFocusManager.current
-    focusManager.clearFocus()
     Box(
         Modifier
             .fillMaxWidth()

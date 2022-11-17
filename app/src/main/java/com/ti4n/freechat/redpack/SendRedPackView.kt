@@ -191,7 +191,7 @@ fun SendRedPackView(
         )
         Spacer(modifier = Modifier.height(6.dp))
         Text(
-            text = "可用: $remainAmount",
+            text = stringResource(id = R.string.balance_of, "$remainAmount"),
             color = Color(0xFF1A1A1A),
             modifier = Modifier
                 .align(Alignment.Start)

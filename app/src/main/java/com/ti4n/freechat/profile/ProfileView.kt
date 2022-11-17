@@ -252,7 +252,7 @@ fun ProfileView(
 //                }
                 if (!isSelf && isFriend) item {
                     Divider(color = Color(0xFFEBEBEB), thickness = 0.5.dp, startIndent = 16.dp)
-                    ProfileItem("备注") {
+                    ProfileItem(stringResource(id = R.string.remark)) {
                         navController.navigate(Route.SetRemark.route)
                     }
                     Divider(color = Color(0xFFEBEBEB), thickness = 0.5.dp, startIndent = 16.dp)
