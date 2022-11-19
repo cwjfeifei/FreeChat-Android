@@ -1,7 +1,7 @@
 buildscript {
     ext {
         compose_ui_version = '1.3.1'
-        accompanist_version = '0.27.0'
+        accompanist_version = '0.27.1'
         room_version = '2.5.0-beta02'
         kethereum_version = '0.85.7'
     }

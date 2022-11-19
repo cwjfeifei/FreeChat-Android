@@ -70,58 +70,58 @@ fun ChatListView(
     Column(
         modifier = modifier
             .fillMaxSize()
-            .background(Color(0xFFF0F0F0))
+            .background(Color(0xFFF0F0F0)),
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
         AnimatedVisibility(
             visible = !showSearchView.value, enter = expandVertically(), exit = shrinkVertically()
         ) {
-            CenterAlignedTopAppBar(
-                colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
-                    containerColor = Color(0xFFF0F0F0)
-                ), title = {
-                    HomeTitle(R.string.app_name)
-                }, actions = {
-                    Box {
-                        Image(mipmap = R.mipmap.add, modifier = Modifier.clickable {
-                            showAddView = true
-                        })
-                        DropdownMenu(
-                            expanded = showAddView,
-                            onDismissRequest = { showAddView = false },
-                            modifier = Modifier.background(Color(0xFF4B4B4B)),
-                            offset = DpOffset(0.dp, 12.dp)
-                        ) {
-                            DropdownMenuItem(onClick = { navController.navigate(Route.AddFriend.route) }) {
-                                Image(mipmap = R.mipmap.icon_addfriend)
-                                Spacer(modifier = Modifier.width(10.dp))
-                                Text(
-                                    text = stringResource(id = R.string.add_friend),
-                                    fontSize = 16.sp,
-                                    color = Color.White
-                                )
-                            }
+            CenterAlignedTopAppBar(colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
+                containerColor = Color(0xFFF0F0F0)
+            ), title = {
+                HomeTitle(R.string.app_name)
+            }, actions = {
+                Box {
+                    Image(mipmap = R.mipmap.add, modifier = Modifier.clickable {
+                        showAddView = true
+                    })
+                    DropdownMenu(
+                        expanded = showAddView,
+                        onDismissRequest = { showAddView = false },
+                        modifier = Modifier.background(Color(0xFF4B4B4B)),
+                        offset = DpOffset(0.dp, 12.dp)
+                    ) {
+                        DropdownMenuItem(onClick = { navController.navigate(Route.AddFriend.route) }) {
+                            Image(mipmap = R.mipmap.icon_addfriend)
+                            Spacer(modifier = Modifier.width(10.dp))
+                            Text(
+                                text = stringResource(id = R.string.add_friend),
+                                fontSize = 16.sp,
+                                color = Color.White
+                            )
+                        }
 //                        Divider(color = Color(0xFF5F5F5F))
 //                        DropdownMenuItem(onClick = { }) {
 //                            Text(text = "创建圈子", fontSize = 16.sp, color = Color.White)
 //                        }
-                            Divider(color = Color(0xFF5F5F5F))
-                            DropdownMenuItem(onClick = { navController.navigate(Route.Wallet.route) }) {
-                                Image(mipmap = R.mipmap.icon_wallet)
-                                Spacer(modifier = Modifier.width(10.dp))
-                                Text(
-                                    text = stringResource(id = R.string.wallet),
-                                    fontSize = 16.sp,
-                                    color = Color.White
-                                )
-                            }
+                        Divider(color = Color(0xFF5F5F5F))
+                        DropdownMenuItem(onClick = { navController.navigate(Route.Wallet.route) }) {
+                            Image(mipmap = R.mipmap.icon_wallet)
+                            Spacer(modifier = Modifier.width(10.dp))
+                            Text(
+                                text = stringResource(id = R.string.wallet),
+                                fontSize = 16.sp,
+                                color = Color.White
+                            )
+                        }
 //                        Divider(color = Color(0xFF5F5F5F))
 //                        DropdownMenuItem(onClick = { }) {
 //                            Text(text = "扫一扫", fontSize = 16.sp, color = Color.White)
 //                        }
-                        }
                     }
-                    Spacer(modifier = Modifier.width(24.dp))
-                }, modifier = Modifier.statusBarsPadding()
+                }
+                Spacer(modifier = Modifier.width(24.dp))
+            }, modifier = Modifier.statusBarsPadding()
             )
         }
         Spacer(modifier = Modifier.height(6.dp))
@@ -133,11 +133,9 @@ fun ChatListView(
                     it.showName.contains(
                         searchText.value
                     )
-                }
-                    .sortedBy { !it.isPinned }, key = { it.conversationID }) {
+                }.sortedBy { !it.isPinned }, key = { it.conversationID }) {
                     val message = Gson().fromJson(it.latestMsg, Message::class.java)
-                    ChatItem(
-                        scrollState,
+                    ChatItem(scrollState,
                         it.faceURL,
                         it.showName,
                         dealWithMessageType(message),
@@ -147,8 +145,7 @@ fun ChatListView(
                         it.unreadCount,
                         it.isPinned,
                         pin = { viewModel.pinConversation(it.conversationID, !it.isPinned) },
-                        delete = { viewModel.deleteConversation(it.conversationID) }
-                    ) {
+                        delete = { viewModel.deleteConversation(it.conversationID) }) {
                         navController.navigate(Route.PrivateChat.jump(it.userID, it.conversationID))
                     }
                     Box(
@@ -161,11 +158,13 @@ fun ChatListView(
                 }
             }
         } else {
-            LazyColumn(state = scrollState, modifier = Modifier.background(Color.White)) {
+            if (IM.conversations.isNotEmpty()) LazyColumn(
+                state = scrollState,
+                modifier = Modifier.background(Color.White)
+            ) {
                 items(IM.conversations.sortedBy { !it.isPinned }) {
                     val message = Gson().fromJson(it.latestMsg, Message::class.java)
-                    ChatItem(
-                        scrollState,
+                    ChatItem(scrollState,
                         it.faceURL,
                         it.showName,
                         dealWithMessageType(message),
@@ -175,9 +174,12 @@ fun ChatListView(
                         it.unreadCount,
                         it.isPinned,
                         pin = { viewModel.pinConversation(it.conversationID, !it.isPinned) },
-                        delete = { viewModel.deleteConversation(it.conversationID) }
-                    ) {
-                        navController.navigate(Route.PrivateChat.jump(it.userID, it.conversationID))
+                        delete = { viewModel.deleteConversation(it.conversationID) }) {
+                        navController.navigate(
+                            Route.PrivateChat.jump(
+                                it.userID, it.conversationID
+                            )
+                        )
                     }
                     Box(
                         Modifier
@@ -187,6 +189,13 @@ fun ChatListView(
                             .background(color = Color(0xFFF0F0F0))
                     )
                 }
+            }
+            else {
+                Spacer(modifier = Modifier.weight(1f))
+                Image(mipmap = R.mipmap.chat_list_default)
+                Spacer(modifier = Modifier.height(20.dp))
+                Text(text = stringResource(id = R.string.no_chat), color = Color(0xFF999999))
+                Spacer(modifier = Modifier.weight(1f))
             }
         }
     }
@@ -214,22 +223,18 @@ fun ChatItem(
     RevealSwipe(
         directions = setOf(RevealDirection.EndToStart),
         hiddenContentEnd = {
-            Box(
-                contentAlignment = Alignment.Center,
+            Box(contentAlignment = Alignment.Center,
                 modifier = Modifier
                     .size(78.dp)
                     .background(Color(0xFF1E84EF))
-                    .clickable { pin() }
-            ) {
+                    .clickable { pin() }) {
                 Image(mipmap = if (isPin) R.mipmap.top_cancel else R.mipmap.top)
             }
-            Box(
-                contentAlignment = Alignment.Center,
+            Box(contentAlignment = Alignment.Center,
                 modifier = Modifier
                     .size(78.dp)
                     .background(Color(0xFFFB5251))
-                    .clickable { delete() }
-            ) {
+                    .clickable { delete() }) {
                 Image(mipmap = R.mipmap.delete)
             }
         },
@@ -247,8 +252,7 @@ fun ChatItem(
             BadgedBox(badge = {
                 if (unread != 0) {
                     Badge(
-                        backgroundColor = Color(0xFFE64940),
-                        contentColor = Color.White
+                        backgroundColor = Color(0xFFE64940), contentColor = Color.White
                     ) {
                         Text(text = "$unread")
                     }
@@ -289,8 +293,7 @@ fun dealWithMessageType(message: Message) = when (message.contentType) {
     MessageType.VOICE -> "[语音]"
     MessageType.TEXT -> message.content
     MessageType.CUSTOM -> {
-        val content =
-            Gson().fromJson(message.content, CustomMessage::class.java)
+        val content = Gson().fromJson(message.content, CustomMessage::class.java)
         when (content.extension) {
             "transfer" -> "[转账]"
             else -> "不支持的消息类型"

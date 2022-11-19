@@ -189,7 +189,8 @@ fun CompleteProfileView(controller: NavController, viewModel: RegisterViewModel 
             onClick = {
                 scope.launch {
                     // must be IM.login
-                    val result = IM.setUserInfo(faceURL, nickname, gender, birth, email, null)
+                    val result =
+                        IM.setUserInfo(faceURL, nickname, gender, birth / 1000, email, null)
                     if (result is Unit) {
                         // success
                         controller.backQueue.clear()

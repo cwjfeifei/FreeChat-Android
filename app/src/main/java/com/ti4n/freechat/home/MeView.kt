@@ -66,7 +66,6 @@ fun MeView(
             color = Color.Transparent
         )
         systemUiController.setNavigationBarColor(Color.White)
-        systemUiController.setNavigationBarColor(Color.White)
     }
     Column(
         modifier = modifier
@@ -76,7 +75,7 @@ fun MeView(
         androidx.compose.foundation.Image(
             painter = rememberAsyncImagePainter(
                 ImageRequest.Builder(context)
-                    .data(data = me?.faceURL?.ifEmpty { DEFAULT_FACEURL })
+                    .data(data = me?.faceURL?.ifEmpty { DEFAULT_FACEURL } ?: DEFAULT_FACEURL)
                     .build(),
                 imageLoader = imageLoader,
             ),
@@ -86,13 +85,13 @@ fun MeView(
             contentScale = ContentScale.Crop
         )
         LazyColumn(modifier = Modifier.background(Color.White)) {
-            me?.let {
+            me.let {
                 item {
                     MeInfoItem(
-                        faceURL = it.faceURL,
-                        nickname = it.nickname,
-                        userID = it.userID,
-                        gender = me?.gender ?: 1
+                        faceURL = it?.faceURL ?: "",
+                        nickname = it?.nickname ?: "",
+                        userID = it?.userID ?: "",
+                        gender = it?.gender ?: 1
                     ) {
                         navController.navigate(Route.MeEdit.route)
                     }

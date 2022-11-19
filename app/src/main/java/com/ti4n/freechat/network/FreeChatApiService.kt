@@ -11,7 +11,7 @@ import retrofit2.http.Query
 import retrofit2.http.Url
 
 
-const val freeChatUrl = "https://freechat.world/api/"
+const val freeChatUrl = "https://pctnpqbcky.ap-northeast-1.awsapprunner.com/api/"
 
 interface FreeChatApiService {
 

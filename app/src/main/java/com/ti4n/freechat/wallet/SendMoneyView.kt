@@ -206,7 +206,7 @@ fun SendMoneyView(navController: NavController, viewModel: SendMoneyViewModel = 
             if (recentAddress.itemCount == 0) {
                 Spacer(modifier = Modifier.weight(1f))
                 Image(mipmap = R.mipmap.no_data, Modifier.fillMaxWidth())
-                Spacer(modifier = Modifier.height(16.dp))
+                Spacer(modifier = Modifier.height(20.dp))
                 Text(
                     text = stringResource(id = R.string.no_data),
                     color = Color(0xFF999999),

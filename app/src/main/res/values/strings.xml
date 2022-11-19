@@ -221,4 +221,10 @@
     <string name="email_been_used">The mailbox has been bound</string>
     <string name="send_verify_code">Send verification code</string>
     <string name="resend_verify_code">Resend %ss</string>
+
+    <string name="no_chat">暂无聊天内容</string>
+    <string name="no_contact">您还没有任何好友</string>
+    <string name="go_to_contact">去添加好友</string>
+
+    <string name="info_copied">信息已复制</string>
 </resources>

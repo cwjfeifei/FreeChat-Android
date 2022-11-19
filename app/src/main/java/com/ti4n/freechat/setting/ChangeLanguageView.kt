@@ -1,5 +1,6 @@
 package com.ti4n.freechat.setting
 
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -32,6 +33,7 @@ import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.ti4n.freechat.R
 import com.ti4n.freechat.widget.Image
 import androidx.compose.runtime.*
+import androidx.core.os.LocaleListCompat
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
 import com.ti4n.freechat.di.dataStore
@@ -44,14 +46,11 @@ import kotlinx.coroutines.launch
 @Composable
 fun ChangeLanguageView(navController: NavController) {
     val systemUiController = rememberSystemUiController()
-    val scope = rememberCoroutineScope()
-    val context = LocalContext.current
     var currentLanguage by remember {
         mutableStateOf("en")
     }
     LaunchedEffect(Unit) {
-        currentLanguage =
-            context.dataStore.data.map { it[stringPreferencesKey("language")] ?: "en" }.first()
+        currentLanguage = AppCompatDelegate.getApplicationLocales().toLanguageTags()
     }
     SideEffect {
         systemUiController.setSystemBarsColor(
@@ -89,12 +88,10 @@ fun ChangeLanguageView(navController: NavController) {
                     fontWeight = FontWeight.Medium,
                     modifier = Modifier
                         .clickable {
-                            scope.launch {
-                                context.dataStore.edit {
-                                    it[stringPreferencesKey("language")] = currentLanguage
-                                }
-                                navController.navigateUp()
-                            }
+                            val appLocale =
+                                LocaleListCompat.forLanguageTags(currentLanguage)
+                            AppCompatDelegate.setApplicationLocales(appLocale)
+                            navController.navigateUp()
                         }
                         .padding(horizontal = 16.dp, vertical = 4.dp))
             }
@@ -102,13 +99,15 @@ fun ChangeLanguageView(navController: NavController) {
     }, backgroundColor = Color.White) {
         Column(modifier = Modifier.padding(it)) {
             LanguageItem(
-                title = stringResource(id = R.string.chinese), isSelected = currentLanguage == "zh"
+                title = stringResource(id = R.string.chinese),
+                isSelected = currentLanguage == "zh"
             ) {
                 currentLanguage = "zh"
             }
             Divider(color = Color(0xFFEBEBEB), thickness = 0.5.dp, startIndent = 16.dp)
             LanguageItem(
-                title = stringResource(id = R.string.english), isSelected = currentLanguage == "en"
+                title = stringResource(id = R.string.english),
+                isSelected = currentLanguage == "en"
             ) {
                 currentLanguage = "en"
             }

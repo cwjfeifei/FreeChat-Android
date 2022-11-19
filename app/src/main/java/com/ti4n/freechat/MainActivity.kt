@@ -56,16 +56,6 @@ class MainActivity : AppCompatActivity() {
     @Inject
     lateinit var db: AppDataBase
     override fun onCreate(savedInstanceState: Bundle?) {
-        runBlocking {
-            val languageCode =
-                dataStore.data.map { it[stringPreferencesKey("language")] ?: "en" }.first()
-            val locale = Locale(languageCode)
-            Locale.setDefault(locale)
-            val config = resources.configuration
-            config.setLocale(locale)
-            createConfigurationContext(config)
-        }
-
         super.onCreate(savedInstanceState)
         WindowCompat.setDecorFitsSystemWindows(window, false)
         IM.init(this)

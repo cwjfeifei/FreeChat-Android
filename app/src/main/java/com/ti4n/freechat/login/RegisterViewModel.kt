@@ -147,7 +147,6 @@ class RegisterViewModel @Inject constructor(
 
     fun registerFreeChat(userID: String, verifyCode: String) {
         viewModelScope.launch {
-            "equal boss muscle child music round tissue tree radio jealous arrange coyote"
             try {
                 val response = imService.register(
                     Register(

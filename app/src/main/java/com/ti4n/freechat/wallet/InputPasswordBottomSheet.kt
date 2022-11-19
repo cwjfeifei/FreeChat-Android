@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.ButtonDefaults
+import androidx.compose.material.Divider
 import androidx.compose.material.Text
 import androidx.compose.material.TextButton
 import androidx.compose.material.TextFieldDefaults
@@ -35,7 +36,6 @@ import androidx.compose.ui.unit.sp
 
 @Composable
 fun InputPasswordBottomSheet(
-    close: () -> Unit,
     forgotPassword: () -> Unit,
     confirm: (String) -> Unit
 ) {
@@ -43,86 +43,78 @@ fun InputPasswordBottomSheet(
         mutableStateOf("")
     }
     val focusManager = LocalFocusManager.current
-    Box(
-        Modifier
+
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
+        modifier = Modifier
             .fillMaxWidth()
-            .imePadding()
+            .background(
+                Color.White, RoundedCornerShape(14.dp)
+            )
     ) {
-        Column(
-            horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.fillMaxWidth()
-        ) {
-            Spacer(modifier = Modifier.height(32.dp))
-            Text(
-                text = stringResource(id = R.string.wallet_password),
+        Spacer(modifier = Modifier.height(24.dp))
+        Text(
+            text = stringResource(id = R.string.wallet_password),
+            color = Color(0xFF1A1A1A),
+            fontSize = 16.sp,
+            fontWeight = FontWeight.Medium
+        )
+        Spacer(modifier = Modifier.height(20.dp))
+        CustomPaddingTextField(
+            value = password,
+            onValueChange = { password = it },
+            Modifier
+                .padding(horizontal = 24.dp)
+                .fillMaxWidth()
+                .height(44.dp),
+            padding = PaddingValues(vertical = 12.dp, horizontal = 16.dp),
+            colors = TextFieldDefaults.textFieldColors(
+                focusedIndicatorColor = Color.Transparent,
+                unfocusedIndicatorColor = Color.Transparent,
+                backgroundColor = Color(0xFFF5F5F5)
+            ),
+            textStyle = TextStyle(
                 color = Color(0xFF1A1A1A),
-                fontSize = 14.sp,
-                fontWeight = FontWeight.Medium
-            )
-            Spacer(modifier = Modifier.height(20.dp))
-            CustomPaddingTextField(
-                value = password,
-                onValueChange = { password = it },
-                Modifier
-                    .padding(horizontal = 24.dp)
-                    .fillMaxWidth()
-                    .height(44.dp),
-                padding = PaddingValues(vertical = 12.dp, horizontal = 16.dp),
-                colors = TextFieldDefaults.textFieldColors(
-                    focusedIndicatorColor = Color.Transparent,
-                    unfocusedIndicatorColor = Color.Transparent,
-                    backgroundColor = Color(0xFFF5F5F5)
-                ),
-                textStyle = TextStyle(
-                    color = Color(0xFF1A1A1A),
-                    textAlign = TextAlign.Center,
-                    fontSize = 14.sp
-                ), shape = RoundedCornerShape(4.dp),
-                placeholder = {
-                    Text(
-                        text = stringResource(id = R.string.wallet_password_hint),
-                        color = Color(0xFFB3B3B3),
-                        fontSize = 14.sp,
-                        textAlign = TextAlign.Center,
-                        modifier = Modifier.fillMaxWidth()
-                    )
-                }
-            )
-            Spacer(modifier = Modifier.height(16.dp))
-            Text(
-                text = stringResource(id = R.string.forget_password),
-                color = Color(0xFF666666),
-                fontSize = 14.sp,
-                modifier = Modifier.clickable { forgotPassword() }
-            )
-            Spacer(modifier = Modifier.height(40.dp))
-            TextButton(
-                onClick = {
-                    focusManager.clearFocus()
-                    confirm(password)
-                },
-                Modifier
-                    .height(42.dp)
-                    .fillMaxWidth(), shape = RoundedCornerShape(2.dp),
-                colors = ButtonDefaults.buttonColors(
-                    backgroundColor = Color(0xFF3879FD),
-                    contentColor = Color.White
-                )
-            ) {
+                textAlign = TextAlign.Center,
+                fontSize = 14.sp
+            ), shape = RoundedCornerShape(4.dp),
+            placeholder = {
                 Text(
-                    text = stringResource(id = R.string.confirm),
-                    fontSize = 16.sp,
-                    fontWeight = FontWeight.SemiBold
+                    text = stringResource(id = R.string.wallet_password_hint),
+                    color = Color(0xFFB3B3B3),
+                    fontSize = 14.sp,
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier.fillMaxWidth()
                 )
             }
+        )
+        Spacer(modifier = Modifier.height(12.dp))
+        Text(
+            text = stringResource(id = R.string.forget_password),
+            color = Color(0xFF666666),
+            fontSize = 14.sp,
+            modifier = Modifier.clickable { forgotPassword() }
+        )
+        Spacer(modifier = Modifier.height(30.dp))
+        Divider(color = Color(0xFFEBEBEB), thickness = 0.5.dp)
+        TextButton(
+            onClick = {
+                focusManager.clearFocus()
+                confirm(password)
+            },
+            Modifier
+                .height(46.dp)
+                .fillMaxWidth(),
+            colors = ButtonDefaults.buttonColors(
+                backgroundColor = Color.White,
+                contentColor = Color(0xFF4A84F7)
+            )
+        ) {
+            Text(
+                text = stringResource(id = R.string.confirm),
+                fontSize = 16.sp,
+                fontWeight = FontWeight.SemiBold
+            )
         }
-        Image(mipmap = R.mipmap.close_input_password,
-            modifier = Modifier
-                .align(Alignment.TopStart)
-                .clickable {
-                    focusManager.clearFocus()
-                    close()
-                }
-                .padding(start = 16.dp, top = 32.dp))
     }
-
 }

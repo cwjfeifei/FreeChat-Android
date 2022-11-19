@@ -18,6 +18,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Divider
 import androidx.compose.material.IconButton
 import androidx.compose.material.Text
@@ -29,8 +30,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.asImageBitmap
+import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -44,6 +47,7 @@ import com.journeyapps.barcodescanner.ScanOptions
 import com.ti4n.freechat.R
 import com.ti4n.freechat.Route
 import com.ti4n.freechat.model.im.toBaseInfo
+import com.ti4n.freechat.toast
 import com.ti4n.freechat.util.IM
 import com.ti4n.freechat.widget.HomeTitle
 import com.ti4n.freechat.widget.Image
@@ -75,6 +79,7 @@ fun AddFriendView(navController: NavController) {
             searchText.component2()(it)
         }
     }
+    val clipboardManager = LocalClipboardManager.current
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -120,14 +125,47 @@ fun AddFriendView(navController: NavController) {
             })
         Spacer(modifier = Modifier.height(8.dp))
         if (!showSearchView.value) {
-            Spacer(modifier = Modifier.height(8.dp))
-            Text(
-                text = "FCID: ${meInfo?.userID}",
-                color = Color(0xFF1A1A1A),
-                fontWeight = FontWeight.Medium,
-                modifier = Modifier.padding(start = 14.dp, end = 14.dp),
-                textAlign = TextAlign.Center
-            )
+            Spacer(modifier = Modifier.height(12.dp))
+            Row(
+                Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    text = "FCID",
+                    color = Color(0xFF1A1A1A),
+                    fontWeight = FontWeight.Medium,
+                    textAlign = TextAlign.Center
+                )
+                Spacer(modifier = Modifier.width(8.dp))
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier
+                        .height(36.dp)
+                        .background(
+                            Color(0xFFEBEBEB),
+                            RoundedCornerShape(4.dp)
+                        )
+                        .clickable {
+                            clipboardManager.setText(AnnotatedString(meInfo?.userID ?: ""))
+                            toast.tryEmit(R.string.info_copied)
+                        }
+                        .padding(horizontal = 12.dp)
+                ) {
+                    Text(
+                        text = meInfo?.userID ?: "",
+                        color = Color(0xFF1A1A1A),
+                        fontWeight = FontWeight.Medium,
+                        textAlign = TextAlign.Center,
+                        fontSize = 12.sp,
+                        maxLines = 1
+                    )
+                    Spacer(modifier = Modifier.width(10.dp))
+                    Image(mipmap = R.mipmap.copy_nor)
+                }
+            }
+
             Spacer(modifier = Modifier.height(24.dp))
             val qrcode =
                 BarcodeEncoder().encodeBitmap(meInfo?.userID, BarcodeFormat.QR_CODE, 600, 600)
