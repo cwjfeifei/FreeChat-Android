@@ -76,14 +76,17 @@ fun TokenDetailView(
             modifier = Modifier.padding(vertical = 40.dp, horizontal = 20.dp)
         ) {
             item {
-                AsyncImage(
-                    model = token?.LogoURI,
-                    contentDescription = null,
-                    Modifier
-                        .padding(vertical = 24.dp)
-                        .size(60.dp)
-                        .align(CenterHorizontally)
-                )
+                Row(Modifier.fillMaxWidth()) {
+                    Spacer(modifier = Modifier.weight(1f))
+                    AsyncImage(
+                        model = token?.LogoURI,
+                        contentDescription = null,
+                        Modifier
+                            .padding(vertical = 24.dp)
+                            .size(60.dp)
+                    )
+                    Spacer(modifier = Modifier.weight(1f))
+                }
             }
             item {
                 ItemDetail(title = "项目信息", content = token?.tokenName)
@@ -98,12 +101,11 @@ fun TokenDetailView(
                 ItemDetail(title = "合约地址", content = token?.contractAddress) {
                     Text(
                         text = stringResource(id = R.string.look_in_etherscan),
-                        color = Color.Black,
+                        color = Color.White,
                         modifier = Modifier
                             .background(
-                                Color.White, RoundedCornerShape(4.dp)
+                                Color(0xFF5C77E6), RoundedCornerShape(4.dp)
                             )
-                            .border(0.5.dp, Color.Black, RoundedCornerShape(4.dp))
                             .clickable {
                                 uriHandler.openUri("https://etherscan.io/token/${token?.contractAddress}")
                             }

@@ -11,6 +11,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.ti4n.freechat.util.*
 import java.util.*
@@ -33,7 +34,7 @@ fun DataTimePicker(
             Modifier
                 .wrapContentHeight()
                 .fillMaxWidth()
-                .background(MaterialTheme.colors.surface),
+                .background(Color.Black),
             Arrangement.SpaceEvenly,
             Alignment.CenterVertically
         ) {

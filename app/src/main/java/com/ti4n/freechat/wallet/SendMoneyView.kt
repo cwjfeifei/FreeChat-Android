@@ -10,6 +10,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -177,7 +178,7 @@ fun SendMoneyView(navController: NavController, viewModel: SendMoneyViewModel = 
                                 modifier = Modifier
                                     .height(50.dp)
                                     .width(70.dp)
-                                    .background(Color(0xFF6B8FF8), RoundedCornerShape(4.dp))
+                                    .background(Color(0xFF141B33), RoundedCornerShape(4.dp))
                                     .clickable {
                                         clipboardManager
                                             .getText()
@@ -235,11 +236,11 @@ fun SendMoneyView(navController: NavController, viewModel: SendMoneyViewModel = 
                     onClick = { navController.navigateUp() },
                     shape = RoundedCornerShape(0.dp),
                     modifier = Modifier
-                        .weight(1f)
-                        .height(42.dp),
+                        .weight(1f),
                     colors = ButtonDefaults.buttonColors(
                         backgroundColor = Color(0xFF3879FD), contentColor = Color.White
-                    )
+                    ),
+                    contentPadding = PaddingValues(vertical = 10.dp)
                 ) {
                     Text(
                         text = stringResource(id = R.string.back),
@@ -256,11 +257,11 @@ fun SendMoneyView(navController: NavController, viewModel: SendMoneyViewModel = 
                     },
                     shape = RoundedCornerShape(0.dp),
                     modifier = Modifier
-                        .weight(1f)
-                        .height(42.dp),
+                        .weight(1f),
                     colors = ButtonDefaults.buttonColors(
                         backgroundColor = Color(0xFF3879FD), contentColor = Color.White
-                    )
+                    ),
+                    contentPadding = PaddingValues(vertical = 10.dp)
                 ) {
                     Text(
                         text = stringResource(id = R.string.next),

@@ -17,7 +17,7 @@
     <string name="back">返回</string>
     <string name="login_freechat">登录Freechat</string>
     <string name="wrong_mnemonic">助记词不正确</string>
-    <string name="keep_mnemonic_to_find_account">请妥善保管您的助记词 便于您找回账户</string>
+    <string name="keep_mnemonic_to_find_account">请记住您的助记词 这是您找回Freechat的唯一凭证</string>
     <string name="next">下一步</string>
     <string name="input_mnemonic_by_order">请按顺序验证助记词</string>
     <string name="title_set_password">请确认您的账户密码</string>
@@ -106,11 +106,11 @@
     <string name="confirm_transaction">确认交易</string>
     <string name="send_address">转出账户</string>
     <string name="receive_address">接收账户</string>
-    <string name="consume_gas">消耗燃料</string>
-    <string name="max_gas">最高收费: %s</string>
+    <string name="consume_gas">估计燃料费用</string>
+    <string name="max_gas">最高收费</string>
     <string name="total_consume">总额</string>
     <string name="amount_gas">金额+燃料费</string>
-    <string name="max_consume">最大金额: %s</string>
+    <string name="max_consume">最大金额</string>
     <string name="confirm">确认</string>
 
     <string name="look_in_etherscan">Etherscan查看</string>
@@ -228,4 +228,8 @@
 
     <string name="info_copied">信息已复制</string>
 
+    <string name="current_account">当前账户</string>
+    <string name="recommoned_site">推荐站点</string>
+    <string name="may_less_30">有可能&lt;30秒</string>
+    <string name="confirm_and_broadcast">确认交易并广播</string>
 </resources>

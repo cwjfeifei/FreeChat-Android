@@ -3,6 +3,7 @@ package com.ti4n.freechat.login
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -13,6 +14,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -98,7 +101,11 @@ fun SetNameView(navController: NavController, viewModel: RegisterViewModel) {
                         color = Color(0xFFB3B3B3),
                         fontSize = 16.sp
                     )
-                }, shape = RoundedCornerShape(8.dp)
+                },
+                shape = RoundedCornerShape(8.dp),
+                keyboardOptions = KeyboardOptions(
+                    imeAction = ImeAction.Done
+                ),
             )
         }
     }

@@ -9,6 +9,8 @@ import androidx.compose.ui.graphics.drawscope.drawIntoCanvas
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavBackStackEntry
+import androidx.navigation.NavController
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlinx.coroutines.withContext
@@ -101,3 +103,10 @@ fun Modifier.coloredShadow(
         }
     }
 )
+
+fun NavController.getBackStackEntryOrNull(route: String): NavBackStackEntry? {
+    val lastFromBackStack: NavBackStackEntry? = backQueue.lastOrNull { entry ->
+        entry.destination.route == route
+    }
+    return lastFromBackStack
+}

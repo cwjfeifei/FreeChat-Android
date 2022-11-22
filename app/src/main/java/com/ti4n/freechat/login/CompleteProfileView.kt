@@ -13,6 +13,7 @@ import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
@@ -32,15 +33,23 @@ import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.ti4n.freechat.widget.Image
 import com.ti4n.freechat.R
 import com.ti4n.freechat.Route
+import com.ti4n.freechat.db.UserBaseInfo
+import com.ti4n.freechat.db.UserBaseInfoDao
 import com.ti4n.freechat.util.AnimatedPngDecoder
 import com.ti4n.freechat.util.IM
+import kotlinx.coroutines.flow.filterNotNull
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import java.util.Date
 
 private const val TAG = "CompleteProfileView"
 
 @Composable
-fun CompleteProfileView(controller: NavController, viewModel: RegisterViewModel = hiltViewModel()) {
+fun CompleteProfileView(
+    controller: NavController,
+    viewModel: RegisterViewModel = hiltViewModel(),
+    userBaseInfoDao: UserBaseInfoDao
+) {
     val systemUiController = rememberSystemUiController()
     SideEffect {
         systemUiController.setSystemBarsColor(
@@ -106,11 +115,13 @@ fun CompleteProfileView(controller: NavController, viewModel: RegisterViewModel 
         Spacer(modifier = Modifier.height(16.dp))
         androidx.compose.foundation.Image(
             painter = rememberAsyncImagePainter(
-                ImageRequest.Builder(context).data(data = faceURL).build(),
+                faceURL.ifEmpty { R.mipmap.portrait_default },
                 imageLoader = imageLoader
             ),
             contentDescription = null,
-            modifier = Modifier.size(160.dp),
+            modifier = Modifier
+                .size(160.dp)
+                .clip(RoundedCornerShape(16.dp)),
             contentScale = ContentScale.FillBounds
         )
         Spacer(modifier = Modifier.height(16.dp))
@@ -188,12 +199,27 @@ fun CompleteProfileView(controller: NavController, viewModel: RegisterViewModel 
         TextButton(
             onClick = {
                 scope.launch {
+                    val userBaseInfo = userBaseInfoDao.getUserInfo().filterNotNull().first()
                     // must be IM.login
                     val result =
-                        IM.setUserInfo(faceURL, nickname, gender, birth / 1000, email, null)
+                        IM.setUserInfo(
+                            faceURL,
+                            nickname,
+                            gender,
+                            birth / 1000,
+                            email.ifEmpty { userBaseInfo.email })
                     if (result is Unit) {
                         // success
                         controller.backQueue.clear()
+                        userBaseInfoDao.insert(
+                            userBaseInfo.copy(
+                                nickname = nickname,
+                                faceURL = faceURL,
+                                birth = birth / 1000,
+                                email = email,
+                                gender = gender
+                            )
+                        )
                         controller.navigate(Route.Home.route)
                     } else {
                         // set user info failed
@@ -201,11 +227,14 @@ fun CompleteProfileView(controller: NavController, viewModel: RegisterViewModel 
                     }
                 }
             },
-            Modifier
+            enabled = faceURL.isNotEmpty() && nickname.isNotEmpty() && gender != 0 && birth != 0L,
+            modifier = Modifier
                 .height(42.dp)
-                .fillMaxWidth(), colors = ButtonDefaults.buttonColors(
+                .fillMaxWidth(),
+            colors = ButtonDefaults.buttonColors(
                 backgroundColor = Color(0xFF3879FD), contentColor = Color.White
-            ), shape = RoundedCornerShape(0.dp)
+            ),
+            shape = RoundedCornerShape(0.dp)
         ) {
             Text(
                 text = stringResource(id = R.string.complete_setting),

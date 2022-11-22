@@ -95,7 +95,7 @@ fun EditPickFaceImageView(
                             navController.navigate(
                                 Route.ProfilePreview.jump(
                                     URLEncoder.encode(faceURL, StandardCharsets.UTF_8.toString()),
-                                    viewModel.nickname.value,
+                                    viewModel.nickname.value.ifEmpty { context.getString(R.string.name) },
                                     viewModel.gender.value
                                 )
                             )

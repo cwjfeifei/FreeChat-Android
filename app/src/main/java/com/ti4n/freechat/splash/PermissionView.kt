@@ -5,6 +5,7 @@ import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -138,14 +139,14 @@ fun PermissionView(navController: NavController, exitApp: () -> Unit) {
                 shape = RoundedCornerShape(0.dp),
                 modifier = Modifier
                     .weight(1f)
-                    .height(42.dp),
+                    .padding(vertical = 10.dp),
                 colors = ButtonDefaults.buttonColors(
                     backgroundColor = Color(0xFFED5B56), contentColor = Color.White
                 )
             ) {
                 Text(
                     text = stringResource(id = R.string.reject),
-                    fontSize = 14.sp,
+                    fontSize = 16.sp,
                     fontWeight = FontWeight.Medium
                 )
             }
@@ -171,15 +172,15 @@ fun PermissionView(navController: NavController, exitApp: () -> Unit) {
                 },
                 shape = RoundedCornerShape(0.dp),
                 modifier = Modifier
-                    .weight(1f)
-                    .height(42.dp),
+                    .weight(1f),
                 colors = ButtonDefaults.buttonColors(
                     backgroundColor = Color(0xFF3879FD), contentColor = Color.White
-                )
+                ),
+                contentPadding = PaddingValues(vertical = 10.dp)
             ) {
                 Text(
                     text = stringResource(id = R.string.agree),
-                    fontSize = 14.sp,
+                    fontSize = 16.sp,
                     fontWeight = FontWeight.Medium
                 )
             }

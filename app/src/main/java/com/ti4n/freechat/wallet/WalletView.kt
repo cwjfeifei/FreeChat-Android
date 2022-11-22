@@ -71,12 +71,12 @@ fun WalletView(navController: NavController, viewModel: WalletViewModel = hiltVi
             colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
                 containerColor = Color(0xFFF0F0F0)
             ), title = {
-            HomeTitle(R.string.wallet)
-        }, navigationIcon = {
-            IconButton(onClick = { navController.navigateUp() }) {
-                Image(mipmap = R.mipmap.nav_back)
-            }
-        })
+                HomeTitle(R.string.wallet)
+            }, navigationIcon = {
+                IconButton(onClick = { navController.navigateUp() }) {
+                    Image(mipmap = R.mipmap.nav_back)
+                }
+            })
         Spacer(modifier = Modifier.height(20.dp))
         WalletFunction(address,
             list.map { it.usd.toDouble() }.sum(),
@@ -97,7 +97,7 @@ fun WalletView(navController: NavController, viewModel: WalletViewModel = hiltVi
                     viewModel.setSelectedToken(it.token)
                     navController.navigate(
                         Route.TokenDetailSimply.jump(
-                            it.token.symbol, viewModel.address.value
+                            it.token.symbol, viewModel.address.value, it.token.contractAddress
                         )
                     )
                 }

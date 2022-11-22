@@ -6,6 +6,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -370,12 +371,12 @@ fun SwapView(navController: NavController, viewModel: SwapViewModel = hiltViewMo
                     showPassword = true
                 },
                 Modifier
-                    .height(42.dp)
                     .fillMaxWidth(), shape = RoundedCornerShape(2.dp),
                 colors = ButtonDefaults.buttonColors(
                     backgroundColor = Color(0xFF3879FD),
                     contentColor = Color.White
-                )
+                ),
+                contentPadding = PaddingValues(vertical = 10.dp)
             ) {
                 Text(
                     text = stringResource(id = R.string.swap),
@@ -439,7 +440,8 @@ fun SwapView(navController: NavController, viewModel: SwapViewModel = hiltViewMo
                 confirm = {
                     showPassword = false
                     viewModel.swap(it)
-                }
+                },
+                close = { showPassword = false }
             )
         }
 }

@@ -58,7 +58,7 @@ class LoginViewModel @Inject constructor(
             } else {
                 var dbUserInfo = db.userBaseInfoDao().getUserInfo(address).firstOrNull()
 
-                if (dbUserInfo == null) { // No Freechat login user Log.d(TAG, "autoLogin: no address ")
+                if (dbUserInfo == null) {
                     autoLoginRoute.emit(Route.MainLogin.route)
                 } else {
                     val OneDayDuration = 7 * 24 * 60 * 60 // unit: s
@@ -72,7 +72,9 @@ class LoginViewModel @Inject constructor(
                     } else {
                         IM.logout()
                         IM.login(address, dbUserInfo.token)
-                        autoLoginRoute.emit(Route.Home.route)
+                        if (dbUserInfo.nickname.isNotEmpty())
+                            autoLoginRoute.emit(Route.Home.route)
+                        else autoLoginRoute.emit(Route.CompleteProfile.route)
 
                         // 自动登录时刷新token 时间
                         val OneWeekDuration = 7 * OneDayDuration

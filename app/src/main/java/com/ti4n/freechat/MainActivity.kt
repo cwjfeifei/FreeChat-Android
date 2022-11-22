@@ -125,15 +125,20 @@ class MainActivity : AppCompatActivity() {
                             }
                             aniComposable(route = Route.PickFaceImage.route) {
                                 val backStackEntry = remember {
-                                    navController.getBackStackEntry(Route.SetPassword.route)
+                                    try {
+                                        navController.getBackStackEntry(Route.SetPassword.route)
+                                    } catch (e: Exception) {
+                                        navController.getBackStackEntry(Route.CompleteProfile.route)
+                                    }
                                 }
                                 PickFaceImageView(navController, hiltViewModel(backStackEntry))
                             }
                             aniComposable(route = Route.ProfilePreview.route) {
-                                ProfilePreview(navController,
+                                ProfilePreview(
+                                    navController,
                                     it.arguments?.getString("xfaceURL", "") ?: "",
                                     it.arguments?.getString("nickname", "") ?: "",
-                                    it.arguments?.getInt("gender")!!
+                                    it.arguments?.getString("gender", "1")?.toIntOrNull() ?: 1
                                 )
                             }
                             aniComposable(route = Route.Register1.route) {
@@ -151,24 +156,35 @@ class MainActivity : AppCompatActivity() {
                             }
                             aniComposable(route = Route.CompleteProfile.route) {
                                 val backStackEntry = remember {
-                                    navController.getBackStackEntry(Route.SetPassword.route)
+                                    navController.getBackStackEntryOrNull(Route.SetPassword.route)
                                 }
-                                CompleteProfileView(navController, hiltViewModel(backStackEntry))
+                                CompleteProfileView(
+                                    navController,
+                                    if (backStackEntry != null) hiltViewModel(backStackEntry) else hiltViewModel(),
+                                    db.userBaseInfoDao()
+                                )
                             }
                             aniComposable(route = Route.SetName.route) {
                                 val backStackEntry = remember {
-                                    navController.getBackStackEntry(Route.SetPassword.route)
+                                    try {
+                                        navController.getBackStackEntry(Route.SetPassword.route)
+                                    } catch (e: Exception) {
+                                        navController.getBackStackEntry(Route.CompleteProfile.route)
+                                    }
                                 }
                                 SetNameView(navController, hiltViewModel(backStackEntry))
                             }
                             aniComposable(route = Route.SetBirth.route) {
                                 val backStackEntry = remember {
-                                    navController.getBackStackEntry(Route.SetPassword.route)
+                                    try {
+                                        navController.getBackStackEntry(Route.SetPassword.route)
+                                    } catch (e: Exception) {
+                                        navController.getBackStackEntry(Route.CompleteProfile.route)
+                                    }
                                 }
                                 SetBirthView(navController, hiltViewModel(backStackEntry))
                             }
                             aniComposable(route = Route.Home.route) {
-//                                navController.backQueue.removeIf { it.destination.route != Route.Home.route }
                                 HomeView(db.userBaseInfoDao(), navController)
                             }
                             aniComposable(

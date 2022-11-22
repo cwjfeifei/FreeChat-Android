@@ -11,8 +11,6 @@ import androidx.paging.PagingConfig
 import androidx.paging.cachedIn
 import com.ti4n.freechat.di.dataStore
 import com.ti4n.freechat.model.response.freechat.ERC20Token
-import com.ti4n.freechat.model.response.freechat.ethereum
-import com.ti4n.freechat.model.response.freechat.wethereum
 import com.ti4n.freechat.network.FreeChatApiService
 import com.ti4n.freechat.paging.EthTransactionPagingSourceFactory
 import com.ti4n.freechat.util.EthUtil
@@ -43,28 +41,36 @@ class WalletViewModel @Inject constructor(
     init {
         viewModelScope.launch {
             address.value = account.filterNotNull().first()
-            erc20Tokens.value = freeChatApiService.getSupportTokens().result + wethereum
+            erc20Tokens.value = freeChatApiService.getSupportTokens().result
             list.addAll(erc20Tokens.value.map { TokenValue(it, "0", "0") })
             getBalance()
-            getEthBalance(address.value)
         }
     }
 
     suspend fun getBalance() {
         erc20Tokens.value.forEach { erc20 ->
             try {
-                val tokenBalance = EthUtil.balanceOf(erc20, address.value) ?: "0"
-                if (erc20.symbol == "USDT") {
-                    Log.e("USDT", "getBalance: $tokenBalance")
-                }
-                val rate =
-                    freeChatApiService.getRate("${erc20.symbol}-USD").data.firstOrNull()?.idxPx
-                list.replaceAll {
-                    if (it.token == erc20) it.apply {
-                        balance = tokenBalance
-                        usd = ((tokenBalance.toDoubleOrNull() ?: 0.0) * (rate?.toDoubleOrNull()
-                            ?: 0.0)).toString()
-                    } else it
+                if (erc20.symbol == "ETH") {
+                    val balance = EthUtil.balanceOf(address.value) ?: "0"
+                    val rate = freeChatApiService.getRate("ETH-USD").data.firstOrNull()?.idxPx
+                    list.replaceAll {
+                        if (it.token == erc20) it.copy(
+                            balance = balance,
+                            usd = ((balance.toDoubleOrNull() ?: 0.0) * (rate?.toDoubleOrNull()
+                                ?: 0.0)).toString()
+                        ) else it
+                    }
+                } else {
+                    val tokenBalance = EthUtil.balanceOf(erc20, address.value) ?: "0"
+                    val rate =
+                        freeChatApiService.getRate("${erc20.symbol}-USD").data.firstOrNull()?.idxPx
+                    list.replaceAll {
+                        if (it.token == erc20) it.copy(
+                            balance = tokenBalance,
+                            usd = ((tokenBalance.toDoubleOrNull() ?: 0.0) * (rate?.toDoubleOrNull()
+                                ?: 0.0)).toString()
+                        ) else it
+                    }
                 }
             } catch (e: Exception) {
                 e.printStackTrace()
@@ -72,30 +78,9 @@ class WalletViewModel @Inject constructor(
         }
     }
 
-    suspend fun getEthBalance(address: String) {
-        try {
-            val balance = EthUtil.balanceOf(address)
-            val rate = freeChatApiService.getRate("ETH-USD").data.firstOrNull()?.idxPx
-            list.add(
-                TokenValue(
-                    ethereum,
-                    balance.toString(),
-                    ((balance?.toDoubleOrNull() ?: 0.0) * (rate?.toDoubleOrNull()
-                        ?: 0.0)).toString()
-                )
-            )
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
-    }
-
     fun setSelectedToken(token: ERC20Token) {
         selectedToken.value = token
     }
-
-    fun createPager() = Pager(PagingConfig(20)) {
-        pagingSourceFactory.create(address.value, selectedToken.value?.contractAddress)
-    }.flow.cachedIn(viewModelScope)
 }
 
 data class TokenValue(val token: ERC20Token, var balance: String, var usd: String)

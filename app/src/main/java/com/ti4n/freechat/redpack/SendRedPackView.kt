@@ -293,11 +293,11 @@ fun SendRedPackView(
             onClick = { navController.navigate(Route.ConfirmTransaction.route) },
             shape = RoundedCornerShape(0.dp),
             modifier = Modifier
-                .fillMaxWidth()
-                .height(42.dp),
+                .fillMaxWidth(),
             colors = ButtonDefaults.buttonColors(
                 backgroundColor = Color(0xFF3879FD), contentColor = Color.White
-            )
+            ),
+            contentPadding = PaddingValues(vertical = 10.dp)
         ) {
             Text(
                 text = stringResource(id = R.string.next),

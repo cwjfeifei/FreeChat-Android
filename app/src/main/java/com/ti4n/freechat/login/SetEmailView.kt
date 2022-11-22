@@ -5,11 +5,14 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
 import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -74,26 +77,28 @@ fun SetEmailView(
             ),
             shape = RoundedCornerShape(4.dp),
             textStyle = TextStyle(
-                fontSize = 14.sp,
-                color = Color.Black,
-                textAlign = TextAlign.Center
+                fontSize = 16.sp,
+                color = Color.Black
             ),
             placeholder = {
                 Text(
                     text = stringResource(id = R.string.set_email),
-                    color = Color(0xFF999999),
-                    fontSize = 14.sp,
-                    textAlign = TextAlign.Center,
+                    color = Color(0xFFB3B3B3),
+                    fontSize = 16.sp,
                     modifier = Modifier.fillMaxWidth()
                 )
             },
-            keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Email)
+            keyboardOptions = KeyboardOptions.Default.copy(
+                keyboardType = KeyboardType.Email,
+                imeAction = ImeAction.Done
+            )
         )
-        Spacer(Modifier.height(12.dp))
+        Spacer(Modifier.height(8.dp))
         Text(
             text = emailCheck,
             color = Color(0xFFED5B56),
-            fontSize = 12.sp
+            fontSize = 14.sp,
+            modifier = Modifier.align(CenterHorizontally)
         )
     }
 }

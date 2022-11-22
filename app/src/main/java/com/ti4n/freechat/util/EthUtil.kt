@@ -41,6 +41,7 @@ import org.web3j.protocol.core.methods.request.Transaction
 import org.web3j.protocol.core.methods.response.EthEstimateGas
 import org.web3j.protocol.core.methods.response.EthGasPrice
 import org.web3j.protocol.core.methods.response.EthSendTransaction
+import org.web3j.protocol.core.methods.response.TransactionReceipt
 import org.web3j.protocol.http.HttpService
 import org.web3j.tx.gas.DefaultGasProvider
 import org.web3j.utils.Convert
@@ -148,13 +149,13 @@ object EthUtil {
         tokenAddress: String,
         decimal: Int,
         password: String = ""
-    ) = ERC20.load(
+    ): Flow<TransactionReceipt>? = if (loadCredentials(context, password) != null) ERC20.load(
         tokenAddress, web3, loadCredentials(context, password), DefaultGasProvider()
     ).transfer(
         to,
         BigInteger((amount.toDouble() * (10.0.pow(decimal))).toBigDecimal().toPlainString())
     )
-        .flowable().asFlow().catch { it.printStackTrace() }.flowOn(Dispatchers.IO)
+        .flowable().asFlow().catch { it.printStackTrace() }.flowOn(Dispatchers.IO) else null
 
     suspend fun transfer(
         context: Context,
@@ -163,7 +164,7 @@ object EthUtil {
         password: String = ""
     ): Flow<EthSendTransaction>? {
         val credentials = loadCredentials(context, password)
-        if (credentials != null) {
+        return if (credentials != null) {
             val value = Convert.toWei(amount, Convert.Unit.ETHER).toBigInteger()
             val ethGetTransactionCount = transactionCount(credentials.address)
             val gasPrice = gasPrice()
@@ -172,9 +173,9 @@ object EthUtil {
             )
             val signedMessage = TransactionEncoder.signMessage(rawTransaction, credentials)
             val hexValue = Numeric.toHexString(signedMessage)
-            return web3.ethSendRawTransaction(hexValue).flowable().asFlow().flowOn(Dispatchers.IO)
+            web3.ethSendRawTransaction(hexValue).flowable().asFlow().flowOn(Dispatchers.IO)
         } else {
-            return null
+            null
         }
     }
 

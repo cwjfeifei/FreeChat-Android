@@ -33,13 +33,14 @@ object IM {
     val totalUnreadCount = MutableStateFlow(0)
     val showNewFriendApplication = MutableStateFlow(false)
 
-    val DEFAULT_FACEURL = "https://www.google.com/images/branding/googlelogo/2x/googlelogo_color_272x92dp.png" // TODO
+    val DEFAULT_FACEURL =
+        "https://www.google.com/images/branding/googlelogo/2x/googlelogo_color_272x92dp.png" // TODO
 
     fun init(context: Context) {
         imClient.initSDK(Platform.ANDROID,
             "http://imtest.freechat.world:10002",
             "ws://imtest.freechat.world:10001",
-            context.filesDir.absolutePath,
+            context.cacheDir.absolutePath,
             Log.DEBUG,
             "minio",
             null,
@@ -234,12 +235,11 @@ object IM {
      * appManagerLevel : 1-normal user, 2-admin user
      */
     suspend fun setUserInfo(
-        faceURL: String?,
-        nickname: String?,
+        faceURL: String,
+        nickname: String,
         gender: Int,
         birth: Long,
-        email: String?,
-        ex: String?
+        email: String,
     ) =
         suspendCoroutine {
             imClient.userInfoManager.setSelfInfo(
@@ -251,7 +251,7 @@ object IM {
                     override fun onSuccess(data: String?) {
                         it.resume(Unit)
                     }
-                }, nickname, faceURL, gender, 1, "", birth, email, ex
+                }, nickname, faceURL, gender, 1, "", birth, email, ""
             )
         }
 

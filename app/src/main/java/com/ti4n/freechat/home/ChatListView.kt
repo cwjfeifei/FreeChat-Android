@@ -129,11 +129,12 @@ fun ChatListView(
         Spacer(modifier = Modifier.height(8.dp))
         if (showSearchView.value) {
             LazyColumn(state = scrollState, modifier = Modifier.background(Color.White)) {
-                items(if (searchText.value.isEmpty()) emptyList() else IM.conversations.filter {
-                    it.showName.contains(
-                        searchText.value
-                    )
-                }.sortedBy { !it.isPinned }, key = { it.conversationID }) {
+                items(if (searchText.value.isEmpty()) emptyList() else IM.conversations.distinctBy { it.conversationID }
+                    .filter {
+                        it.showName.contains(
+                            searchText.value
+                        )
+                    }.sortedBy { !it.isPinned }, key = { it.conversationID }) {
                     val message = Gson().fromJson(it.latestMsg, Message::class.java)
                     ChatItem(scrollState,
                         it.faceURL,
@@ -162,7 +163,9 @@ fun ChatListView(
                 state = scrollState,
                 modifier = Modifier.background(Color.White)
             ) {
-                items(IM.conversations.sortedBy { !it.isPinned }) {
+                items(
+                    IM.conversations.distinctBy { it.conversationID }.sortedBy { !it.isPinned },
+                    key = { it.conversationID }) {
                     val message = Gson().fromJson(it.latestMsg, Message::class.java)
                     ChatItem(scrollState,
                         it.faceURL,

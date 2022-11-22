@@ -50,11 +50,12 @@ import java.util.Date
 @Composable
 fun TokenDetailSimplyView(
     navController: NavController,
-    viewModel: WalletViewModel = hiltViewModel()
+    viewModel: WalletViewModel = hiltViewModel(),
+    transactionHistoryViewModel: TokenDetailSimplyViewModel = hiltViewModel()
 ) {
 
     val token by viewModel.selectedToken.collectAsState()
-    val transactions = viewModel.createPager().collectAsLazyPagingItems()
+    val transactions = transactionHistoryViewModel.pager.collectAsLazyPagingItems()
     val systemUiController = rememberSystemUiController()
     val address by viewModel.address.collectAsState()
     val tokenValue = viewModel.list.find { it.token.symbol == token?.symbol }
@@ -136,7 +137,7 @@ fun TokenDetailSimplyView(
             )
             Spacer(modifier = Modifier.weight(1f))
         } else {
-            LazyColumn {
+            LazyColumn(Modifier.padding(horizontal = 16.dp)) {
                 items(transactions) {
                     it?.let {
                         ItemTransaction(
@@ -144,6 +145,7 @@ fun TokenDetailSimplyView(
                             address = address,
                             token?.Decimals ?: 18
                         )
+                        Divider(color = Color(0x1A000000), thickness = 1.dp)
                     }
                 }
             }
@@ -153,7 +155,11 @@ fun TokenDetailSimplyView(
 
 @Composable
 fun ItemTransaction(transaction: Transaction, address: String, decimal: Int) {
-    Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
+    Row(
+        Modifier
+            .fillMaxWidth()
+            .height(66.dp), verticalAlignment = Alignment.CenterVertically
+    ) {
         Column {
             Text(
                 text = if (transaction.from == address) "付款" else "收款",

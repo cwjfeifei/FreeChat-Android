@@ -2,10 +2,17 @@ package com.ti4n.freechat.profile
 
 import android.os.Build
 import android.text.TextUtils
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.Orientation
+import androidx.compose.foundation.gestures.detectDragGestures
+import androidx.compose.foundation.gestures.draggable
+import androidx.compose.foundation.gestures.rememberDraggableState
+import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material3.LargeTopAppBar
@@ -14,11 +21,19 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.CenterVertically
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.nestedscroll.NestedScrollConnection
+import androidx.compose.ui.input.nestedscroll.NestedScrollSource
+import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
@@ -41,6 +56,7 @@ import com.ti4n.freechat.widget.Image
 import io.openim.android.sdk.models.FriendInfo
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.filter
+import kotlin.math.roundToInt
 
 @Composable
 fun ProfileView(
@@ -61,7 +77,9 @@ fun ProfileView(
     var refuseMessage by remember {
         mutableStateOf("")
     }
-
+    val configuration = LocalConfiguration.current
+    val screenHeight = configuration.screenHeightDp.dp + WindowInsets.systemBars.asPaddingValues()
+        .calculateTopPadding()
     val context = LocalContext.current
     val imageLoader = ImageLoader.Builder(context).components {
         if (Build.VERSION.SDK_INT >= 28) {
@@ -76,7 +94,7 @@ fun ProfileView(
         systemUiController.setStatusBarColor(
             color = Color.Transparent
         )
-        systemUiController.setNavigationBarColor(Color(0xFFF0F0F0))
+        systemUiController.setNavigationBarColor(Color.White)
     }
     LaunchedEffect(viewModel.toUserId) {
         viewModel.refuseSuccess.filter { it }.collectLatest {
@@ -89,9 +107,15 @@ fun ProfileView(
             isFromFriendApplication = false
         }
     }
+    var userInfoOffsetPx by remember {
+        mutableStateOf(0f)
+    }
     Scaffold(bottomBar = {
         if (isFromFriendApplication && !isFriend && !isSelf) {
-            Row(Modifier.fillMaxWidth(), Arrangement.spacedBy(3.dp)) {
+            Row(
+                Modifier
+                    .fillMaxWidth(), Arrangement.spacedBy(3.dp)
+            ) {
                 TextButton(
                     onClick = {
                         showRefuseDialog = true
@@ -99,8 +123,8 @@ fun ProfileView(
                         backgroundColor = Color(0xFFED5B56), contentColor = Color.White
                     ), shape = RoundedCornerShape(0.dp),
                     modifier = Modifier
-                        .weight(1f)
-                        .height(42.dp)
+                        .weight(1f),
+                    contentPadding = PaddingValues(vertical = 10.dp)
                 ) {
                     Text(
                         text = stringResource(id = R.string.refuse),
@@ -116,8 +140,8 @@ fun ProfileView(
                         backgroundColor = Color(0xFF3879FD), contentColor = Color.White
                     ), shape = RoundedCornerShape(0.dp),
                     modifier = Modifier
-                        .weight(1f)
-                        .height(42.dp)
+                        .weight(1f),
+                    contentPadding = PaddingValues(vertical = 10.dp)
                 ) {
                     Text(
                         text = stringResource(id = R.string.accept),
@@ -141,8 +165,8 @@ fun ProfileView(
                     backgroundColor = Color(0xFF3879FD), contentColor = Color.White
                 ), shape = RoundedCornerShape(0.dp),
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .height(42.dp)
+                    .fillMaxWidth(),
+                contentPadding = PaddingValues(vertical = 10.dp)
             ) {
                 if (isFriend) {
                     Image(mipmap = R.mipmap.message)
@@ -156,253 +180,225 @@ fun ProfileView(
                 )
             }
         }
-    }, modifier = Modifier.navigationBarsPadding()) {
-        Column(
+    }, modifier = Modifier.navigationBarsPadding(), backgroundColor = Color.White) {
+
+        Box(
             modifier = Modifier
                 .fillMaxSize()
-                .background(Color(0xFFF0F0F0))
                 .padding(it),
+            contentAlignment = Alignment.TopCenter
         ) {
-            Box(
-                modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.TopCenter
-            ) {
-                androidx.compose.foundation.Image(
-                    painter = rememberAsyncImagePainter(
-                        ImageRequest.Builder(context)
-                            .data(data = userInfo?.faceURL ?: DEFAULT_FACEURL)
-                            .build(),
-                        imageLoader = imageLoader,
-                    ),
-                    contentDescription = null,
-                    modifier = Modifier
-                        .fillMaxWidth(),
+            androidx.compose.foundation.Image(
+                painter = rememberAsyncImagePainter(
+                    ImageRequest.Builder(context)
+                        .data(data = userInfo?.faceURL ?: DEFAULT_FACEURL)
+                        .build(),
+                    imageLoader = imageLoader,
                     contentScale = ContentScale.Crop
-                )
-                TopAppBar(
-                    modifier = Modifier.statusBarsPadding(),
-                    backgroundColor = Color.Transparent,
-                    title = {},
-                    navigationIcon = {
-                        IconButton(onClick = { navController.navigateUp() }) {
-                            Image(mipmap = R.mipmap.me_back)
+                ),
+                contentDescription = null,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(screenHeight - 100.dp - 42.dp),
+                contentScale = ContentScale.Crop
+            )
+            TopAppBar(
+                modifier = Modifier.statusBarsPadding(),
+                backgroundColor = Color.Transparent,
+                title = {},
+                navigationIcon = {
+                    IconButton(onClick = { navController.navigateUp() }) {
+                        Image(mipmap = R.mipmap.me_back)
+                    }
+                },
+                elevation = 0.dp
+            )
+            Column(
+                modifier = Modifier
+                    .padding(top = screenHeight - 100.dp - 42.dp)
+                    .offset { IntOffset(0, userInfoOffsetPx.roundToInt()) }
+                    .background(Color.White)
+                    .draggable(
+                        orientation = Orientation.Vertical,
+                        state = rememberDraggableState { delta ->
+                            userInfoOffsetPx += delta
                         }
-                    },
-                    elevation = 0.dp
-                )
-            }
-            LazyColumn(modifier = Modifier.background(Color.White)) {
-                item {
-                    ProfileInfoItem(
-                        userInfo?.faceURL ?: DEFAULT_FACEURL,
-                        userInfo?.nickname ?: "",
-                        userInfo?.remark ?: "",
-                        userInfo?.userID ?: "",
-                        userInfo?.gender ?: 1,
                     )
-                    Divider(color = Color(0xFFF0F0F0))
-                }
-//                item {
-//                    Row(
-//                        Modifier
-//                            .fillMaxWidth()
-//                            .padding(16.dp),
-//                        verticalAlignment = Alignment.CenterVertically
-//                    ) {
-//                        Text(text = "我的广场", fontSize = 12.sp, color = Color(0xFF1A1A1A))
-//                        Spacer(modifier = Modifier.width(18.dp))
-//                        AsyncImage(
-//                            model = "https://i1.wp.com/buondua.art/cdn/26551/BLUECAKE-Son-Ye-Eun-REDHOOD-SM-MrCong.com-005.jpeg",
-//                            contentDescription = null,
-//                            modifier = Modifier
-//                                .padding(end = 8.dp)
-//                                .size(44.dp)
-//                                .clip(RoundedCornerShape(6.dp)),
-//                            contentScale = ContentScale.Crop
-//                        )
-//                        Spacer(modifier = Modifier.weight(1f))
-//                        Spacer(modifier = Modifier.width(18.dp))
-//                        Image(mipmap = R.mipmap.right_arrow)
-//                    }
-//                    Divider(color = Color(0xFFF0F0F0), thickness = 8.dp)
-//                }
-//                item {
-//                    CommentGrade(
-//                        grade = 4.6f,
-//                        totalCount = 878,
-//                        fiveCount = 400,
-//                        fourCount = 216,
-//                        threeCount = 100,
-//                        twoCount = 50,
-//                        oneCount = 2
-//                    )
-//                    Divider(color = Color(0xFFF0F0F0), thickness = 8.dp)
-//                }
-//                item {
-//                    CommentItem(
-//                        name = "Mohammad",
-//                        comment = "这是一个非常好的聊友，很有趣。",
-//                        grade = 4.5f,
-//                        time = System.currentTimeMillis()
-//                    )
-//                    Divider(color = Color(0xFFE6E6E6), thickness = 1.dp)
-//                }
-//                item {
-//                    ProfileItem("评论Ta")
-//                    Divider(color = Color(0xFFE6E6E6), thickness = 1.dp)
-//                }
-                if (!isSelf && isFriend) item {
-                    Divider(color = Color(0xFFEBEBEB), thickness = 0.5.dp, startIndent = 16.dp)
+            ) {
+                ProfileInfoItem(
+                    userInfo?.faceURL ?: DEFAULT_FACEURL,
+                    userInfo?.nickname ?: "",
+                    userInfo?.remark ?: "",
+                    userInfo?.userID ?: "",
+                    userInfo?.gender ?: 1
+                )
+                if (!isSelf && isFriend) {
                     ProfileItem(stringResource(id = R.string.remark)) {
                         navController.navigate(Route.SetRemark.route)
                     }
                     Divider(color = Color(0xFFEBEBEB), thickness = 0.5.dp, startIndent = 16.dp)
                 }
-//                item {
-//                    ProfileItem("权限设置")
-//                    Divider(color = Color(0xFFE6E6E6), thickness = 1.dp)
-//                }
-//
-//                item {
-//                    Divider(color = Color(0xFFF0F0F0), thickness = 20.dp)
-//                }
             }
         }
-        if (showRefuseDialog)
-            Dialog(onDismissRequest = {
-                showRefuseDialog = false
-                refuseMessage = ""
-            }) {
-                Column(
-                    Modifier
-                        .fillMaxWidth()
-                        .background(Color.White, RoundedCornerShape(14.dp))
-                        .clip(RoundedCornerShape(14.dp)),
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-                    Spacer(modifier = Modifier.height(24.dp))
-                    Text(
-                        text = stringResource(id = R.string.reply),
-                        color = Color(0xFF1A1A1A),
-                        fontSize = 16.sp,
-                        fontWeight = FontWeight.SemiBold
-                    )
-                    Spacer(modifier = Modifier.height(20.dp))
-                    CustomPaddingTextField(
-                        value = refuseMessage,
-                        onValueChange = { refuseMessage = it },
-                        padding = PaddingValues(horizontal = 10.dp, vertical = 5.dp),
-                        colors = TextFieldDefaults.textFieldColors(
-                            focusedIndicatorColor = Color.Transparent,
-                            unfocusedIndicatorColor = Color.Transparent,
-                            textColor = Color(0xFF181818),
-                            backgroundColor = Color(0xFFF5F5F5)
-                        ),
-                        modifier = Modifier.height(30.dp),
-                        shape = RoundedCornerShape(2.dp)
-                    )
-                    Spacer(modifier = Modifier.height(35.dp))
-                    Divider(color = Color(0xFFEBEBEB), thickness = 0.5.dp)
-                    Row(Modifier.fillMaxWidth(), verticalAlignment = CenterVertically) {
-                        TextButton(
-                            onClick = {
-                                showRefuseDialog = false
-                                refuseMessage = ""
-                            },
-                            modifier = Modifier
-                                .height(47.dp)
-                                .weight(1f),
-                            colors = ButtonDefaults.buttonColors(
-                                backgroundColor = Color.White,
-                                contentColor = Color(0xFF1B1B1B)
-                            )
-                        ) {
-                            Text(
-                                text = stringResource(id = R.string.cancel),
-                                fontSize = 16.sp,
-                                fontWeight = FontWeight.Medium
-                            )
-                        }
-                        Box(
-                            Modifier
-                                .height(47.dp)
-                                .width(0.5.dp)
-                                .background(Color(0xFFEBEBEB))
+    }
+    if (showRefuseDialog)
+        Dialog(onDismissRequest = {
+            showRefuseDialog = false
+            refuseMessage = ""
+        }) {
+            Column(
+                Modifier
+                    .fillMaxWidth()
+                    .background(Color.White, RoundedCornerShape(14.dp))
+                    .clip(RoundedCornerShape(14.dp)),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Spacer(modifier = Modifier.height(24.dp))
+                Text(
+                    text = stringResource(id = R.string.reply),
+                    color = Color(0xFF1A1A1A),
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.SemiBold
+                )
+                Spacer(modifier = Modifier.height(20.dp))
+                CustomPaddingTextField(
+                    value = refuseMessage,
+                    onValueChange = { refuseMessage = it },
+                    padding = PaddingValues(horizontal = 10.dp, vertical = 5.dp),
+                    colors = TextFieldDefaults.textFieldColors(
+                        focusedIndicatorColor = Color.Transparent,
+                        unfocusedIndicatorColor = Color.Transparent,
+                        textColor = Color(0xFF181818),
+                        backgroundColor = Color(0xFFF5F5F5)
+                    ),
+                    modifier = Modifier.height(30.dp),
+                    shape = RoundedCornerShape(2.dp)
+                )
+                Spacer(modifier = Modifier.height(35.dp))
+                Divider(color = Color(0xFFEBEBEB), thickness = 0.5.dp)
+                Row(Modifier.fillMaxWidth(), verticalAlignment = CenterVertically) {
+                    TextButton(
+                        onClick = {
+                            showRefuseDialog = false
+                            refuseMessage = ""
+                        },
+                        modifier = Modifier
+                            .height(47.dp)
+                            .weight(1f),
+                        colors = ButtonDefaults.buttonColors(
+                            backgroundColor = Color.White,
+                            contentColor = Color(0xFF1B1B1B)
                         )
-                        TextButton(
-                            onClick = {
-                                viewModel.refuseFriendApplication()
-                            },
-                            modifier = Modifier
-                                .height(47.dp)
-                                .weight(1f),
-                            colors = ButtonDefaults.buttonColors(
-                                backgroundColor = Color.White,
-                                contentColor = Color(0xFF4A84F7)
-                            )
-                        ) {
-                            Text(
-                                text = stringResource(id = R.string.send),
-                                fontSize = 16.sp,
-                                fontWeight = FontWeight.Medium
-                            )
-                        }
+                    ) {
+                        Text(
+                            text = stringResource(id = R.string.cancel),
+                            fontSize = 16.sp,
+                            fontWeight = FontWeight.Medium
+                        )
+                    }
+                    Box(
+                        Modifier
+                            .height(47.dp)
+                            .width(0.5.dp)
+                            .background(Color(0xFFEBEBEB))
+                    )
+                    TextButton(
+                        onClick = {
+                            viewModel.refuseFriendApplication()
+                        },
+                        modifier = Modifier
+                            .height(47.dp)
+                            .weight(1f),
+                        colors = ButtonDefaults.buttonColors(
+                            backgroundColor = Color.White,
+                            contentColor = Color(0xFF4A84F7)
+                        )
+                    ) {
+                        Text(
+                            text = stringResource(id = R.string.send),
+                            fontSize = 16.sp,
+                            fontWeight = FontWeight.Medium
+                        )
                     }
                 }
             }
-    }
+        }
 }
 
 @Composable
 fun ProfileInfoItem(
-    avatar: String, nickname: String, mark: String, id: String, gender: Int
-//    location: String
+    avatar: String,
+    nickname: String,
+    mark: String,
+    id: String,
+    gender: Int,
+    modifier: Modifier = Modifier
 ) {
-    Row(
-        modifier = Modifier
+    Column(
+        modifier
             .fillMaxWidth()
-            .padding(horizontal = 16.dp, vertical = 20.dp),
-        verticalAlignment = Alignment.CenterVertically
+            .height(100.dp)
+            .background(Color.White),
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        AsyncImage(
-            model = avatar,
-            contentDescription = null,
+        Spacer(modifier = Modifier.height(6.dp))
+        Box(
             modifier = Modifier
-                .size(64.dp)
-                .clip(RoundedCornerShape(6.dp)),
-            contentScale = ContentScale.Crop
-        )
-        Spacer(modifier = Modifier.width(12.dp))
-        Column(
-            modifier = Modifier.height(64.dp), verticalArrangement = Arrangement.SpaceBetween
-        ) {
-            Row(verticalAlignment = CenterVertically) {
-                Text(
-                    text = mark.ifEmpty { nickname },
-                    fontSize = 16.sp,
-                    color = Color.Black,
-                    fontWeight = FontWeight.Medium,
-                    maxLines = 1,
-                    modifier = Modifier.widthIn(0.dp, 240.dp),
+                .size(40.dp, 4.dp)
+                .background(
+                    Color(0xFF1A1A1A),
+                    RoundedCornerShape(3.dp)
                 )
-                Spacer(modifier = Modifier.width(6.dp))
-                when (gender) {
-                    1 -> Image(mipmap = R.mipmap.male)
-
-                    2 -> Image(mipmap = R.mipmap.female)
-
-                    3 -> Image(mipmap = R.mipmap.transgender)
-                }
-            }
-            Spacer(modifier = Modifier.weight(1f))
-            if (mark.isNotEmpty()) Text(
-                text = "昵称：$nickname", fontSize = 10.sp, color = Color(0xFF4D4D4D)
+        )
+        Spacer(modifier = Modifier.weight(1f))
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            AsyncImage(
+                model = avatar,
+                contentDescription = null,
+                modifier = Modifier
+                    .size(64.dp)
+                    .clip(RoundedCornerShape(6.dp)),
+                contentScale = ContentScale.Crop
             )
-            Spacer(modifier = Modifier.weight(1f))
-            Text(text = "FCID：$id", fontSize = 12.sp, color = Color(0xFF808080))
-            Spacer(modifier = Modifier.height(5.dp))
-//            Text(text = "地区：$location", fontSize = 10.sp, color = Color(0xFF4D4D4D))
+            Spacer(modifier = Modifier.width(12.dp))
+            Column(
+                modifier = Modifier.height(64.dp), verticalArrangement = Arrangement.SpaceBetween
+            ) {
+                Row(verticalAlignment = CenterVertically) {
+                    Text(
+                        text = mark.ifEmpty { nickname },
+                        fontSize = 16.sp,
+                        color = Color.Black,
+                        fontWeight = FontWeight.Medium,
+                        maxLines = 1,
+                        modifier = Modifier.widthIn(0.dp, 240.dp),
+                    )
+                    Spacer(modifier = Modifier.width(6.dp))
+                    when (gender) {
+                        1 -> Image(mipmap = R.mipmap.male)
+
+                        2 -> Image(mipmap = R.mipmap.female)
+
+                        3 -> Image(mipmap = R.mipmap.transgender)
+                    }
+                }
+                Spacer(modifier = Modifier.weight(1f))
+                if (mark.isNotEmpty()) Text(
+                    text = "昵称：$nickname", fontSize = 10.sp, color = Color(0xFF4D4D4D)
+                )
+                Spacer(modifier = Modifier.weight(1f))
+                Text(text = "FCID：$id", fontSize = 12.sp, color = Color(0xFF808080))
+                Spacer(modifier = Modifier.height(5.dp))
+            }
         }
+        Spacer(modifier = Modifier.weight(1f))
     }
+    Divider(color = Color(0xFFEBEBEB), thickness = 0.5.dp, startIndent = 16.dp)
 }
 
 @Composable
@@ -410,6 +406,7 @@ fun ProfileItem(title: String, click: () -> Unit) {
     Row(
         Modifier
             .fillMaxWidth()
+            .height(50.dp)
             .clickable { click() }
             .padding(16.dp),
         verticalAlignment = CenterVertically) {

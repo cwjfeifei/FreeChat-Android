@@ -32,6 +32,7 @@ import androidx.compose.material.ButtonElevation
 import androidx.compose.material.Text
 import androidx.compose.material.TextButton
 import androidx.compose.material3.CenterAlignedTopAppBar
+import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
@@ -145,14 +146,19 @@ fun ContactView(
             }, modifier = Modifier.statusBarsPadding()
         )
         Spacer(modifier = Modifier.height(6.dp))
-        if (items.isNotEmpty()) {
-            Box(modifier = Modifier.weight(1f)) {
-                LazyColumn(modifier = Modifier.background(Color.White), state = scrollState) {
-                    item {
-                        ItemNewFriend {
-                            navController.navigate(Route.NewContact.route)
-                        }
+
+        Box(modifier = Modifier.weight(1f)) {
+            LazyColumn(
+                modifier = Modifier
+                    .background(Color.White)
+                    .fillMaxSize(), state = scrollState
+            ) {
+                item {
+                    ItemNewFriend {
+                        navController.navigate(Route.NewContact.route)
                     }
+                }
+                if (items.isNotEmpty()) {
                     items.forEach {
                         when (it) {
                             is ItemContactData -> item {
@@ -166,97 +172,112 @@ fun ContactView(
                             }
                         }
                     }
-                }
-                Row(
-                    modifier = Modifier
-                        .align(Alignment.CenterEnd)
-                        .padding(end = 8.dp)
-                ) {
-                    if (showLetter && letter.isNotEmpty())
-                        Box(
-                            contentAlignment = Alignment.Center,
-                            modifier = Modifier.offset(y = y)
+                } else {
+                    item {
+                        Column(
+                            Modifier.fillParentMaxSize(),
+                            horizontalAlignment = Alignment.CenterHorizontally
                         ) {
-                            Image(mipmap = R.mipmap.letter_bg)
-                            Spacer(modifier = Modifier.width(8.dp))
+                            Divider(color = Color(0xFFEFEBEB), thickness = 0.5.dp)
+                            Spacer(modifier = Modifier.weight(1f))
+                            Image(mipmap = R.mipmap.contact_list_default)
+                            Spacer(modifier = Modifier.height(20.dp))
                             Text(
-                                text = letter,
-                                color = Color.White,
-                                fontSize = 12.sp,
-                                modifier = Modifier.padding(end = 5.dp)
+                                text = stringResource(id = R.string.no_contact),
+                                color = Color(0xFF999999)
                             )
+                            Spacer(modifier = Modifier.height(24.dp))
+                            TextButton(
+                                onClick = { navController.navigate(Route.AddFriend.route) },
+                                shape = RoundedCornerShape(50),
+                                colors = ButtonDefaults.textButtonColors(
+                                    backgroundColor = Color(0xFF3879FD),
+                                    contentColor = Color.White
+                                ),
+                                modifier = Modifier.size(160.dp, 40.dp),
+                                elevation = ButtonDefaults.elevation()
+                            ) {
+                                Text(
+                                    text = stringResource(id = R.string.go_to_contact),
+                                    fontSize = 16.sp
+                                )
+                            }
+                            Spacer(modifier = Modifier.weight(1f))
                         }
-                    Spacer(modifier = Modifier.width(8.dp))
-                    Column(
-                        modifier = Modifier
-                            .padding(vertical = 10.dp)
-                            .height((itemLetters.size * 16).dp)
-                            .pointerInput(Unit) {
-                                detectDragGestures(
-                                    onDragStart = {
-                                        showLetter = true
-                                        if (it.y.toDp() in 0.dp..(itemLetters.size * 14).dp) {
-                                            letter =
-                                                itemLetters[(it.y.toDp().value / 14).toInt()]
-                                            y = it.y.toDp()
-                                        }
-                                    },
-                                    onDragCancel = {
-                                        showLetter = false
-                                    },
-                                    onDragEnd = {
-                                        showLetter = false
+                    }
 
-                                    }) { change, dragAmount ->
-                                    with(density) {
-                                        if (change.position.y.toDp() in 0.dp..(itemLetters.size * 14).dp) {
-                                            letter =
-                                                itemLetters[(change.position.y.toDp().value / 14).toInt()]
-                                            y = change.position.y.toDp()
-                                            scope.launch {
-                                                scrollState.animateScrollToItem(items.indexOfFirst { it is ItemLetterData && it.letter == letter })
-                                            }
+                }
+            }
+            Row(
+                modifier = Modifier
+                    .align(Alignment.CenterEnd)
+                    .padding(end = 8.dp)
+            ) {
+                if (showLetter && letter.isNotEmpty())
+                    Box(
+                        contentAlignment = Alignment.Center,
+                        modifier = Modifier.offset(y = y)
+                    ) {
+                        Image(mipmap = R.mipmap.letter_bg)
+                        Spacer(modifier = Modifier.width(8.dp))
+                        Text(
+                            text = letter,
+                            color = Color.White,
+                            fontSize = 12.sp,
+                            modifier = Modifier.padding(end = 5.dp)
+                        )
+                    }
+                Spacer(modifier = Modifier.width(8.dp))
+                Column(
+                    modifier = Modifier
+                        .padding(vertical = 10.dp)
+                        .height((itemLetters.size * 16).dp)
+                        .pointerInput(Unit) {
+                            detectDragGestures(
+                                onDragStart = {
+                                    showLetter = true
+                                    if (it.y.toDp() in 0.dp..(itemLetters.size * 14).dp) {
+                                        letter =
+                                            itemLetters[(it.y.toDp().value / 14).toInt()]
+                                        y = it.y.toDp()
+                                    }
+                                },
+                                onDragCancel = {
+                                    showLetter = false
+                                },
+                                onDragEnd = {
+                                    showLetter = false
+
+                                }) { change, dragAmount ->
+                                with(density) {
+                                    if (change.position.y.toDp() in 0.dp..(itemLetters.size * 14).dp) {
+                                        letter =
+                                            itemLetters[(change.position.y.toDp().value / 14).toInt()]
+                                        y = change.position.y.toDp()
+                                        scope.launch {
+                                            scrollState.animateScrollToItem(items.indexOfFirst { it is ItemLetterData && it.letter == letter })
                                         }
                                     }
                                 }
-                            }) {
-                        itemLetters.forEach {
-                            Text(
-                                text = it,
-                                color = if (letter == it) Color.White else Color(0xFF4D4D4D),
-                                fontSize = 9.sp,
-                                textAlign = TextAlign.Center,
-                                modifier = Modifier
-                                    .size(14.dp)
-                                    .background(
-                                        if (letter == it) Color(0xFF3879FD) else Color.Transparent,
-                                        CircleShape
-                                    )
-                                    .padding(horizontal = 2.dp, vertical = 2.dp)
-                            )
-                        }
+                            }
+                        }) {
+                    itemLetters.forEach {
+                        Text(
+                            text = it,
+                            color = if (letter == it) Color.White else Color(0xFF4D4D4D),
+                            fontSize = 9.sp,
+                            textAlign = TextAlign.Center,
+                            modifier = Modifier
+                                .size(14.dp)
+                                .background(
+                                    if (letter == it) Color(0xFF3879FD) else Color.Transparent,
+                                    CircleShape
+                                )
+                                .padding(horizontal = 2.dp, vertical = 2.dp)
+                        )
                     }
                 }
             }
-        } else {
-            Spacer(modifier = Modifier.weight(1f))
-            Image(mipmap = R.mipmap.contact_list_default)
-            Spacer(modifier = Modifier.height(20.dp))
-            Text(text = stringResource(id = R.string.no_contact), color = Color(0xFF999999))
-            Spacer(modifier = Modifier.height(24.dp))
-            TextButton(
-                onClick = { navController.navigate(Route.AddFriend.route) },
-                shape = RoundedCornerShape(50),
-                colors = ButtonDefaults.textButtonColors(
-                    backgroundColor = Color(0xFF3879FD),
-                    contentColor = Color.White
-                ),
-                modifier = Modifier.size(160.dp, 40.dp),
-                elevation = ButtonDefaults.elevation()
-            ) {
-                Text(text = stringResource(id = R.string.go_to_contact), fontSize = 16.sp)
-            }
-            Spacer(modifier = Modifier.weight(1f))
         }
     }
 }

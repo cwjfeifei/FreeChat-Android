@@ -11,7 +11,7 @@ import retrofit2.http.Query
 import retrofit2.http.Url
 
 
-const val freeChatUrl = "https://pctnpqbcky.ap-northeast-1.awsapprunner.com/api/"
+const val freeChatUrl = "https://blockchaindata.freechat.world/api/"
 
 interface FreeChatApiService {
 
@@ -22,7 +22,7 @@ interface FreeChatApiService {
     suspend fun getRate(@Query("instId") instId: String): FreeChatBaseResponse<List<Rate>>
 
     @POST()
-    suspend fun getAvatars(@Url url: String = "http://8.218.80.2:10008/user/select_face"): BaseResponse<List<FaceImageInfo>>
+    suspend fun getAvatars(@Url url: String = "http://imtest.freechat.world:10008/user/select_face"): BaseResponse<List<FaceImageInfo>>
 }
 
 

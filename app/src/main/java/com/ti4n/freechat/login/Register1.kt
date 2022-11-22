@@ -55,13 +55,11 @@ fun Register1View(
     ) {
         Column(Modifier.verticalScroll(scrollState)) {
             LazyVerticalGrid(
-                columns = GridCells.Fixed(4),
-                verticalArrangement = Arrangement.spacedBy(20.dp),
-                horizontalArrangement = Arrangement.spacedBy(13.dp),
+                columns = GridCells.Fixed(3),
+                verticalArrangement = Arrangement.spacedBy(8.dp),
+                horizontalArrangement = Arrangement.spacedBy(12.dp),
                 userScrollEnabled = false,
-                modifier = Modifier
-                    .height(136.dp)
-                    .fillMaxWidth()
+                modifier = Modifier.fillMaxWidth().height(152.dp)
             ) {
                 items(words) {
                     Card(
@@ -109,7 +107,7 @@ fun Register1View(
                     Text(
                         text = stringResource(id = R.string.save_to_gallery),
                         color = Color.White,
-                        fontSize = 12.sp,
+                        fontSize = 16.sp,
                         fontWeight = FontWeight.Medium
                     )
                 }
@@ -126,7 +124,7 @@ fun Register1View(
                     Text(
                         text = stringResource(id = R.string.copy),
                         color = Color.White,
-                        fontSize = 12.sp,
+                        fontSize = 16.sp,
                         fontWeight = FontWeight.Medium
                     )
                 }

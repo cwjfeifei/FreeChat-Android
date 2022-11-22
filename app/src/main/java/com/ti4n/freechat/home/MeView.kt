@@ -75,7 +75,7 @@ fun MeView(
         androidx.compose.foundation.Image(
             painter = rememberAsyncImagePainter(
                 ImageRequest.Builder(context)
-                    .data(data = me?.faceURL?.ifEmpty { DEFAULT_FACEURL } ?: DEFAULT_FACEURL)
+                    .data(data = "https://img.ithome.com/newsuploadfiles/focus/3baf5060-7091-449e-8809-548e5b5369aa.jpg?x-bce-process=image/format,f_auto")
                     .build(),
                 imageLoader = imageLoader,
             ),

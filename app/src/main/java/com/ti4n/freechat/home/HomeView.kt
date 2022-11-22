@@ -68,13 +68,6 @@ fun HomeView(userBaseInfoDao: UserBaseInfoDao, globleNavController: NavControlle
     val unread by IM.totalUnreadCount.collectAsState()
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
-    LaunchedEffect(Unit) {
-//        @see LoginViewMode.autoLogin(context)
-//        userBaseInfoDao.getUserInfo().filterNotNull().collectLatest {
-//            IM.logout()
-//            IM.login(it.userID, it.token)
-//        }
-    }
     Scaffold(bottomBar = {
         AnimatedVisibility(visible = currentRoute == HomeTab.Chat.route || currentRoute == HomeTab.Contact.route || currentRoute == HomeTab.Me.route,
             enter = slideInVertically {
@@ -134,19 +127,20 @@ fun HomeView(userBaseInfoDao: UserBaseInfoDao, globleNavController: NavControlle
             }
         }
     }, modifier = Modifier.navigationBarsPadding()) {
-        AnimatedNavHost(
-            navController, startDestination = HomeTab.Chat.route
-        ) {
-            aniComposable(
-                HomeTab.Chat.route
-            ) { _ ->
-                ChatListView(navController, Modifier.padding(it))
-            }
-            aniComposable(
-                HomeTab.Contact.route
-            ) { _ ->
-                ContactView(navController = navController, Modifier.padding(it))
-            }
+        runCatching {
+            AnimatedNavHost(
+                navController, startDestination = HomeTab.Chat.route
+            ) {
+                aniComposable(
+                    HomeTab.Chat.route
+                ) { _ ->
+                    ChatListView(navController, Modifier.padding(it))
+                }
+                aniComposable(
+                    HomeTab.Contact.route
+                ) { _ ->
+                    ContactView(navController = navController, Modifier.padding(it))
+                }
 //            noAniComposable(
 //                HomeTab.Square.route
 //            ) { _ ->
@@ -157,240 +151,247 @@ fun HomeView(userBaseInfoDao: UserBaseInfoDao, globleNavController: NavControlle
 //            ) { _ ->
 //                DiscoverView(Modifier.padding(it), navController = navController)
 //            }
-            aniComposable(HomeTab.Me.route) { _ ->
-                MeView(Modifier.padding(it), navController = navController)
-            }
-            aniComposable(Route.MeEdit.route) { _ ->
-                MeEditView(navController = navController)
-            }
-            aniComposable(Route.EditPickFaceImage.route) { _ ->
-                val backStackEntry = remember {
-                    navController.getBackStackEntry(Route.MeEdit.route)
+                aniComposable(HomeTab.Me.route) { _ ->
+                    MeView(Modifier.padding(it), navController = navController)
                 }
-                EditPickFaceImageView(navController = navController, hiltViewModel(backStackEntry))
-            }
-            aniComposable(route = Route.ProfilePreview.route) {
-                ProfilePreview(
-                    navController,
-                    it.arguments?.getString("xfaceURL", "") ?: "",
-                    it.arguments?.getString("nickname", "") ?: "",
-                    it.arguments?.getInt("gender")!!
-                )
-            }
-            aniComposable(route = Route.ProfilePreview.route) {
-                ProfilePreview(
-                    navController,
-                    it.arguments?.getString("xfaceURL", "") ?: "",
-                    it.arguments?.getString("nickname", "") ?: "",
-                    it.arguments?.getInt("gender")!!
-                )
-            }
-            aniComposable(Route.EditEmail.route) { _ ->
-                val backStackEntry = remember {
-                    navController.getBackStackEntry(Route.MeEdit.route)
+                aniComposable(Route.MeEdit.route) { _ ->
+                    MeEditView(navController = navController)
                 }
-                EditEmailView(navController = navController, hiltViewModel(backStackEntry))
-            }
-            aniComposable(Route.EditNickName.route) { _ ->
-                val backStackEntry = remember {
-                    navController.getBackStackEntry(Route.MeEdit.route)
+                aniComposable(Route.EditPickFaceImage.route) { _ ->
+                    val backStackEntry = remember {
+                        navController.getBackStackEntry(Route.MeEdit.route)
+                    }
+                    EditPickFaceImageView(
+                        navController = navController,
+                        hiltViewModel(backStackEntry)
+                    )
                 }
-                EditNameView(navController = navController, hiltViewModel(backStackEntry))
-            }
-            aniComposable(Route.EditGender.route) { _ ->
-                val backStackEntry = remember {
-                    navController.getBackStackEntry(Route.MeEdit.route)
+                aniComposable(route = Route.ProfilePreview.route) {
+                    ProfilePreview(
+                        navController,
+                        it.arguments?.getString("xfaceURL", "") ?: "",
+                        it.arguments?.getString("nickname", "") ?: "",
+                        it.arguments?.getInt("gender")!!
+                    )
                 }
-                EditGenderView(navController = navController, hiltViewModel(backStackEntry))
-            }
-            aniComposable(Route.EditBirth.route) { _ ->
-                val backStackEntry = remember {
-                    navController.getBackStackEntry(Route.MeEdit.route)
+                aniComposable(route = Route.ProfilePreview.route) {
+                    ProfilePreview(
+                        navController,
+                        it.arguments?.getString("xfaceURL", "") ?: "",
+                        it.arguments?.getString("nickname", "") ?: "",
+                        it.arguments?.getInt("gender")!!
+                    )
                 }
-                EditBirthView(navController = navController, hiltViewModel(backStackEntry))
-            }
-            aniComposable(Route.Wallet.route) { _ ->
-                WalletView(navController)
-            }
-            aniComposable(Route.SendMoney.route) { _ ->
-                SendMoneyView(navController)
-            }
-            aniComposable(
-                "sendMoney?userId={userId}&redpack={redpack}",
-                arguments = listOf(navArgument("userId") { defaultValue = "" },
-                    navArgument("redpack") { defaultValue = true })
-            ) { _ ->
-                SendRedPackView(navController)
-            }
-            aniComposable(Route.ReceiveMoney.route) { _ ->
-                ReceiveMoneyView(navController)
-            }
-            aniComposable(Route.SendMoneyInputDetail.route) { _ ->
-                val backStackEntry = remember {
-                    navController.getBackStackEntry(Route.SendMoney.route)
+                aniComposable(Route.EditEmail.route) { _ ->
+                    val backStackEntry = remember {
+                        navController.getBackStackEntry(Route.MeEdit.route)
+                    }
+                    EditEmailView(navController = navController, hiltViewModel(backStackEntry))
                 }
-                SendMoneyInputDetailView(navController, hiltViewModel(backStackEntry))
-            }
-            aniComposable(Route.TokenDetail.route) { navBackEntry ->
-                val backStackEntry = remember {
-                    navController.getBackStackEntry(Route.Wallet.route)
+                aniComposable(Route.EditNickName.route) { _ ->
+                    val backStackEntry = remember {
+                        navController.getBackStackEntry(Route.MeEdit.route)
+                    }
+                    EditNameView(navController = navController, hiltViewModel(backStackEntry))
                 }
-                TokenDetailView(
-                    navController, hiltViewModel(backStackEntry)
-                )
-            }
-            aniComposable(Route.TokenDetailSimply.route) { navBackEntry ->
-                val backStackEntry = remember {
-                    navController.getBackStackEntry(Route.Wallet.route)
+                aniComposable(Route.EditGender.route) { _ ->
+                    val backStackEntry = remember {
+                        navController.getBackStackEntry(Route.MeEdit.route)
+                    }
+                    EditGenderView(navController = navController, hiltViewModel(backStackEntry))
                 }
-                TokenDetailSimplyView(
-                    navController, hiltViewModel(backStackEntry)
-                )
-            }
-            aniComposable(Route.Swap.route) { _ ->
-                SwapView(
-                    navController
-                )
-            }
-            aniComposable(Route.ConfirmTransaction.route) { navBackEntry ->
-                val backStackEntry = remember {
-                    try {
+                aniComposable(Route.EditBirth.route) { _ ->
+                    val backStackEntry = remember {
+                        navController.getBackStackEntry(Route.MeEdit.route)
+                    }
+                    EditBirthView(navController = navController, hiltViewModel(backStackEntry))
+                }
+                aniComposable(Route.Wallet.route) { _ ->
+                    WalletView(navController)
+                }
+                aniComposable(Route.SendMoney.route) { _ ->
+                    SendMoneyView(navController)
+                }
+                aniComposable(
+                    "sendMoney?userId={userId}&redpack={redpack}",
+                    arguments = listOf(navArgument("userId") { defaultValue = "" },
+                        navArgument("redpack") { defaultValue = true })
+                ) { _ ->
+                    SendRedPackView(navController)
+                }
+                aniComposable(Route.ReceiveMoney.route) { _ ->
+                    ReceiveMoneyView(navController)
+                }
+                aniComposable(Route.SendMoneyInputDetail.route) { _ ->
+                    val backStackEntry = remember {
                         navController.getBackStackEntry(Route.SendMoney.route)
-                    } catch (e: Exception) {
-                        navController.getBackStackEntry("sendMoney?userId={userId}&redpack={redpack}")
+                    }
+                    SendMoneyInputDetailView(navController, hiltViewModel(backStackEntry))
+                }
+                aniComposable(Route.TokenDetail.route) { navBackEntry ->
+                    val backStackEntry = remember {
+                        navController.getBackStackEntry(Route.Wallet.route)
+                    }
+                    TokenDetailView(
+                        navController, hiltViewModel(backStackEntry)
+                    )
+                }
+                aniComposable(Route.TokenDetailSimply.route) { navBackEntry ->
+                    val backStackEntry = remember {
+                        navController.getBackStackEntry(Route.Wallet.route)
+                    }
+                    TokenDetailSimplyView(
+                        navController, hiltViewModel(backStackEntry)
+                    )
+                }
+                aniComposable(Route.Swap.route) { _ ->
+                    SwapView(
+                        navController
+                    )
+                }
+                aniComposable(Route.ConfirmTransaction.route) { navBackEntry ->
+                    val backStackEntry = remember {
+                        try {
+                            navController.getBackStackEntry(Route.SendMoney.route)
+                        } catch (e: Exception) {
+                            navController.getBackStackEntry("sendMoney?userId={userId}&redpack={redpack}")
+                        }
+                    }
+                    ConfirmTransactionView(
+                        navController = navController, viewModel = hiltViewModel(backStackEntry)
+                    ) {
+                        scope.launch {
+                            EthUtil.deleteWallet(context, userBaseInfoDao)
+                            globleNavController.backQueue.clear()
+                            globleNavController.navigate(Route.Login.route)
+                        }
                     }
                 }
-                ConfirmTransactionView(
-                    navController = navController, viewModel = hiltViewModel(backStackEntry)
+                aniComposable(Route.PrivateChat.route) { _ ->
+                    PrivateChatView(
+                        navController
+                    )
+                }
+                aniComposable(
+                    route = Route.Profile.route
                 ) {
-                    scope.launch {
-                        EthUtil.deleteWallet(context, userBaseInfoDao)
-                        globleNavController.backQueue.clear()
-                        globleNavController.navigate(Route.Login.route)
-                    }
+                    ProfileView(navController = navController)
                 }
-            }
-            aniComposable(Route.PrivateChat.route) { _ ->
-                PrivateChatView(
-                    navController
-                )
-            }
-            aniComposable(
-                route = Route.Profile.route
-            ) {
-                ProfileView(navController = navController)
-            }
-            aniComposable(
-                route = Route.LookFriendApplication.route
-            ) {
-                ProfileView(navController = navController, isFromFriendApplication = true)
-            }
-            aniComposable(
-                route = Route.ApproveFriendApplication.route
-            ) {
-                val backStackEntry = remember {
-                    navController.getBackStackEntry(Route.LookFriendApplication.route)
+                aniComposable(
+                    route = Route.LookFriendApplication.route
+                ) {
+                    ProfileView(navController = navController, isFromFriendApplication = true)
                 }
-                ApproveFriendApplicationView(
-                    navController = navController, hiltViewModel(backStackEntry)
-                )
-            }
-            aniComposable(
-                route = Route.SetRemark.route
-            ) {
-                val backStackEntry = remember {
-                    try {
-                        navController.getBackStackEntry(Route.Profile.route)
-                    } catch (e: Exception) {
+                aniComposable(
+                    route = Route.ApproveFriendApplication.route
+                ) {
+                    val backStackEntry = remember {
                         navController.getBackStackEntry(Route.LookFriendApplication.route)
                     }
+                    ApproveFriendApplicationView(
+                        navController = navController, hiltViewModel(backStackEntry)
+                    )
                 }
-                SetRemarkView(navController = navController, hiltViewModel(backStackEntry))
-            }
-            aniComposable(
-                route = Route.SendFriendApplication.route
-            ) {
-                val backStackEntry = remember {
-                    navController.getBackStackEntry(Route.Profile.route)
+                aniComposable(
+                    route = Route.SetRemark.route
+                ) {
+                    val backStackEntry = remember {
+                        try {
+                            navController.getBackStackEntry(Route.Profile.route)
+                        } catch (e: Exception) {
+                            navController.getBackStackEntry(Route.LookFriendApplication.route)
+                        }
+                    }
+                    SetRemarkView(navController = navController, hiltViewModel(backStackEntry))
                 }
-                SendFriendApplicationView(
-                    navController = navController, hiltViewModel(backStackEntry)
-                )
-            }
-            aniComposable(Route.NewContact.route) {
-                NewContactView(navController = navController)
-            }
-            aniComposable(Route.AddFriend.route) {
-                AddFriendView(navController = navController)
-            }
-            aniComposable(Route.TransferRisk.route) {
-                TransferRiskView(navController = navController)
-            }
-            aniComposable(Route.Setting.route) {
-                SettingView(navController = navController, userBaseInfoDao, globleNavController)
-            }
-            aniComposable(Route.AccountSecurity.route) {
-                AccountSecurityView(navController = navController)
-            }
-            aniComposable(Route.ChangePassword.route) {
-                ChangePasswordView(navController = navController)
-            }
-            aniComposable(Route.LanguageSetting.route) {
-                ChangeLanguageView(navController = navController)
-            }
-            aniComposable(Route.ClearCache.route) {
-                ClearCacheView(navController = navController)
-            }
-            aniComposable(
-                Route.SelectTransferToken.route,
-                arguments = listOf(navArgument("tokens") {
-                    type = SelectTokenType
-                    defaultValue = ERC20Tokens(emptyList())
-                }, navArgument("select") {
-                    type = NavType.StringType
-                    defaultValue = ""
-                })
-            ) {
-                SelectTokenView(
-                    navController = navController,
-                    erC20Tokens = it.arguments?.getParcelable("tokens") ?: ERC20Tokens(emptyList()),
-                    selected = it.arguments?.getString("select", "") ?: "",
-                    fromType = "transferToken"
-                )
-            }
-            aniComposable(
-                Route.SelectSwapFromToken.route,
-                arguments = listOf(navArgument("tokens") {
-                    type = SelectTokenType
-                    defaultValue = ERC20Tokens(emptyList())
-                }, navArgument("select") {
-                    type = NavType.StringType
-                    defaultValue = ""
-                })
-            ) {
-                SelectTokenView(
-                    navController = navController,
-                    erC20Tokens = it.arguments?.getParcelable("tokens") ?: ERC20Tokens(emptyList()),
-                    selected = it.arguments?.getString("select", "") ?: "",
-                    fromType = "swapFromToken"
-                )
-            }
-            aniComposable(
-                Route.SelectSwapToToken.route,
-                arguments = listOf(navArgument("tokens") {
-                    type = SelectTokenType
-                    defaultValue = ERC20Tokens(emptyList())
-                }, navArgument("select") {
-                    type = NavType.StringType
-                    defaultValue = ""
-                })
-            ) {
-                SelectTokenView(
-                    navController = navController,
-                    erC20Tokens = it.arguments?.getParcelable("tokens") ?: ERC20Tokens(emptyList()),
-                    selected = it.arguments?.getString("select", "") ?: "",
-                    fromType = "swapToToken"
-                )
+                aniComposable(
+                    route = Route.SendFriendApplication.route
+                ) {
+                    val backStackEntry = remember {
+                        navController.getBackStackEntry(Route.Profile.route)
+                    }
+                    SendFriendApplicationView(
+                        navController = navController, hiltViewModel(backStackEntry)
+                    )
+                }
+                aniComposable(Route.NewContact.route) {
+                    NewContactView(navController = navController)
+                }
+                aniComposable(Route.AddFriend.route) {
+                    AddFriendView(navController = navController)
+                }
+                aniComposable(Route.TransferRisk.route) {
+                    TransferRiskView(navController = navController)
+                }
+                aniComposable(Route.Setting.route) {
+                    SettingView(navController = navController, userBaseInfoDao, globleNavController)
+                }
+                aniComposable(Route.AccountSecurity.route) {
+                    AccountSecurityView(navController = navController)
+                }
+                aniComposable(Route.ChangePassword.route) {
+                    ChangePasswordView(navController = navController)
+                }
+                aniComposable(Route.LanguageSetting.route) {
+                    ChangeLanguageView(navController = navController)
+                }
+                aniComposable(Route.ClearCache.route) {
+                    ClearCacheView(navController = navController)
+                }
+                aniComposable(
+                    Route.SelectTransferToken.route,
+                    arguments = listOf(navArgument("tokens") {
+                        type = SelectTokenType
+                        defaultValue = ERC20Tokens(emptyList())
+                    }, navArgument("select") {
+                        type = NavType.StringType
+                        defaultValue = ""
+                    })
+                ) {
+                    SelectTokenView(
+                        navController = navController,
+                        erC20Tokens = it.arguments?.getParcelable("tokens")
+                            ?: ERC20Tokens(emptyList()),
+                        selected = it.arguments?.getString("select", "") ?: "",
+                        fromType = "transferToken"
+                    )
+                }
+                aniComposable(
+                    Route.SelectSwapFromToken.route,
+                    arguments = listOf(navArgument("tokens") {
+                        type = SelectTokenType
+                        defaultValue = ERC20Tokens(emptyList())
+                    }, navArgument("select") {
+                        type = NavType.StringType
+                        defaultValue = ""
+                    })
+                ) {
+                    SelectTokenView(
+                        navController = navController,
+                        erC20Tokens = it.arguments?.getParcelable("tokens")
+                            ?: ERC20Tokens(emptyList()),
+                        selected = it.arguments?.getString("select", "") ?: "",
+                        fromType = "swapFromToken"
+                    )
+                }
+                aniComposable(
+                    Route.SelectSwapToToken.route,
+                    arguments = listOf(navArgument("tokens") {
+                        type = SelectTokenType
+                        defaultValue = ERC20Tokens(emptyList())
+                    }, navArgument("select") {
+                        type = NavType.StringType
+                        defaultValue = ""
+                    })
+                ) {
+                    SelectTokenView(
+                        navController = navController,
+                        erC20Tokens = it.arguments?.getParcelable("tokens")
+                            ?: ERC20Tokens(emptyList()),
+                        selected = it.arguments?.getString("select", "") ?: "",
+                        fromType = "swapToToken"
+                    )
+                }
             }
         }
     }

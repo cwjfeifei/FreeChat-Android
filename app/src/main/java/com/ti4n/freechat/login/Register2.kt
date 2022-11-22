@@ -117,13 +117,13 @@ fun Register2View(
                 }
                 Spacer(Modifier.height(12.dp))
                 LazyVerticalGrid(
-                    columns = GridCells.Fixed(4),
+                    columns = GridCells.Fixed(3),
                     verticalArrangement = Arrangement.spacedBy(8.dp),
-                    horizontalArrangement = Arrangement.spacedBy(13.dp),
+                    horizontalArrangement = Arrangement.spacedBy(12.dp),
                     userScrollEnabled = false,
                     modifier = Modifier
-                        .height(150.dp)
                         .fillMaxWidth()
+                        .height(152.dp)
                 ) {
                     items(randomWords) {
                         Chip(
@@ -135,7 +135,8 @@ fun Register2View(
                                 disabledBackgroundColor = Color(0xFFF4F6FA),
                                 contentColor = Color(0xFF1A1A1A),
                                 disabledContentColor = Color(0x801A1A1A)
-                            )
+                            ),
+                            modifier = Modifier.height(32.dp)
                         ) {
                             Text(
                                 text = it,

@@ -119,10 +119,10 @@ fun ProfilePreview(
                 onClick = {
                 },
                 Modifier
-                    .height(42.dp)
                     .fillMaxWidth(), colors = ButtonDefaults.buttonColors(
                     backgroundColor = Color(0xFF3879FD), contentColor = Color.White
-                ), shape = RoundedCornerShape(0.dp)
+                ), shape = RoundedCornerShape(0.dp),
+                contentPadding = PaddingValues(vertical = 10.dp)
             ) {
                 Text(
                     text = stringResource(id = R.string.send_message),

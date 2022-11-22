@@ -121,7 +121,7 @@ fun MeEditView(
                     scope.launch {
                         // must be IM.login
                         val result =
-                            IM.setUserInfo(faceURL, nickname, gender, birth / 1000, email, null)
+                            IM.setUserInfo(faceURL, nickname, gender, birth / 1000, email)
                         if (result is Unit) {
                             // success
                             navController.navigateUp()

@@ -218,11 +218,11 @@ fun SendMoneyInputDetailView(
                 onClick = { navController.navigateUp() },
                 shape = RoundedCornerShape(0.dp),
                 modifier = Modifier
-                    .weight(1f)
-                    .height(42.dp),
+                    .weight(1f),
                 colors = ButtonDefaults.buttonColors(
                     backgroundColor = Color(0xFF3879FD), contentColor = Color.White
-                )
+                ),
+                contentPadding = PaddingValues(vertical = 10.dp)
             ) {
                 Text(
                     text = stringResource(id = R.string.back),
@@ -237,11 +237,11 @@ fun SendMoneyInputDetailView(
                 },
                 shape = RoundedCornerShape(0.dp),
                 modifier = Modifier
-                    .weight(1f)
-                    .height(42.dp),
+                    .weight(1f),
                 colors = ButtonDefaults.buttonColors(
                     backgroundColor = Color(0xFF3879FD), contentColor = Color.White
-                )
+                ),
+                contentPadding = PaddingValues(vertical = 10.dp)
             ) {
                 Text(
                     text = stringResource(id = R.string.transfer),

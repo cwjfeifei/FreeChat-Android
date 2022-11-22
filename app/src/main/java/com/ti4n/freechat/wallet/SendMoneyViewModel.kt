@@ -9,8 +9,6 @@ import androidx.paging.PagingConfig
 import com.ti4n.freechat.db.AppDataBase
 import com.ti4n.freechat.db.RecentTransfer
 import com.ti4n.freechat.model.response.freechat.ERC20Token
-import com.ti4n.freechat.model.response.freechat.ethereum
-import com.ti4n.freechat.model.response.freechat.wethereum
 import com.ti4n.freechat.network.FreeChatApiService
 import com.ti4n.freechat.util.EthUtil
 import com.ti4n.freechat.util.IM
@@ -60,8 +58,7 @@ class SendMoneyViewModel @Inject constructor(
     init {
         viewModelScope.launch {
             async {
-                tokens.value =
-                    listOf(ethereum, wethereum) + freeChatApiService.getSupportTokens().result
+                tokens.value = freeChatApiService.getSupportTokens().result
                 setSelectedToken(tokens.value.first())
             }
             async {
@@ -125,7 +122,7 @@ class SendMoneyViewModel @Inject constructor(
                     selectedToken.value!!.contractAddress,
                     selectedToken.value!!.Decimals,
                     password,
-                ).collectLatest {
+                )?.collectLatest {
                     transactionHash.value = it.transactionHash
                     db.recentTransferDao()
                         .insert(RecentTransfer(toAddress.value, Date(System.currentTimeMillis())))

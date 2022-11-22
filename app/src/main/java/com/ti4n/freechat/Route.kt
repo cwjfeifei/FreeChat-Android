@@ -59,8 +59,9 @@ sealed class Route(val route: String) {
 
     object ReceiveMoney : Route("receiveMoney")
     object SendMoneyInputDetail : Route("sendMoneyInputDetail")
-    object TokenDetailSimply : Route("tokenSimply/{tokenSymbol}/{address}") {
-        fun jump(tokenSymbol: String, address: String) = "tokenSimply/$tokenSymbol/$address"
+    object TokenDetailSimply : Route("tokenSimply/{tokenSymbol}/{address}/{tokenAddress}") {
+        fun jump(tokenSymbol: String, address: String, tokenAddress: String) =
+            "tokenSimply/$tokenSymbol/$address/$tokenAddress"
     }
 
     object TokenDetail : Route("token/{tokenSymbol}/{address}") {

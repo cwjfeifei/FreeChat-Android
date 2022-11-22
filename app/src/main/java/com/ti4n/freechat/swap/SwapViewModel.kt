@@ -6,7 +6,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ti4n.freechat.di.dataStore
 import com.ti4n.freechat.model.response.freechat.ERC20Token
-import com.ti4n.freechat.model.response.freechat.ethereum
 import com.ti4n.freechat.network.FreeChatApiService
 import com.ti4n.freechat.network.SwapApiService
 import com.ti4n.freechat.util.EthUtil
@@ -65,7 +64,7 @@ class SwapViewModel @Inject constructor(
     init {
         viewModelScope.launch {
             try {
-                val tokens = listOf(ethereum) + freeChatApiService.getSupportTokens().result
+                val tokens = freeChatApiService.getSupportTokens().result
                 supportTokens.value = tokens
                 fromToken.value = tokens.firstOrNull()
                 toToken.value = tokens[1]
@@ -180,24 +179,25 @@ class SwapViewModel @Inject constructor(
                     val tx = swap.tx
                     val count = EthUtil.transactionCount(fromAddress.value)
                     val credentials = EthUtil.loadCredentials(context, password)
-                    EthUtil.web3.ethSendRawTransaction(
-                        Numeric.toHexString(
-                            TransactionEncoder.signMessage(
-                                RawTransaction.createTransaction(
-                                    count,
-                                    BigInteger(tx.gasPrice),
-                                    BigInteger(tx.gas),
-                                    tx.to,
-                                    BigInteger(tx.value),
-                                    tx.data,
-                                ), credentials
+                    if (credentials != null)
+                        EthUtil.web3.ethSendRawTransaction(
+                            Numeric.toHexString(
+                                TransactionEncoder.signMessage(
+                                    RawTransaction.createTransaction(
+                                        count,
+                                        BigInteger(tx.gasPrice),
+                                        BigInteger(tx.gas),
+                                        tx.to,
+                                        BigInteger(tx.value),
+                                        tx.data,
+                                    ), credentials
+                                )
                             )
-                        )
-                    ).flowable().doOnError { it.printStackTrace() }.asFlow()
-                        .catch { it.printStackTrace() }.flowOn(Dispatchers.IO).collectLatest {
-                            transactionHash.value = it.transactionHash
-                            transactionSend.tryEmit(true)
-                        }
+                        ).flowable().doOnError { it.printStackTrace() }.asFlow()
+                            .catch { it.printStackTrace() }.flowOn(Dispatchers.IO).collectLatest {
+                                transactionHash.value = it.transactionHash
+                                transactionSend.tryEmit(true)
+                            }
                 } catch (e: Exception) {
                     e.printStackTrace()
                 }

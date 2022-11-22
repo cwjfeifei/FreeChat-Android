@@ -393,7 +393,7 @@ fun ToUserMessage(message: Message, navController: NavController) {
                                 .setContentType(AudioAttributes.CONTENT_TYPE_SPEECH)
                                 .build()
                         )
-                        mediaPlayer.setDataSource(message.soundElem.soundPath)
+                        mediaPlayer.setDataSource(message.soundElem.sourceUrl)
                         mediaPlayer.prepare()
                         mediaPlayer.start()
                     }

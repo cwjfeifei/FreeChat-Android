@@ -6,6 +6,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -101,11 +102,11 @@ fun TransferRiskView(navController: NavController) {
                 onClick = { navController.navigateUp() },
                 shape = RoundedCornerShape(0.dp),
                 modifier = Modifier
-                    .weight(1f)
-                    .height(42.dp),
+                    .weight(1f),
                 colors = ButtonDefaults.buttonColors(
                     backgroundColor = Color(0xFF3879FD), contentColor = Color.White
-                )
+                ),
+                contentPadding = PaddingValues(vertical = 10.dp)
             ) {
                 Text(
                     text = stringResource(id = R.string.back),
@@ -124,11 +125,11 @@ fun TransferRiskView(navController: NavController) {
                 },
                 shape = RoundedCornerShape(0.dp),
                 modifier = Modifier
-                    .weight(1f)
-                    .height(42.dp),
+                    .weight(1f),
                 colors = ButtonDefaults.buttonColors(
                     backgroundColor = Color(0xFF3879FD), contentColor = Color.White
-                )
+                ),
+                contentPadding = PaddingValues(vertical = 10.dp)
             ) {
                 Text(
                     text = stringResource(id = R.string.i_read_and_know),

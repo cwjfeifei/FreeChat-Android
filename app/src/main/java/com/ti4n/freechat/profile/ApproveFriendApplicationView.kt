@@ -98,12 +98,12 @@ fun ApproveFriendApplicationView(navController: NavController, viewModel: Profil
                     navController.navigateUp()
                 },
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .height(42.dp),
+                    .fillMaxWidth(),
                 colors = ButtonDefaults.buttonColors(
                     backgroundColor = Color(0xFF3879FD), contentColor = Color.White
                 ),
-                shape = RoundedCornerShape(0.dp)
+                shape = RoundedCornerShape(0.dp),
+                contentPadding = PaddingValues(vertical = 10.dp)
             ) {
                 Text(text = stringResource(id = R.string.finish), fontSize = 16.sp)
             }
