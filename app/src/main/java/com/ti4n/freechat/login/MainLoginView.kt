@@ -1,5 +1,6 @@
 package com.ti4n.freechat.login
 
+import androidx.activity.compose.BackHandler
 import androidx.annotation.StringRes
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
@@ -36,7 +37,7 @@ import com.ti4n.freechat.Route
 import com.ti4n.freechat.widget.Image
 
 @Composable
-fun MainLoginView(navController: NavController) {
+fun MainLoginView(navController: NavController, appExit: () -> Unit) {
     val systemUiController = rememberSystemUiController()
     SideEffect {
         systemUiController.setSystemBarsColor(Color.White)
@@ -48,6 +49,9 @@ fun MainLoginView(navController: NavController) {
         mutableStateOf(false)
     }
     val uriHandler = LocalUriHandler.current
+    BackHandler {
+        appExit()
+    }
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier

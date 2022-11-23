@@ -82,7 +82,7 @@ class MainActivity : AppCompatActivity() {
                                 SplashView(navController)
                             }
                             aniComposable(route = Route.MainLogin.route) {
-                                MainLoginView(navController)
+                                MainLoginView(navController) { finish() }
                             }
                             aniComposable(route = Route.Login.route) {
                                 LoginView(navController)

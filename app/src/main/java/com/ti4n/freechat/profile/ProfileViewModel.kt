@@ -78,9 +78,9 @@ class ProfileViewModel @Inject constructor(
         }
     }
 
-    fun refuseFriendApplication() {
+    fun refuseFriendApplication(message: String) {
         viewModelScope.launch {
-            IM.rejectFriendApplication(toUserId)
+            IM.rejectFriendApplication(toUserId, message)
             refuseSuccess.value = true
         }
     }

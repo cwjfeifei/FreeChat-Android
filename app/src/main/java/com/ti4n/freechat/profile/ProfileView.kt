@@ -313,7 +313,7 @@ fun ProfileView(
                 )
                 TextButton(
                     onClick = {
-                        viewModel.refuseFriendApplication()
+                        viewModel.refuseFriendApplication(refuseMessage)
                     },
                     modifier = Modifier
                         .height(47.dp)

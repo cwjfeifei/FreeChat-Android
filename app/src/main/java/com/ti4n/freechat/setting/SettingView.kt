@@ -86,9 +86,8 @@ fun SettingView(
                     onClick = {
                         scope.launch {
                             EthUtil.deleteWallet(context, userBaseInfoDao)
-                            globeNavController.navigate(Route.MainLogin.route) {
-                                popUpTo(0)
-                            }
+                            globeNavController.backQueue.clear()
+                            globeNavController.navigate(Route.MainLogin.route)
                         }
                     },
                     Modifier

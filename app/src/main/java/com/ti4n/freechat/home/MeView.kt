@@ -42,6 +42,7 @@ import com.ti4n.freechat.util.AnimatedPngDecoder
 import com.ti4n.freechat.util.IM
 import com.ti4n.freechat.util.IM.DEFAULT_FACEURL
 import com.ti4n.freechat.widget.Image
+import com.ti4n.freechat.widget.MiddleEllipsisText
 
 @Composable
 fun MeView(
@@ -204,7 +205,7 @@ fun MeInfoItem(
             )
         }
 
-        Text(
+        MiddleEllipsisText(
             text = "FCID: $userID",
             modifier = Modifier
                 .constrainAs(uidView) {
@@ -213,8 +214,6 @@ fun MeInfoItem(
                 }
                 .widthIn(0.dp, 240.dp),
             fontSize = 12.sp,
-            maxLines = 1,
-            overflow = TextOverflow.Ellipsis,
             color = Color(0xFF808080)
         )
 

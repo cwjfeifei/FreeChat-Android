@@ -39,6 +39,7 @@ import com.ti4n.freechat.Route
 import com.ti4n.freechat.util.AnimatedPngDecoder
 import com.ti4n.freechat.util.IM
 import com.ti4n.freechat.widget.Image
+import com.ti4n.freechat.widget.MiddleEllipsisText
 import kotlinx.coroutines.launch
 import java.util.*
 
@@ -305,7 +306,7 @@ fun MePropertyItem(
         )
 
         if (arrow) {
-            Text(
+            MiddleEllipsisText(
                 text = value,
                 color = Color.Black,
                 fontSize = 16.sp,
@@ -327,7 +328,7 @@ fun MePropertyItem(
                 Image(mipmap = R.mipmap.right_arrow)
             }
         } else {
-            Text(
+            MiddleEllipsisText(
                 text = value,
                 color = Color.Black,
                 fontSize = 16.sp,

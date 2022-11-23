@@ -51,6 +51,7 @@ import com.ti4n.freechat.toast
 import com.ti4n.freechat.util.IM
 import com.ti4n.freechat.widget.HomeTitle
 import com.ti4n.freechat.widget.Image
+import com.ti4n.freechat.widget.MiddleEllipsisText
 import com.ti4n.freechat.widget.SearchView
 import kotlinx.coroutines.launch
 
@@ -153,13 +154,13 @@ fun AddFriendView(navController: NavController) {
                         }
                         .padding(horizontal = 12.dp)
                 ) {
-                    Text(
+                    MiddleEllipsisText(
                         text = meInfo?.userID ?: "",
                         color = Color(0xFF1A1A1A),
                         fontWeight = FontWeight.Medium,
                         textAlign = TextAlign.Center,
-                        fontSize = 12.sp,
-                        maxLines = 1
+                        fontSize = 14.sp,
+                        modifier = Modifier.weight(1f)
                     )
                     Spacer(modifier = Modifier.width(10.dp))
                     Image(mipmap = R.mipmap.copy_nor)

@@ -555,7 +555,7 @@ object IM {
         }, id, "")
     }
 
-    suspend fun rejectFriendApplication(id: String) = suspendCoroutine {
+    suspend fun rejectFriendApplication(id: String, message: String) = suspendCoroutine {
         imClient.friendshipManager.refuseFriendApplication(object : OnBase<String> {
             override fun onError(code: Int, error: String?) {
                 it.resumeWithException(IMError(code, error))
@@ -565,7 +565,7 @@ object IM {
                 Log.e(TAG, "onSuccess: $id $data")
                 it.resume(data)
             }
-        }, id, "")
+        }, id, message)
     }
 }
 
