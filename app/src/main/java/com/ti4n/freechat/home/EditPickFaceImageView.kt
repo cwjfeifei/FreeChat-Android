@@ -37,6 +37,8 @@ import coil.compose.rememberAsyncImagePainter
 import coil.decode.GifDecoder
 import coil.decode.ImageDecoderDecoder
 import coil.request.ImageRequest
+import com.google.accompanist.systemuicontroller.SystemUiController
+import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.ti4n.freechat.R
 import com.ti4n.freechat.Route
 import com.ti4n.freechat.login.GenderItem
@@ -66,6 +68,11 @@ fun EditPickFaceImageView(
         }
         add(AnimatedPngDecoder.Factory())
     }.build()
+
+    val systemUiController = rememberSystemUiController()
+    SideEffect {
+        systemUiController.setSystemBarsColor(Color.White)
+    }
 
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -131,20 +138,17 @@ fun EditPickFaceImageView(
             contentScale = ContentScale.Crop
         )
 //        Divider(color = Color(0xFFEBEBEB), thickness = 0.5.dp, startIndent = 2.dp)
-        Box(
+        LazyRow(
             modifier = Modifier
                 .fillMaxWidth()
-                .height(96.dp)
+                .background(Color.White)
+                .padding(vertical = 12.dp),
+            horizontalArrangement = Arrangement.spacedBy(8.dp),
+            contentPadding = PaddingValues(horizontal = 16.dp)
         ) {
-            LazyRow(
-                modifier = Modifier
-                    .background(Color.White)
-                    .padding(top = 8.dp)
-            ) {
-                items(faceUrls) {
-                    ItemFaceImage(it.small) {
-                        viewModel.setFaceURL(it.small)
-                    }
+            items(faceUrls) {
+                ItemFaceImage(it.small, it.small == faceURL) {
+                    viewModel.setFaceURL(it.small)
                 }
             }
         }

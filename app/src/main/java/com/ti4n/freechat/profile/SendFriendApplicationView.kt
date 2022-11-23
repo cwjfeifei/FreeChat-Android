@@ -126,7 +126,6 @@ fun SendFriendApplicationView(navController: NavController, viewModel: ProfileVi
                     backgroundColor = Color(0xFF3879FD), contentColor = Color.White
                 ),
                 shape = RoundedCornerShape(0.dp),
-                contentPadding = PaddingValues(vertical = 10.dp)
             ) {
                 Text(text = stringResource(id = R.string.send_request), fontSize = 16.sp)
             }

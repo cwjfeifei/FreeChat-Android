@@ -3,8 +3,10 @@ package com.ti4n.freechat.login
 import android.os.Build
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyItemScope
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -37,6 +39,7 @@ import coil.compose.rememberAsyncImagePainter
 import coil.decode.GifDecoder
 import coil.decode.ImageDecoderDecoder
 import coil.request.ImageRequest
+import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.ti4n.freechat.R
 import com.ti4n.freechat.Route
 import com.ti4n.freechat.util.AnimatedPngDecoder
@@ -68,7 +71,10 @@ fun PickFaceImageView(
         }
         add(AnimatedPngDecoder.Factory())
     }.build()
-
+    val systemUiController = rememberSystemUiController()
+    SideEffect {
+        systemUiController.setSystemBarsColor(Color.White)
+    }
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier
@@ -150,20 +156,16 @@ fun PickFaceImageView(
 //            }
 //        }
 //        Divider(color = Color(0xFFEBEBEB), thickness = 0.5.dp, startIndent = 2.dp)
-        Box(
+        LazyRow(
             modifier = Modifier
                 .fillMaxWidth()
-                .height(96.dp)
+                .background(Color.White)
+                .padding(vertical = 12.dp),
+            contentPadding = PaddingValues(horizontal = 12.dp)
         ) {
-            LazyRow(
-                modifier = Modifier
-                    .background(Color.White)
-                    .padding(top = 8.dp)
-            ) {
-                items(faceUrls) {
-                    ItemFaceImage(it.small) {
-                        viewModel.setFaceURL(it.small)
-                    }
+            items(faceUrls) {
+                ItemFaceImage(it.small, it.small == faceURL) {
+                    viewModel.setFaceURL(it.small)
                 }
             }
         }
@@ -172,21 +174,33 @@ fun PickFaceImageView(
 }
 
 @Composable
-fun ItemFaceImage(faceUrl: String, click: () -> Unit) {
-    Column(
-        Modifier
-            .fillMaxSize()
-            .clickable { click() }
-            .padding(horizontal = 2.dp),
-        horizontalAlignment = Alignment.CenterHorizontally) {
+fun LazyItemScope.ItemFaceImage(faceUrl: String, isSelected: Boolean, click: () -> Unit) {
+    Box {
         AsyncImage(
             model = faceUrl, contentDescription = null,
             Modifier
-                .size(96.dp)
+                .fillParentMaxWidth(0.25f)
+                .padding(horizontal = 4.dp)
+                .aspectRatio(1f)
                 .clip(
-                    RoundedCornerShape(4.dp)
+                    RoundedCornerShape(8.dp)
                 )
+                .clickable { click() }
+                .border(
+                    1.dp,
+                    if (isSelected) Color(0xFF3879FD) else Color(0xF5f5f5f5),
+                    RoundedCornerShape(8.dp)
+                ),
+            contentScale = ContentScale.Crop
         )
+        if (isSelected) {
+            Image(
+                mipmap = R.mipmap.icon_select_sel,
+                modifier = Modifier
+                    .align(Alignment.BottomEnd)
+                    .padding(6.dp)
+            )
+        }
     }
 }
 

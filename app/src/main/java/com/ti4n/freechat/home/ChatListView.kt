@@ -2,6 +2,7 @@
 
 package com.ti4n.freechat.home
 
+import android.content.Intent
 import android.icu.text.SimpleDateFormat
 import androidx.compose.animation.*
 import androidx.compose.foundation.background
@@ -21,6 +22,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.DpOffset
@@ -66,6 +68,7 @@ fun ChatListView(
     val searchText = remember {
         mutableStateOf("")
     }
+    val context = LocalContext.current
     val scrollState = rememberLazyListState()
     Column(
         modifier = modifier
@@ -198,6 +201,33 @@ fun ChatListView(
                 Image(mipmap = R.mipmap.chat_list_default)
                 Spacer(modifier = Modifier.height(20.dp))
                 Text(text = stringResource(id = R.string.no_chat), color = Color(0xFF999999))
+                Spacer(modifier = Modifier.height(12.dp))
+                TextButton(
+                    onClick = {
+                        val sendIntent = Intent().apply {
+                            action = Intent.ACTION_SEND
+                            putExtra(
+                                Intent.EXTRA_TEXT,
+                                "https:/share.freechat.world/${IM.currentUserInfo.value?.userID}"
+                            )
+                            type = "text/plain"
+                        }
+                        val shareIntent = Intent.createChooser(sendIntent, null)
+                        context.startActivity(shareIntent)
+                    },
+                    shape = RoundedCornerShape(50),
+                    colors = ButtonDefaults.textButtonColors(
+                        backgroundColor = Color(0xFF3879FD),
+                        contentColor = Color.White
+                    ),
+                    modifier = Modifier.size(160.dp, 40.dp),
+                    elevation = ButtonDefaults.elevation()
+                ) {
+                    Text(
+                        text = stringResource(id = R.string.invite_friend),
+                        fontSize = 16.sp
+                    )
+                }
                 Spacer(modifier = Modifier.weight(1f))
             }
         }

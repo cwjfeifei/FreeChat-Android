@@ -47,6 +47,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Alignment.Companion.CenterVertically
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalUriHandler
@@ -121,280 +122,280 @@ fun SwapView(navController: NavController, viewModel: SwapViewModel = hiltViewMo
             }
         }
 
-    Box(modifier = Modifier.fillMaxSize()) {
-        Image(
-            mipmap = R.mipmap.transfer_bg,
-            modifier = Modifier.fillMaxSize(),
-            contentScale = ContentScale.FillBounds
-        )
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .systemBarsPadding()
-        ) {
-            CenterAlignedTopAppBar(
-                colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
-                    containerColor = Color.Transparent
-                ), title = {
-                    HomeTitle("闪兑")
-                }, navigationIcon = {
-                    IconButton(onClick = { navController.navigateUp() }) {
-                        Image(mipmap = R.mipmap.nav_back)
-                    }
-                })
-            Card(
-                backgroundColor = Color.White,
-                shape = RoundedCornerShape(12.dp),
-                modifier = Modifier
-                    .padding(16.dp)
-                    .fillMaxWidth()
-            ) {
-                Row(
-                    Modifier
-                        .fillMaxWidth()
-                        .padding(16.dp)
-                ) {
-                    Column(Modifier.weight(1f)) {
-                        Row(
-                            verticalAlignment = CenterVertically,
-                        ) {
-                            AsyncImage(
-                                model = fromToken?.LogoURI,
-                                contentDescription = null,
-                                modifier = Modifier.size(38.dp)
-                            )
-                            Spacer(modifier = Modifier.width(5.dp))
-                            Column {
-                                Row(verticalAlignment = CenterVertically) {
-                                    Text(
-                                        text = fromToken?.symbol ?: "",
-                                        color = Color(0xFF1A1A1A)
-                                    )
-                                    Spacer(modifier = Modifier.width(4.dp))
-                                    Image(mipmap = R.mipmap.push, Modifier.clickable {
-                                        navController.navigate(
-                                            Route.SelectSwapFromToken.jump(
-                                                ERC20Tokens(
-                                                    tokens.toMutableList().apply {
-                                                        removeAll { it.symbol == toToken?.symbol }
-                                                    }
-                                                ),
-                                                fromToken?.symbol ?: ""
-                                            )
-                                        )
-                                    })
-                                }
-                                Text(
-                                    text = "转出数量",
-                                    color = Color(0xFF999999),
-                                    fontSize = 12.sp
-                                )
-                            }
-                        }
-                        Spacer(modifier = Modifier.height(20.dp))
-                        Text(
-                            text = fromBalance,
-                            color = Color(0xFF4D4D4D),
-                            fontSize = 16.sp,
-                            fontWeight = FontWeight.Medium,
-                            maxLines = 1
-                        )
-                        Spacer(modifier = Modifier.height(6.dp))
-                        CustomPaddingTextField(
-                            value = amount,
-                            onValueChange = {
-                                viewModel.setAmount(it)
-                            },
-                            colors = TextFieldDefaults.textFieldColors(
-                                backgroundColor = Color.Transparent,
-                                focusedIndicatorColor = Color.Transparent,
-                                unfocusedIndicatorColor = Color.Transparent,
-                                textColor = Color(0xFF4D4D4D)
-                            ),
-                            placeholder = {
-                                Text(
-                                    text = stringResource(id = R.string.input_amount),
-                                    color = Color(0xFFB3B3B3)
-                                )
-                            },
-                            keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Decimal)
-                        )
-                    }
-                    Spacer(modifier = Modifier.width(6.dp))
-                    Image(
-                        mipmap = R.mipmap.duihuan_icon,
-                        modifier = Modifier.align(CenterVertically)
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(
+                Brush.verticalGradient(
+                    listOf(
+                        Color(0xFFCADFFC), Color(0xFFD2EFFF),
+                        Color(0xFFFFFFFF)
                     )
-                    Spacer(modifier = Modifier.width(6.dp))
-                    Column(Modifier.weight(1f)) {
-                        Row(verticalAlignment = CenterVertically) {
-                            AsyncImage(
-                                model = toToken?.LogoURI,
-                                contentDescription = null,
-                                modifier = Modifier.size(38.dp)
-                            )
-                            Spacer(modifier = Modifier.width(5.dp))
-                            Column {
-                                Row(verticalAlignment = CenterVertically) {
-                                    Text(
-                                        text = toToken?.symbol ?: "",
-                                        color = Color(0xFF1A1A1A)
-                                    )
-                                    Spacer(modifier = Modifier.width(4.dp))
-                                    Image(mipmap = R.mipmap.push, Modifier.clickable {
-                                        navController.navigate(
-                                            Route.SelectSwapToToken.jump(
-                                                ERC20Tokens(
-                                                    tokens.toMutableList().apply {
-                                                        removeAll { it.symbol == fromToken?.symbol }
-                                                    }
-                                                ),
-                                                toToken?.symbol ?: ""
-                                            )
-                                        )
-                                    })
-                                }
-                                Text(
-                                    text = "转入数量",
-                                    color = Color(0xFF999999),
-                                    fontSize = 12.sp
-                                )
-                            }
-                        }
-                        Spacer(modifier = Modifier.height(20.dp))
-                        Text(
-                            text = toBalance,
-                            color = Color(0xFF4D4D4D),
-                            fontSize = 16.sp,
-                            fontWeight = FontWeight.Medium
-                        )
-                        Spacer(modifier = Modifier.height(6.dp))
-                        CustomPaddingTextField(
-                            value = toAmount,
-                            onValueChange = {
-                                viewModel.setToAmount(it)
-                            },
-                            colors = TextFieldDefaults.textFieldColors(
-                                backgroundColor = Color.Transparent,
-                                focusedIndicatorColor = Color.Transparent,
-                                unfocusedIndicatorColor = Color.Transparent,
-                                textColor = Color(0xFF4D4D4D)
-                            ),
-                            placeholder = {
-                                Text(
-                                    text = stringResource(id = R.string.input_amount),
-                                    color = Color(0xFFB3B3B3)
-                                )
-                            },
-                            keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Decimal)
-                        )
-                    }
-                }
-            }
-            Row(
-                verticalAlignment = CenterVertically,
-                modifier = Modifier.padding(horizontal = 16.dp)
-            ) {
-                Text(text = "查看币种信息", color = Color(0xFF333333), fontSize = 12.sp)
-                Spacer(modifier = Modifier.weight(1f))
-                Text(text = buildAnnotatedString {
-                    withStyle(SpanStyle(color = Color(0xFF333333))) {
-                        append(fromToken?.symbol ?: "")
-                        append("/")
-                    }
-                    withStyle(SpanStyle(color = Color(0xFF6F5FFC))) {
-                        append(toToken?.symbol ?: "")
-                    }
-                })
-            }
-            Card(
-                backgroundColor = Color.White,
-                shape = RoundedCornerShape(12.dp),
-                modifier = Modifier
-                    .padding(16.dp)
-                    .fillMaxWidth()
-            ) {
-                Row(
-                    Modifier
-                        .fillMaxWidth()
-                        .padding(16.dp)
-                ) {
-                    Column {
-                        Row(verticalAlignment = CenterVertically) {
-                            AsyncImage(
-                                model = toToken?.LogoURI,
-                                contentDescription = null,
-                                modifier = Modifier.size(24.dp)
-                            )
-                            Spacer(modifier = Modifier.width(8.dp))
-                            Text(
-                                text = toToken?.symbol ?: "",
-                                color = Color(0xFF1A1A1A)
-                            )
-                        }
-                        Spacer(modifier = Modifier.height(8.dp))
-                        Row(verticalAlignment = CenterVertically) {
-                            Text(text = "汇率", color = Color(0xFF999999))
-                            Spacer(modifier = Modifier.weight(1f))
-                            Text(
-                                text = "1${fromToken?.symbol ?: ""}=$rate ${toToken?.symbol ?: ""}",
-                                color = Color(0xFF1A1A1A),
-                                fontSize = 16.sp
-                            )
-                        }
-                    }
-                }
-            }
-            ItemInfo(title = "预期获得", value = "$quoteAmount ${toToken?.symbol ?: ""}")
-            ItemInfo(
-                title = "兑换率影响",
-                value = "${impactValue}%"
-            )
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(1.dp)
-                    .padding(horizontal = 16.dp)
-                    .background(Color(0xFFE6E6E6), RoundedCornerShape(2.dp))
-                    .padding(vertical = 4.dp)
-            )
-            ItemInfo(
-                title = "收到的最低数额滑点后（0.05%）",
-                value = "${(quoteAmount.toDoubleOrNull() ?: 0.0) * 0.95} ${toToken?.symbol ?: ""}"
-            )
-
-            ItemInfo(title = "网络费用", value = "$$gasUSD")
-            Spacer(modifier = Modifier.height(8.dp))
-            Spacer(modifier = Modifier.weight(1f))
-            TextButton(
-                onClick = {
-                    showPassword = true
-                },
-                Modifier
-                    .fillMaxWidth(), shape = RoundedCornerShape(2.dp),
-                colors = ButtonDefaults.buttonColors(
-                    backgroundColor = Color(0xFF3879FD),
-                    contentColor = Color.White
-                ),
-                contentPadding = PaddingValues(vertical = 10.dp)
-            ) {
-                Text(
-                    text = stringResource(id = R.string.swap),
-                    fontSize = 16.sp,
-                    fontWeight = FontWeight.SemiBold
                 )
+            )
+            .systemBarsPadding()
+    ) {
+        CenterAlignedTopAppBar(
+            colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
+                containerColor = Color.Transparent
+            ), title = {
+                HomeTitle("闪兑")
+            }, navigationIcon = {
+                IconButton(onClick = { navController.navigateUp() }) {
+                    Image(mipmap = R.mipmap.nav_back)
+                }
+            })
+        Card(
+            backgroundColor = Color.White,
+            shape = RoundedCornerShape(12.dp),
+            modifier = Modifier
+                .padding(16.dp)
+                .fillMaxWidth()
+        ) {
+            Row(
+                Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp)
+            ) {
+                Column(Modifier.weight(1f)) {
+                    Row(
+                        verticalAlignment = CenterVertically,
+                    ) {
+                        AsyncImage(
+                            model = fromToken?.LogoURI,
+                            contentDescription = null,
+                            modifier = Modifier.size(38.dp)
+                        )
+                        Spacer(modifier = Modifier.width(5.dp))
+                        Column {
+                            Row(verticalAlignment = CenterVertically) {
+                                Text(
+                                    text = fromToken?.symbol ?: "",
+                                    color = Color(0xFF1A1A1A)
+                                )
+                                Spacer(modifier = Modifier.width(4.dp))
+                                Image(mipmap = R.mipmap.push, Modifier.clickable {
+                                    navController.navigate(
+                                        Route.SelectSwapFromToken.jump(
+                                            ERC20Tokens(
+                                                tokens.toMutableList().apply {
+                                                    removeAll { it.symbol == toToken?.symbol }
+                                                }
+                                            ),
+                                            fromToken?.symbol ?: ""
+                                        )
+                                    )
+                                })
+                            }
+                            Text(
+                                text = "转出数量",
+                                color = Color(0xFF999999),
+                                fontSize = 12.sp
+                            )
+                        }
+                    }
+                    Spacer(modifier = Modifier.height(20.dp))
+                    Text(
+                        text = fromBalance,
+                        color = Color(0xFF4D4D4D),
+                        fontSize = 16.sp,
+                        fontWeight = FontWeight.Medium,
+                        maxLines = 1
+                    )
+                    Spacer(modifier = Modifier.height(6.dp))
+                    CustomPaddingTextField(
+                        value = amount,
+                        onValueChange = {
+                            viewModel.setAmount(it)
+                        },
+                        colors = TextFieldDefaults.textFieldColors(
+                            backgroundColor = Color.Transparent,
+                            focusedIndicatorColor = Color.Transparent,
+                            unfocusedIndicatorColor = Color.Transparent,
+                            textColor = Color(0xFF4D4D4D)
+                        ),
+                        placeholder = {
+                            Text(
+                                text = stringResource(id = R.string.input_amount),
+                                color = Color(0xFFB3B3B3)
+                            )
+                        },
+                        keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Decimal)
+                    )
+                }
+                Spacer(modifier = Modifier.width(6.dp))
+                Image(
+                    mipmap = R.mipmap.duihuan_icon,
+                    modifier = Modifier.align(CenterVertically)
+                )
+                Spacer(modifier = Modifier.width(6.dp))
+                Column(Modifier.weight(1f)) {
+                    Row(verticalAlignment = CenterVertically) {
+                        AsyncImage(
+                            model = toToken?.LogoURI,
+                            contentDescription = null,
+                            modifier = Modifier.size(38.dp)
+                        )
+                        Spacer(modifier = Modifier.width(5.dp))
+                        Column {
+                            Row(verticalAlignment = CenterVertically) {
+                                Text(
+                                    text = toToken?.symbol ?: "",
+                                    color = Color(0xFF1A1A1A)
+                                )
+                                Spacer(modifier = Modifier.width(4.dp))
+                                Image(mipmap = R.mipmap.push, Modifier.clickable {
+                                    navController.navigate(
+                                        Route.SelectSwapToToken.jump(
+                                            ERC20Tokens(
+                                                tokens.toMutableList().apply {
+                                                    removeAll { it.symbol == fromToken?.symbol }
+                                                }
+                                            ),
+                                            toToken?.symbol ?: ""
+                                        )
+                                    )
+                                })
+                            }
+                            Text(
+                                text = "转入数量",
+                                color = Color(0xFF999999),
+                                fontSize = 12.sp
+                            )
+                        }
+                    }
+                    Spacer(modifier = Modifier.height(20.dp))
+                    Text(
+                        text = toBalance,
+                        color = Color(0xFF4D4D4D),
+                        fontSize = 16.sp,
+                        fontWeight = FontWeight.Medium
+                    )
+                    Spacer(modifier = Modifier.height(6.dp))
+                    CustomPaddingTextField(
+                        value = toAmount,
+                        onValueChange = {
+                            viewModel.setToAmount(it)
+                        },
+                        colors = TextFieldDefaults.textFieldColors(
+                            backgroundColor = Color.Transparent,
+                            focusedIndicatorColor = Color.Transparent,
+                            unfocusedIndicatorColor = Color.Transparent,
+                            textColor = Color(0xFF4D4D4D)
+                        ),
+                        placeholder = {
+                            Text(
+                                text = stringResource(id = R.string.input_amount),
+                                color = Color(0xFFB3B3B3)
+                            )
+                        },
+                        keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Decimal)
+                    )
+                }
             }
+        }
+        Row(
+            verticalAlignment = CenterVertically,
+            modifier = Modifier.padding(horizontal = 16.dp)
+        ) {
+            Text(text = "查看币种信息", color = Color(0xFF333333), fontSize = 12.sp)
+            Spacer(modifier = Modifier.weight(1f))
+            Text(text = buildAnnotatedString {
+                withStyle(SpanStyle(color = Color(0xFF333333))) {
+                    append(fromToken?.symbol ?: "")
+                    append("/")
+                }
+                withStyle(SpanStyle(color = Color(0xFF6F5FFC))) {
+                    append(toToken?.symbol ?: "")
+                }
+            })
+        }
+        Card(
+            backgroundColor = Color.White,
+            shape = RoundedCornerShape(12.dp),
+            modifier = Modifier
+                .padding(16.dp)
+                .fillMaxWidth()
+        ) {
+            Row(
+                Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp)
+            ) {
+                Column {
+                    Row(verticalAlignment = CenterVertically) {
+                        AsyncImage(
+                            model = toToken?.LogoURI,
+                            contentDescription = null,
+                            modifier = Modifier.size(24.dp)
+                        )
+                        Spacer(modifier = Modifier.width(8.dp))
+                        Text(
+                            text = toToken?.symbol ?: "",
+                            color = Color(0xFF1A1A1A)
+                        )
+                    }
+                    Spacer(modifier = Modifier.height(8.dp))
+                    Row(verticalAlignment = CenterVertically) {
+                        Text(text = "汇率", color = Color(0xFF999999))
+                        Spacer(modifier = Modifier.weight(1f))
+                        Text(
+                            text = "1${fromToken?.symbol ?: ""}=$rate ${toToken?.symbol ?: ""}",
+                            color = Color(0xFF1A1A1A),
+                            fontSize = 16.sp
+                        )
+                    }
+                }
+            }
+        }
+        ItemInfo(title = "预期获得", value = "$quoteAmount ${toToken?.symbol ?: ""}")
+        ItemInfo(
+            title = "兑换率影响",
+            value = "${impactValue}%"
+        )
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(1.dp)
+                .padding(horizontal = 16.dp)
+                .background(Color(0xFFE6E6E6), RoundedCornerShape(2.dp))
+                .padding(vertical = 4.dp)
+        )
+        ItemInfo(
+            title = "收到的最低数额滑点后（0.05%）",
+            value = "${(quoteAmount.toDoubleOrNull() ?: 0.0) * 0.95} ${toToken?.symbol ?: ""}"
+        )
+
+        ItemInfo(title = "网络费用", value = "$$gasUSD")
+        Spacer(modifier = Modifier.height(8.dp))
+        Spacer(modifier = Modifier.weight(1f))
+        TextButton(
+            onClick = {
+                showPassword = true
+            },
+            Modifier
+                .fillMaxWidth(), shape = RoundedCornerShape(2.dp),
+            colors = ButtonDefaults.buttonColors(
+                backgroundColor = Color(0xFF3879FD),
+                contentColor = Color.White
+            ),
+        ) {
+            Text(
+                text = stringResource(id = R.string.swap),
+                fontSize = 16.sp,
+                fontWeight = FontWeight.SemiBold
+            )
         }
     }
     if (showSuccessDialog) {
         Dialog(onDismissRequest = { navController.navigateUp() }) {
             Column(Modifier.background(Color.White, RoundedCornerShape(10.dp))) {
-                Spacer(modifier = Modifier.height(40.dp))
+                Spacer(modifier = Modifier.height(20.dp))
                 Image(mipmap = R.mipmap.success, modifier = Modifier.align(CenterHorizontally))
-                Spacer(modifier = Modifier.height(12.dp))
+                Spacer(modifier = Modifier.height(2.dp))
                 Text(
                     text = stringResource(id = R.string.swap_finish),
-                    color = Color(0xFF4B6AF7),
+                    color = Color(0xFF3879FD),
                     fontSize = 16.sp,
                     modifier = Modifier.align(CenterHorizontally)
                 )

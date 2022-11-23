@@ -34,6 +34,7 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.IntOffset
+import androidx.compose.ui.unit.coerceAtMost
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
@@ -107,24 +108,24 @@ fun ProfileView(
             isFromFriendApplication = false
         }
     }
+    val density = LocalDensity.current
     var userInfoOffsetPx by remember {
-        mutableStateOf(0f)
+        mutableStateOf(screenHeight - 100.dp - (if (isSelf) 0.dp else 42.dp) - 280.dp)
     }
     Scaffold(bottomBar = {
         if (isFromFriendApplication && !isFriend && !isSelf) {
             Row(
-                Modifier
-                    .fillMaxWidth(), Arrangement.spacedBy(3.dp)
+                Modifier.fillMaxWidth(), Arrangement.spacedBy(3.dp)
             ) {
                 TextButton(
                     onClick = {
                         showRefuseDialog = true
-                    }, colors = ButtonDefaults.buttonColors(
+                    },
+                    colors = ButtonDefaults.buttonColors(
                         backgroundColor = Color(0xFFED5B56), contentColor = Color.White
-                    ), shape = RoundedCornerShape(0.dp),
-                    modifier = Modifier
-                        .weight(1f),
-                    contentPadding = PaddingValues(vertical = 10.dp)
+                    ),
+                    shape = RoundedCornerShape(0.dp),
+                    modifier = Modifier.weight(1f),
                 ) {
                     Text(
                         text = stringResource(id = R.string.refuse),
@@ -136,12 +137,12 @@ fun ProfileView(
                 TextButton(
                     onClick = {
                         navController.navigate(Route.ApproveFriendApplication.route)
-                    }, colors = ButtonDefaults.buttonColors(
+                    },
+                    colors = ButtonDefaults.buttonColors(
                         backgroundColor = Color(0xFF3879FD), contentColor = Color.White
-                    ), shape = RoundedCornerShape(0.dp),
-                    modifier = Modifier
-                        .weight(1f),
-                    contentPadding = PaddingValues(vertical = 10.dp)
+                    ),
+                    shape = RoundedCornerShape(0.dp),
+                    modifier = Modifier.weight(1f),
                 ) {
                     Text(
                         text = stringResource(id = R.string.accept),
@@ -155,18 +156,18 @@ fun ProfileView(
             TextButton(
                 onClick = {
                     if (isFriend) navController.navigate(
-                        Route.PrivateChat.jump(
-                            viewModel.toUserId,
+                        Route.PrivateChat.jump(viewModel.toUserId,
                             IM.getConversationId(viewModel.toUserId)
-                                .ifEmpty { "single_${viewModel.toUserId}" }
-                        )
-                    ) else navController.navigate(Route.SendFriendApplication.route)
-                }, colors = ButtonDefaults.buttonColors(
+                                .ifEmpty { "single_${viewModel.toUserId}" })
+                    ) else navController.navigate(
+                        Route.SendFriendApplication.route
+                    )
+                },
+                colors = ButtonDefaults.buttonColors(
                     backgroundColor = Color(0xFF3879FD), contentColor = Color.White
-                ), shape = RoundedCornerShape(0.dp),
-                modifier = Modifier
-                    .fillMaxWidth(),
-                contentPadding = PaddingValues(vertical = 10.dp)
+                ),
+                shape = RoundedCornerShape(0.dp),
+                modifier = Modifier.fillMaxWidth(),
             ) {
                 if (isFriend) {
                     Image(mipmap = R.mipmap.message)
@@ -185,16 +186,12 @@ fun ProfileView(
         Box(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(it),
-            contentAlignment = Alignment.TopCenter
+                .padding(it), contentAlignment = Alignment.TopCenter
         ) {
             androidx.compose.foundation.Image(
                 painter = rememberAsyncImagePainter(
-                    ImageRequest.Builder(context)
-                        .data(data = userInfo?.faceURL ?: DEFAULT_FACEURL)
-                        .build(),
-                    imageLoader = imageLoader,
-                    contentScale = ContentScale.Crop
+                    ImageRequest.Builder(context).data(data = userInfo?.faceURL ?: DEFAULT_FACEURL)
+                        .build(), imageLoader = imageLoader, contentScale = ContentScale.Crop
                 ),
                 contentDescription = null,
                 modifier = Modifier
@@ -215,114 +212,125 @@ fun ProfileView(
             )
             Column(
                 modifier = Modifier
-                    .padding(top = screenHeight - 100.dp - 42.dp)
-                    .offset { IntOffset(0, userInfoOffsetPx.roundToInt()) }
-                    .background(Color.White)
-                    .draggable(
-                        orientation = Orientation.Vertical,
-                        state = rememberDraggableState { delta ->
-                            userInfoOffsetPx += delta
-                        }
+                    .fillMaxSize()
+                    .background(Color.Transparent)
+                    .offset(
+                        y = userInfoOffsetPx
+                            .coerceAtLeast(0.dp)
+                            .coerceAtMost(screenHeight - 100.dp - (if (isSelf) 0.dp else 42.dp) - 280.dp)
                     )
             ) {
-                ProfileInfoItem(
-                    userInfo?.faceURL ?: DEFAULT_FACEURL,
-                    userInfo?.nickname ?: "",
-                    userInfo?.remark ?: "",
-                    userInfo?.userID ?: "",
-                    userInfo?.gender ?: 1
+                Spacer(
+                    modifier = Modifier
+                        .height(280.dp)
+                        .background(Color.Transparent)
                 )
-                if (!isSelf && isFriend) {
-                    ProfileItem(stringResource(id = R.string.remark)) {
-                        navController.navigate(Route.SetRemark.route)
+                Column(
+                    modifier = Modifier
+                        .background(Color.White)
+                        .weight(1f)
+                        .draggable(orientation = Orientation.Vertical,
+                            state = rememberDraggableState { delta ->
+                                userInfoOffsetPx += with(density) {
+                                    delta.toDp()
+                                }
+                            })
+                ) {
+                    ProfileInfoItem(
+                        userInfo?.faceURL ?: DEFAULT_FACEURL,
+                        userInfo?.nickname ?: "",
+                        userInfo?.remark ?: "",
+                        userInfo?.userID ?: "",
+                        userInfo?.gender ?: 1
+                    )
+                    if (!isSelf && isFriend) {
+                        ProfileItem(stringResource(id = R.string.remark)) {
+                            navController.navigate(Route.SetRemark.route)
+                        }
+                        Divider(color = Color(0xFFEBEBEB), thickness = 0.5.dp, startIndent = 16.dp)
                     }
-                    Divider(color = Color(0xFFEBEBEB), thickness = 0.5.dp, startIndent = 16.dp)
                 }
             }
         }
     }
-    if (showRefuseDialog)
-        Dialog(onDismissRequest = {
-            showRefuseDialog = false
-            refuseMessage = ""
-        }) {
-            Column(
-                Modifier
-                    .fillMaxWidth()
-                    .background(Color.White, RoundedCornerShape(14.dp))
-                    .clip(RoundedCornerShape(14.dp)),
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                Spacer(modifier = Modifier.height(24.dp))
-                Text(
-                    text = stringResource(id = R.string.reply),
-                    color = Color(0xFF1A1A1A),
-                    fontSize = 16.sp,
-                    fontWeight = FontWeight.SemiBold
-                )
-                Spacer(modifier = Modifier.height(20.dp))
-                CustomPaddingTextField(
-                    value = refuseMessage,
-                    onValueChange = { refuseMessage = it },
-                    padding = PaddingValues(horizontal = 10.dp, vertical = 5.dp),
-                    colors = TextFieldDefaults.textFieldColors(
-                        focusedIndicatorColor = Color.Transparent,
-                        unfocusedIndicatorColor = Color.Transparent,
-                        textColor = Color(0xFF181818),
-                        backgroundColor = Color(0xFFF5F5F5)
-                    ),
-                    modifier = Modifier.height(30.dp),
-                    shape = RoundedCornerShape(2.dp)
-                )
-                Spacer(modifier = Modifier.height(35.dp))
-                Divider(color = Color(0xFFEBEBEB), thickness = 0.5.dp)
-                Row(Modifier.fillMaxWidth(), verticalAlignment = CenterVertically) {
-                    TextButton(
-                        onClick = {
-                            showRefuseDialog = false
-                            refuseMessage = ""
-                        },
-                        modifier = Modifier
-                            .height(47.dp)
-                            .weight(1f),
-                        colors = ButtonDefaults.buttonColors(
-                            backgroundColor = Color.White,
-                            contentColor = Color(0xFF1B1B1B)
-                        )
-                    ) {
-                        Text(
-                            text = stringResource(id = R.string.cancel),
-                            fontSize = 16.sp,
-                            fontWeight = FontWeight.Medium
-                        )
-                    }
-                    Box(
-                        Modifier
-                            .height(47.dp)
-                            .width(0.5.dp)
-                            .background(Color(0xFFEBEBEB))
+    if (showRefuseDialog) Dialog(onDismissRequest = {
+        showRefuseDialog = false
+        refuseMessage = ""
+    }) {
+        Column(
+            Modifier
+                .fillMaxWidth()
+                .background(Color.White, RoundedCornerShape(14.dp))
+                .clip(RoundedCornerShape(14.dp)), horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Spacer(modifier = Modifier.height(24.dp))
+            Text(
+                text = stringResource(id = R.string.reply),
+                color = Color(0xFF1A1A1A),
+                fontSize = 16.sp,
+                fontWeight = FontWeight.SemiBold
+            )
+            Spacer(modifier = Modifier.height(20.dp))
+            CustomPaddingTextField(
+                value = refuseMessage,
+                onValueChange = { refuseMessage = it },
+                padding = PaddingValues(horizontal = 10.dp, vertical = 5.dp),
+                colors = TextFieldDefaults.textFieldColors(
+                    focusedIndicatorColor = Color.Transparent,
+                    unfocusedIndicatorColor = Color.Transparent,
+                    textColor = Color(0xFF181818),
+                    backgroundColor = Color(0xFFF5F5F5)
+                ),
+                modifier = Modifier.height(30.dp),
+                shape = RoundedCornerShape(2.dp)
+            )
+            Spacer(modifier = Modifier.height(35.dp))
+            Divider(color = Color(0xFFEBEBEB), thickness = 0.5.dp)
+            Row(Modifier.fillMaxWidth(), verticalAlignment = CenterVertically) {
+                TextButton(
+                    onClick = {
+                        showRefuseDialog = false
+                        refuseMessage = ""
+                    },
+                    modifier = Modifier
+                        .height(47.dp)
+                        .weight(1f),
+                    colors = ButtonDefaults.buttonColors(
+                        backgroundColor = Color.White, contentColor = Color(0xFF1B1B1B)
                     )
-                    TextButton(
-                        onClick = {
-                            viewModel.refuseFriendApplication()
-                        },
-                        modifier = Modifier
-                            .height(47.dp)
-                            .weight(1f),
-                        colors = ButtonDefaults.buttonColors(
-                            backgroundColor = Color.White,
-                            contentColor = Color(0xFF4A84F7)
-                        )
-                    ) {
-                        Text(
-                            text = stringResource(id = R.string.send),
-                            fontSize = 16.sp,
-                            fontWeight = FontWeight.Medium
-                        )
-                    }
+                ) {
+                    Text(
+                        text = stringResource(id = R.string.cancel),
+                        fontSize = 16.sp,
+                        fontWeight = FontWeight.Medium
+                    )
+                }
+                Box(
+                    Modifier
+                        .height(47.dp)
+                        .width(0.5.dp)
+                        .background(Color(0xFFEBEBEB))
+                )
+                TextButton(
+                    onClick = {
+                        viewModel.refuseFriendApplication()
+                    },
+                    modifier = Modifier
+                        .height(47.dp)
+                        .weight(1f),
+                    colors = ButtonDefaults.buttonColors(
+                        backgroundColor = Color.White, contentColor = Color(0xFF4A84F7)
+                    )
+                ) {
+                    Text(
+                        text = stringResource(id = R.string.send),
+                        fontSize = 16.sp,
+                        fontWeight = FontWeight.Medium
+                    )
                 }
             }
         }
+    }
 }
 
 @Composable
@@ -346,8 +354,7 @@ fun ProfileInfoItem(
             modifier = Modifier
                 .size(40.dp, 4.dp)
                 .background(
-                    Color(0xFF1A1A1A),
-                    RoundedCornerShape(3.dp)
+                    Color(0xFF1A1A1A), RoundedCornerShape(3.dp)
                 )
         )
         Spacer(modifier = Modifier.weight(1f))

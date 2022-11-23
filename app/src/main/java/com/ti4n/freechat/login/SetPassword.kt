@@ -14,7 +14,6 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -49,10 +48,7 @@ fun SetPasswordView(
             navController.navigate(it)
         }
     }
-    var showPassword1 by remember {
-        mutableStateOf(false)
-    }
-    var showPassword2 by remember {
+    var showPassword by remember {
         mutableStateOf(false)
     }
     LoginCommonView(
@@ -87,13 +83,13 @@ fun SetPasswordView(
                     modifier = Modifier.fillMaxWidth()
                 )
             },
-            visualTransformation = if (showPassword1) VisualTransformation.None else PasswordVisualTransformation(),
+            visualTransformation = if (showPassword) VisualTransformation.None else PasswordVisualTransformation(),
             keyboardOptions = KeyboardOptions(
                 keyboardType = KeyboardType.Password, imeAction = ImeAction.Next
             ),
             trailingIcon = {
-                IconButton(onClick = { showPassword1 = !showPassword1 }) {
-                    Image(mipmap = if (showPassword1) R.mipmap.password_show else R.mipmap.password_hide)
+                IconButton(onClick = { showPassword = !showPassword }) {
+                    Image(mipmap = if (showPassword) R.mipmap.password_show else R.mipmap.password_hide)
                 }
             })
         Spacer(Modifier.height(20.dp))
@@ -119,18 +115,18 @@ fun SetPasswordView(
                     modifier = Modifier.fillMaxWidth()
                 )
             },
-            visualTransformation = if (showPassword2) VisualTransformation.None else PasswordVisualTransformation(),
+            visualTransformation = if (showPassword) VisualTransformation.None else PasswordVisualTransformation(),
             keyboardOptions = KeyboardOptions(
                 keyboardType = KeyboardType.Password, imeAction = ImeAction.Done
             ), trailingIcon = {
-                IconButton(onClick = { showPassword2 = !showPassword2 }) {
-                    Image(mipmap = if (showPassword2) R.mipmap.password_show else R.mipmap.password_hide)
+                IconButton(onClick = { showPassword = !showPassword }) {
+                    Image(mipmap = if (showPassword) R.mipmap.password_show else R.mipmap.password_hide)
                 }
             }
         )
         Spacer(Modifier.height(12.dp))
         Text(
-            text = "确保您的密码有大写字母、小写字母等，位数大于8位。",
+            text = stringResource(id = R.string.confirm_password_fit),
             color = Color(0xFF808080),
             fontSize = 12.sp
         )

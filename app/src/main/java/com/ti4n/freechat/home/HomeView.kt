@@ -171,15 +171,7 @@ fun HomeView(userBaseInfoDao: UserBaseInfoDao, globleNavController: NavControlle
                         navController,
                         it.arguments?.getString("xfaceURL", "") ?: "",
                         it.arguments?.getString("nickname", "") ?: "",
-                        it.arguments?.getInt("gender")!!
-                    )
-                }
-                aniComposable(route = Route.ProfilePreview.route) {
-                    ProfilePreview(
-                        navController,
-                        it.arguments?.getString("xfaceURL", "") ?: "",
-                        it.arguments?.getString("nickname", "") ?: "",
-                        it.arguments?.getInt("gender")!!
+                        it.arguments?.getString("gender", "1")?.toIntOrNull() ?: 1
                     )
                 }
                 aniComposable(Route.EditEmail.route) { _ ->

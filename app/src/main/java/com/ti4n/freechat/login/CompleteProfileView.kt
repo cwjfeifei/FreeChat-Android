@@ -211,15 +211,6 @@ fun CompleteProfileView(
                     if (result is Unit) {
                         // success
                         controller.backQueue.clear()
-                        userBaseInfoDao.insert(
-                            userBaseInfo.copy(
-                                nickname = nickname,
-                                faceURL = faceURL,
-                                birth = birth / 1000,
-                                email = email,
-                                gender = gender
-                            )
-                        )
                         controller.navigate(Route.Home.route)
                     } else {
                         // set user info failed

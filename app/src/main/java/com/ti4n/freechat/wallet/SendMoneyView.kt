@@ -66,6 +66,7 @@ import com.ti4n.freechat.R
 import com.ti4n.freechat.Route
 import com.ti4n.freechat.db.RecentTransfer
 import com.ti4n.freechat.util.EthUtil
+import com.ti4n.freechat.widget.CustomPaddingTextField
 import com.ti4n.freechat.widget.HomeTitle
 import com.ti4n.freechat.widget.Image
 
@@ -88,187 +89,187 @@ fun SendMoneyView(navController: NavController, viewModel: SendMoneyViewModel = 
     SideEffect {
         systemUiController.setStatusBarColor(color = Color.Transparent)
         systemUiController.setNavigationBarColor(
-            color = Color(0xFFF0F0F0)
+            color = Color.White
         )
     }
-    Box(modifier = Modifier.fillMaxSize()) {
-        Image(
-            mipmap = R.mipmap.transfer_bg,
-            modifier = Modifier.fillMaxSize(),
-            contentScale = ContentScale.FillBounds
-        )
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-//                .background(Color.White)
-                .systemBarsPadding()
-        ) {
-            CenterAlignedTopAppBar(
-                colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
-                    containerColor = Color.Transparent
-                ), title = {
-                    HomeTitle(R.string.transfer)
-                }, navigationIcon = {
-                    IconButton(onClick = { navController.navigateUp() }) {
-                        Image(mipmap = R.mipmap.nav_back)
-                    }
-                }
-            )
-            Spacer(modifier = Modifier.height(20.dp))
-            Card(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 20.dp),
-                shape = RoundedCornerShape(16.dp),
-            ) {
-                Box(Modifier.background(Color.White)) {
-                    Column(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(horizontal = 16.dp, vertical = 20.dp)
-                    ) {
-                        Row(Modifier.fillMaxWidth()) {
-                            Text(
-                                text = stringResource(id = R.string.receive_account),
-                                color = Color(0xFF333333),
-                                fontWeight = FontWeight.Medium,
-                                fontSize = 16.sp
-                            )
-                            Spacer(modifier = Modifier.weight(1f))
-                            Image(
-                                mipmap = R.mipmap.scan_black,
-                                modifier = Modifier.clickable {
-                                    barcodeLauncher.launch(
-                                        ScanOptions().setDesiredBarcodeFormats(
-                                            ScanOptions.QR_CODE
-                                        ).setOrientationLocked(false)
-                                    )
-                                })
-                        }
-
-                        Spacer(modifier = Modifier.height(16.dp))
-                        Row {
-                            TextField(
-                                value = address,
-                                onValueChange = {
-                                    viewModel.setAddress(it)
-                                },
-                                modifier = Modifier
-                                    .weight(1f)
-                                    .height(50.dp),
-                                colors = TextFieldDefaults.textFieldColors(
-                                    focusedIndicatorColor = Color.Transparent,
-                                    unfocusedIndicatorColor = Color.Transparent,
-                                    backgroundColor = Color(0xFFF5F5F5),
-                                    textColor = Color(0xFFB3B3B3)
-                                ),
-                                shape = RoundedCornerShape(4.dp),
-                                placeholder = {
-                                    Text(
-                                        text = stringResource(id = R.string.receive_account_hint),
-                                        color = Color(0xFFB3B3B3),
-                                        modifier = Modifier
-                                            .fillMaxWidth(),
-                                        fontSize = 12.sp
-                                    )
-                                },
-                                keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Done),
-                            )
-                            Box(
-                                modifier = Modifier
-                                    .height(50.dp)
-                                    .width(70.dp)
-                                    .background(Color(0xFF141B33), RoundedCornerShape(4.dp))
-                                    .clickable {
-                                        clipboardManager
-                                            .getText()
-                                            ?.let {
-                                                viewModel.setAddress(it.text)
-                                            }
-                                    }, contentAlignment = Alignment.Center
-                            ) {
-                                Text(
-                                    text = stringResource(id = R.string.paste),
-                                    color = Color.White,
-                                    style = TextStyle(textAlign = TextAlign.Center)
-                                )
-                            }
-                        }
-                    }
-                }
-            }
-            Spacer(modifier = Modifier.height(8.dp))
-            Text(
-                text = stringResource(id = R.string.recent_transfer),
-                color = Color(0xFF4B6AF7),
-                modifier = Modifier.padding(16.dp)
-            )
-            Divider(thickness = 1.dp, color = Color.Black.copy(alpha = 0.1f))
-            if (recentAddress.itemCount == 0) {
-                Spacer(modifier = Modifier.weight(1f))
-                Image(mipmap = R.mipmap.no_data, Modifier.fillMaxWidth())
-                Spacer(modifier = Modifier.height(20.dp))
-                Text(
-                    text = stringResource(id = R.string.no_data),
-                    color = Color(0xFF999999),
-                    fontSize = 12.sp,
-                    modifier = Modifier.fillMaxWidth(),
-                    textAlign = TextAlign.Center
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(
+                Brush.verticalGradient(
+                    listOf(
+                        Color(0xFFCADFFC), Color(0xFFD2EFFF),
+                        Color(0xFFFFFFFF)
+                    )
                 )
-                Spacer(modifier = Modifier.weight(1f))
-            } else {
-                LazyColumn(Modifier.padding(start = 16.dp)) {
-                    items(recentAddress) {
-                        it?.let {
-                            ItemRecentTransfer(recentTransfer = it)
+            )
+            .systemBarsPadding()
+    ) {
+        CenterAlignedTopAppBar(
+            colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
+                containerColor = Color.Transparent
+            ), title = {
+                HomeTitle(R.string.transfer)
+            }, navigationIcon = {
+                IconButton(onClick = { navController.navigateUp() }) {
+                    Image(mipmap = R.mipmap.nav_back)
+                }
+            }
+        )
+        Spacer(modifier = Modifier.height(20.dp))
+        Card(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 20.dp),
+            shape = RoundedCornerShape(16.dp),
+        ) {
+            Box(Modifier.background(Color.White)) {
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 16.dp, vertical = 20.dp)
+                ) {
+                    Row(Modifier.fillMaxWidth()) {
+                        Text(
+                            text = stringResource(id = R.string.receive_account),
+                            color = Color(0xFF333333),
+                            fontWeight = FontWeight.Medium,
+                            fontSize = 16.sp
+                        )
+                        Spacer(modifier = Modifier.weight(1f))
+                        Image(
+                            mipmap = R.mipmap.scan_black,
+                            modifier = Modifier.clickable {
+                                barcodeLauncher.launch(
+                                    ScanOptions().setDesiredBarcodeFormats(
+                                        ScanOptions.QR_CODE
+                                    ).setOrientationLocked(false)
+                                )
+                            })
+                    }
+
+                    Spacer(modifier = Modifier.height(16.dp))
+                    Row {
+                        CustomPaddingTextField(
+                            value = address,
+                            onValueChange = {
+                                viewModel.setAddress(it)
+                            },
+                            modifier = Modifier
+                                .weight(1f)
+                                .height(46.dp),
+                            colors = TextFieldDefaults.textFieldColors(
+                                focusedIndicatorColor = Color.Transparent,
+                                unfocusedIndicatorColor = Color.Transparent,
+                                backgroundColor = Color(0xFFF5F5F5),
+                                textColor = Color(0xFF1A1A1A)
+                            ),
+                            shape = RoundedCornerShape(4.dp),
+                            placeholder = {
+                                Text(
+                                    text = stringResource(id = R.string.receive_account_hint),
+                                    color = Color(0xFFB3B3B3),
+                                    modifier = Modifier
+                                        .fillMaxWidth(),
+                                    fontSize = 16.sp
+                                )
+                            },
+                            keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Done),
+                            padding = PaddingValues(vertical = 12.dp, horizontal = 20.dp)
+                        )
+                        Spacer(modifier = Modifier.width(8.dp))
+                        Box(
+                            modifier = Modifier
+                                .height(46.dp)
+                                .width(68.dp)
+                                .background(Color(0xFF141B33), RoundedCornerShape(4.dp))
+                                .clickable {
+                                    clipboardManager
+                                        .getText()
+                                        ?.let {
+                                            viewModel.setAddress(it.text)
+                                        }
+                                }, contentAlignment = Alignment.Center
+                        ) {
+                            Text(
+                                text = stringResource(id = R.string.paste),
+                                color = Color.White,
+                                style = TextStyle(textAlign = TextAlign.Center)
+                            )
                         }
                     }
                 }
             }
+        }
+        Spacer(modifier = Modifier.height(8.dp))
+        Text(
+            text = stringResource(id = R.string.recent_transfer),
+            color = Color(0xFF4B6AF7),
+            modifier = Modifier.padding(16.dp)
+        )
+        Divider(thickness = 1.dp, color = Color.Black.copy(alpha = 0.1f))
+        if (recentAddress.itemCount == 0) {
             Spacer(modifier = Modifier.weight(1f))
-            Row(
+            Image(mipmap = R.mipmap.no_data, Modifier.fillMaxWidth())
+            Spacer(modifier = Modifier.height(20.dp))
+            Text(
+                text = stringResource(id = R.string.no_data),
+                color = Color(0xFF999999),
+                fontSize = 12.sp,
+                modifier = Modifier.fillMaxWidth(),
+                textAlign = TextAlign.Center
+            )
+            Spacer(modifier = Modifier.weight(1f))
+        } else {
+            LazyColumn(Modifier.padding(start = 16.dp)) {
+                items(recentAddress) {
+                    it?.let {
+                        ItemRecentTransfer(recentTransfer = it)
+                    }
+                }
+            }
+        }
+        Spacer(modifier = Modifier.weight(1f))
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = 20.dp),
+            horizontalArrangement = Arrangement.spacedBy(3.dp)
+        ) {
+            TextButton(
+                onClick = { navController.navigateUp() },
+                shape = RoundedCornerShape(0.dp),
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(top = 20.dp),
-                horizontalArrangement = Arrangement.spacedBy(3.dp)
+                    .weight(1f),
+                colors = ButtonDefaults.buttonColors(
+                    backgroundColor = Color(0xFF3879FD), contentColor = Color.White
+                ),
             ) {
-                TextButton(
-                    onClick = { navController.navigateUp() },
-                    shape = RoundedCornerShape(0.dp),
-                    modifier = Modifier
-                        .weight(1f),
-                    colors = ButtonDefaults.buttonColors(
-                        backgroundColor = Color(0xFF3879FD), contentColor = Color.White
-                    ),
-                    contentPadding = PaddingValues(vertical = 10.dp)
-                ) {
-                    Text(
-                        text = stringResource(id = R.string.back),
-                        fontSize = 14.sp,
-                        fontWeight = FontWeight.Medium
-                    )
-                }
-                TextButton(
-                    onClick = {
-                        if (EthUtil.addressExist(address)) {
-                            viewModel.addressDone()
-                            navController.navigate(Route.SendMoneyInputDetail.route)
-                        }
-                    },
-                    shape = RoundedCornerShape(0.dp),
-                    modifier = Modifier
-                        .weight(1f),
-                    colors = ButtonDefaults.buttonColors(
-                        backgroundColor = Color(0xFF3879FD), contentColor = Color.White
-                    ),
-                    contentPadding = PaddingValues(vertical = 10.dp)
-                ) {
-                    Text(
-                        text = stringResource(id = R.string.next),
-                        fontSize = 14.sp,
-                        fontWeight = FontWeight.Medium
-                    )
-                }
+                Text(
+                    text = stringResource(id = R.string.back),
+                    fontSize = 14.sp,
+                    fontWeight = FontWeight.Medium
+                )
+            }
+            TextButton(
+                onClick = {
+                    if (EthUtil.addressExist(address)) {
+                        viewModel.addressDone()
+                        navController.navigate(Route.SendMoneyInputDetail.route)
+                    }
+                },
+                shape = RoundedCornerShape(0.dp),
+                modifier = Modifier
+                    .weight(1f),
+                colors = ButtonDefaults.buttonColors(
+                    backgroundColor = Color(0xFF3879FD), contentColor = Color.White
+                ),
+            ) {
+                Text(
+                    text = stringResource(id = R.string.next),
+                    fontSize = 14.sp,
+                    fontWeight = FontWeight.Medium
+                )
             }
         }
     }

@@ -49,6 +49,7 @@ import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
 import com.ti4n.freechat.Route
+import com.ti4n.freechat.widget.MiddleEllipsisText
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -56,7 +57,7 @@ fun WalletView(navController: NavController, viewModel: WalletViewModel = hiltVi
     val systemUiController = rememberSystemUiController()
     SideEffect {
         systemUiController.setSystemBarsColor(
-            color = Color(0xFFF0F0F0)
+            color = Color.White
         )
     }
     val list = viewModel.list
@@ -69,7 +70,7 @@ fun WalletView(navController: NavController, viewModel: WalletViewModel = hiltVi
     ) {
         CenterAlignedTopAppBar(
             colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
-                containerColor = Color(0xFFF0F0F0)
+                containerColor = Color.White
             ), title = {
                 HomeTitle(R.string.wallet)
             }, navigationIcon = {
@@ -78,11 +79,29 @@ fun WalletView(navController: NavController, viewModel: WalletViewModel = hiltVi
                 }
             })
         Spacer(modifier = Modifier.height(20.dp))
-        WalletFunction(address,
-            list.map { it.usd.toDouble() }.sum(),
-            sendClick = { navController.navigate(Route.SendMoney.route) },
-            receiveClick = { navController.navigate(Route.ReceiveMoney.route) },
-            swapClick = { navController.navigate(Route.Swap.route) })
+        WalletCard(address, list.sumOf { it.usd.toDouble() })
+        Spacer(modifier = Modifier.height(24.dp))
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 40.dp)
+        ) {
+            ItemFunction(
+                image = R.mipmap.send,
+                text = R.string.transfer,
+                click = { navController.navigate(Route.SendMoney.route) })
+            Spacer(modifier = Modifier.weight(1f))
+            ItemFunction(
+                image = R.mipmap.receive,
+                text = R.string.receive_money,
+                click = { navController.navigate(Route.ReceiveMoney.route) }
+            )
+            Spacer(modifier = Modifier.weight(1f))
+            ItemFunction(
+                image = R.mipmap.swap,
+                text = R.string.swap,
+                click = { navController.navigate(Route.Swap.route) })
+        }
         Spacer(modifier = Modifier.height(24.dp))
         Text(
             text = stringResource(id = R.string.all_money),
@@ -107,13 +126,7 @@ fun WalletView(navController: NavController, viewModel: WalletViewModel = hiltVi
 }
 
 @Composable
-fun WalletFunction(
-    address: String,
-    allMoney: Double,
-    sendClick: () -> Unit = {},
-    receiveClick: () -> Unit = {},
-    swapClick: () -> Unit = {}
-) {
+fun WalletCard(address: String, allMoney: Double) {
     val clipboardManager = LocalClipboardManager.current
     Box(
         contentAlignment = Alignment.Center,
@@ -126,51 +139,46 @@ fun WalletFunction(
             modifier = Modifier.fillMaxWidth(),
             contentScale = ContentScale.FillWidth
         )
-        Column(
-            horizontalAlignment = Alignment.CenterHorizontally,
-            modifier = Modifier.padding(vertical = 20.dp, horizontal = 16.dp)
-        ) {
+        Column(modifier = Modifier.padding(24.dp)) {
             Spacer(modifier = Modifier.height(20.dp))
-            Row(verticalAlignment = Alignment.CenterVertically) {
+            Text(
+                text = stringResource(id = R.string.total_asset),
+                color = Color(0x99FFFFFF),
+                fontSize = 14.sp
+            )
+            Spacer(modifier = Modifier.height(12.dp))
+            Row(
+                verticalAlignment = Alignment.Bottom,
+            ) {
                 Text(
-                    text = "FCID:$address", color = Color.White.copy(alpha = 0.7f), fontSize = 12.sp
+                    text = "$ ",
+                    color = Color.White,
+                    fontSize = 14.sp,
+                    fontWeight = FontWeight.Medium,
+                    modifier = Modifier.padding(bottom = 4.dp)
+                )
+                Text(
+                    text = "$allMoney",
+                    color = Color.White,
+                    fontSize = 24.sp,
+                    fontWeight = FontWeight.Medium
+                )
+            }
+            Spacer(modifier = Modifier.height(36.dp))
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Text(text = "FCID: ", color = Color(0x99FFFFFF), fontSize = 14.sp)
+                MiddleEllipsisText(
+                    text = address,
+                    color = Color.White,
+                    fontSize = 14.sp,
+                    modifier = Modifier.weight(1f)
                 )
                 Spacer(modifier = Modifier.width(4.dp))
                 Image(mipmap = R.mipmap.copy, Modifier.clickable {
                     clipboardManager.setText(AnnotatedString(address))
                 })
             }
-            Spacer(modifier = Modifier.height(20.dp))
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.Center,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(48.dp)
-                    .border(1.dp, Color.White, RoundedCornerShape(8.dp))
-                    .background(Color(0x33364EA7), RoundedCornerShape(8.dp))
-                    .padding(vertical = 12.dp)
-            ) {
-                Text(text = "资产总值:", color = Color.White.copy(alpha = 0.7f), fontSize = 12.sp)
-                Spacer(modifier = Modifier.width(4.dp))
-                Text(
-                    text = "$$allMoney",
-                    color = Color.White,
-                    fontSize = 18.sp,
-                    fontWeight = FontWeight.Medium
-                )
-            }
-            Spacer(modifier = Modifier.height(20.dp))
-            Row(
-                horizontalArrangement = Arrangement.spacedBy(46.dp)
-            ) {
-                ItemFunction(image = R.mipmap.send, text = R.string.transfer, click = sendClick)
-                ItemFunction(
-                    image = R.mipmap.receive, text = R.string.receive_money, click = receiveClick
-                )
-                ItemFunction(image = R.mipmap.swap, text = R.string.swap, click = swapClick)
-            }
-            Spacer(modifier = Modifier.height(20.dp))
+            Spacer(modifier = Modifier.height(16.dp))
         }
     }
 }
@@ -227,8 +235,8 @@ fun ItemCoin(token: ERC20Token, count: String, usd: String, click: () -> Unit) {
 fun ItemFunction(
     @DrawableRes image: Int,
     @StringRes text: Int,
-    backgroundColor: Color = Color(0x1AFFFFFF),
-    textColor: Color = Color.White,
+    backgroundColor: Color = Color(0xFFF2F3FC),
+    textColor: Color = Color(0xFF666666),
     click: () -> Unit = {}
 ) {
     Column(horizontalAlignment = Alignment.CenterHorizontally,
@@ -236,11 +244,11 @@ fun ItemFunction(
         Box(
             modifier = Modifier
                 .background(backgroundColor, CircleShape)
-                .padding(10.dp)
+                .padding(12.dp)
         ) {
             Image(mipmap = image)
         }
-        Spacer(modifier = Modifier.height(8.dp))
+        Spacer(modifier = Modifier.height(6.dp))
         Text(
             text = stringResource(id = text), color = textColor, fontSize = 12.sp
         )

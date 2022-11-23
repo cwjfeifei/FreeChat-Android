@@ -137,12 +137,10 @@ fun PermissionView(navController: NavController, exitApp: () -> Unit) {
                     }
                 },
                 shape = RoundedCornerShape(0.dp),
-                modifier = Modifier
-                    .weight(1f)
-                    .padding(vertical = 10.dp),
+                modifier = Modifier.weight(1f),
                 colors = ButtonDefaults.buttonColors(
                     backgroundColor = Color(0xFFED5B56), contentColor = Color.White
-                )
+                ),
             ) {
                 Text(
                     text = stringResource(id = R.string.reject),
@@ -171,12 +169,10 @@ fun PermissionView(navController: NavController, exitApp: () -> Unit) {
                     }
                 },
                 shape = RoundedCornerShape(0.dp),
-                modifier = Modifier
-                    .weight(1f),
+                modifier = Modifier.weight(1f),
                 colors = ButtonDefaults.buttonColors(
                     backgroundColor = Color(0xFF3879FD), contentColor = Color.White
                 ),
-                contentPadding = PaddingValues(vertical = 10.dp)
             ) {
                 Text(
                     text = stringResource(id = R.string.agree),

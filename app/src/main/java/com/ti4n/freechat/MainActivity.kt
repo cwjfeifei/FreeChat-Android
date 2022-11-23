@@ -40,6 +40,7 @@ import com.ti4n.freechat.widget.BigImageView
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
@@ -217,6 +218,21 @@ class MainActivity : AppCompatActivity() {
         lifecycleScope.launch {
             toast.collectLatest {
                 Toast.makeText(this@MainActivity, it, Toast.LENGTH_SHORT).show()
+            }
+        }
+
+        lifecycleScope.launch {
+            IM.currentUserInfo.filterNotNull().collectLatest {
+                val old = db.userBaseInfoDao().getUserInfo().filterNotNull().first()
+                db.userBaseInfoDao().insert(
+                    old.copy(
+                        nickname = it.nickname,
+                        faceURL = it.faceURL,
+                        birth = it.birth,
+                        gender = it.gender,
+                        email = it.email
+                    )
+                )
             }
         }
     }

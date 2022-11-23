@@ -1,7 +1,10 @@
 package com.ti4n.freechat.home
 
+import android.content.Intent
 import android.icu.text.SimpleDateFormat
 import android.util.Log
+import androidx.annotation.DrawableRes
+import androidx.annotation.StringRes
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.expandVertically
 import androidx.compose.animation.shrinkVertically
@@ -51,6 +54,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.capitalize
@@ -92,6 +96,7 @@ fun ContactView(
     var showLetter by remember {
         mutableStateOf(false)
     }
+    val context = LocalContext.current
     val items = buildList {
         friends.groupBy {
             val pinyin = it.remark.ifEmpty {
@@ -154,8 +159,23 @@ fun ContactView(
                     .fillMaxSize(), state = scrollState
             ) {
                 item {
-                    ItemNewFriend {
+                    ItemFriend(image = R.mipmap.friend_new, text = R.string.new_friend) {
                         navController.navigate(Route.NewContact.route)
+                    }
+                    Divider(color = Color(0xFFEFEBEB), thickness = 0.5.dp)
+                }
+                item {
+                    ItemFriend(image = R.mipmap.invite, text = R.string.invite_friend) {
+                        val sendIntent = Intent().apply {
+                            action = Intent.ACTION_SEND
+                            putExtra(
+                                Intent.EXTRA_TEXT,
+                                "https:/share.freechat.world/${IM.currentUserInfo.value?.userID}"
+                            )
+                            type = "text/plain"
+                        }
+                        val shareIntent = Intent.createChooser(sendIntent, null)
+                        context.startActivity(shareIntent)
                     }
                 }
                 if (items.isNotEmpty()) {
@@ -186,9 +206,20 @@ fun ContactView(
                                 text = stringResource(id = R.string.no_contact),
                                 color = Color(0xFF999999)
                             )
-                            Spacer(modifier = Modifier.height(24.dp))
+                            Spacer(modifier = Modifier.height(12.dp))
                             TextButton(
-                                onClick = { navController.navigate(Route.AddFriend.route) },
+                                onClick = {
+                                    val sendIntent = Intent().apply {
+                                        action = Intent.ACTION_SEND
+                                        putExtra(
+                                            Intent.EXTRA_TEXT,
+                                            "https:/share.freechat.world/${IM.currentUserInfo.value?.userID}"
+                                        )
+                                        type = "text/plain"
+                                    }
+                                    val shareIntent = Intent.createChooser(sendIntent, null)
+                                    context.startActivity(shareIntent)
+                                },
                                 shape = RoundedCornerShape(50),
                                 colors = ButtonDefaults.textButtonColors(
                                     backgroundColor = Color(0xFF3879FD),
@@ -198,7 +229,7 @@ fun ContactView(
                                 elevation = ButtonDefaults.elevation()
                             ) {
                                 Text(
-                                    text = stringResource(id = R.string.go_to_contact),
+                                    text = stringResource(id = R.string.invite_friend),
                                     fontSize = 16.sp
                                 )
                             }
@@ -283,7 +314,7 @@ fun ContactView(
 }
 
 @Composable
-fun ItemNewFriend(click: () -> Unit) {
+fun ItemFriend(@DrawableRes image: Int, @StringRes text: Int, click: () -> Unit) {
     Row(
         Modifier
             .fillMaxWidth()
@@ -291,10 +322,10 @@ fun ItemNewFriend(click: () -> Unit) {
             .clickable { click() }
             .padding(horizontal = 16.dp),
         verticalAlignment = Alignment.CenterVertically) {
-        Image(mipmap = R.mipmap.friend_new)
+        Image(mipmap = image)
         Spacer(modifier = Modifier.width(10.dp))
         Text(
-            text = stringResource(id = R.string.new_friend),
+            text = stringResource(id = text),
             color = Color(0xFF1A1A1A),
             fontSize = 16.sp
         )
