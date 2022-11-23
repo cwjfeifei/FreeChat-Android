@@ -9,6 +9,7 @@ import com.ti4n.freechat.model.response.freechat.ERC20Token
 import com.ti4n.freechat.network.FreeChatApiService
 import com.ti4n.freechat.network.SwapApiService
 import com.ti4n.freechat.util.EthUtil
+import com.ti4n.freechat.util.safeCall
 import com.ti4n.freechat.util.toWei
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -62,7 +63,7 @@ class SwapViewModel @Inject constructor(
     val usdt = MutableStateFlow<ERC20Token?>(null)
 
     init {
-        viewModelScope.launch {
+        safeCall {
             try {
                 val tokens = freeChatApiService.getSupportTokens().result
                 supportTokens.value = tokens
@@ -83,7 +84,7 @@ class SwapViewModel @Inject constructor(
 
     fun setFromToken(from: ERC20Token) {
         fromToken.value = from
-        viewModelScope.launch {
+        safeCall {
             fromUSD.value = getRate(from)
             calculateRate()
         }
@@ -92,7 +93,7 @@ class SwapViewModel @Inject constructor(
 
     fun setToToken(to: ERC20Token) {
         toToken.value = to
-        viewModelScope.launch {
+        safeCall {
             toUSD.value = getRate(to)
             calculateRate()
         }

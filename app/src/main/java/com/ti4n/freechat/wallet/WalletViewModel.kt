@@ -14,6 +14,7 @@ import com.ti4n.freechat.model.response.freechat.ERC20Token
 import com.ti4n.freechat.network.FreeChatApiService
 import com.ti4n.freechat.paging.EthTransactionPagingSourceFactory
 import com.ti4n.freechat.util.EthUtil
+import com.ti4n.freechat.util.safeCall
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -39,7 +40,7 @@ class WalletViewModel @Inject constructor(
     val selectedToken = MutableStateFlow<ERC20Token?>(null)
 
     init {
-        viewModelScope.launch {
+        safeCall {
             address.value = account.filterNotNull().first()
             erc20Tokens.value = freeChatApiService.getSupportTokens().result
             list.addAll(erc20Tokens.value.map { TokenValue(it, "0", "0") })

@@ -9,9 +9,12 @@ import androidx.compose.ui.graphics.drawscope.drawIntoCanvas
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavController
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlinx.coroutines.withContext
 import java.io.UnsupportedEncodingException
@@ -109,4 +112,12 @@ fun NavController.getBackStackEntryOrNull(route: String): NavBackStackEntry? {
         entry.destination.route == route
     }
     return lastFromBackStack
+}
+
+fun ViewModel.safeCall(block: suspend () -> Unit) {
+    runCatching {
+        viewModelScope.launch {
+            block()
+        }
+    }
 }

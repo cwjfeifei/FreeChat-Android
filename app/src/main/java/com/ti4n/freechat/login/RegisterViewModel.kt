@@ -16,6 +16,7 @@ import com.ti4n.freechat.network.FreeChatIMService
 import com.ti4n.freechat.toast
 import com.ti4n.freechat.util.EthUtil
 import com.ti4n.freechat.util.IM
+import com.ti4n.freechat.util.safeCall
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -56,7 +57,7 @@ class RegisterViewModel @Inject constructor(
     var passedTime = MutableStateFlow(0)
 
     init {
-        viewModelScope.launch {
+        safeCall {
             faceUrls.value = freeChatApiService.getAvatars().data ?: emptyList()
         }
         viewModelScope.launch {

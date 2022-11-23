@@ -12,6 +12,7 @@ import com.ti4n.freechat.model.response.freechat.ERC20Token
 import com.ti4n.freechat.network.FreeChatApiService
 import com.ti4n.freechat.util.EthUtil
 import com.ti4n.freechat.util.IM
+import com.ti4n.freechat.util.safeCall
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import io.openim.android.sdk.models.UserInfo
@@ -56,16 +57,14 @@ class SendMoneyViewModel @Inject constructor(
     }.flow
 
     init {
-        viewModelScope.launch {
-            async {
-                tokens.value = freeChatApiService.getSupportTokens().result
-                setSelectedToken(tokens.value.first())
-            }
-            async {
-                if (isRedPack && toUserId.isNotEmpty()) {
-                    toUserInfo.value = IM.getUserInfo(toUserId)
-                    addressDone()
-                }
+        safeCall {
+            tokens.value = freeChatApiService.getSupportTokens().result
+            setSelectedToken(tokens.value.first())
+        }
+        safeCall {
+            if (isRedPack && toUserId.isNotEmpty()) {
+                toUserInfo.value = IM.getUserInfo(toUserId)
+                addressDone()
             }
         }
     }
@@ -76,7 +75,7 @@ class SendMoneyViewModel @Inject constructor(
 
     fun addressDone() {
         if (toAddress.value.isNotEmpty()) {
-            viewModelScope.launch(Dispatchers.IO) {
+            safeCall {
                 EthUtil.gasPrice(
                     fromAddress, toAddress.value
                 ).collectLatest {
