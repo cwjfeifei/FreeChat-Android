@@ -1,6 +1,6 @@
 package com.ti4n.freechat.setting
 
-import androidx.compose.foundation.clickable
+import com.ti4n.freechat.util.clickableSingle
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
@@ -51,7 +51,7 @@ fun ChangePasswordView(navController: NavController) {
                 color = Color(0xFF181818),
                 fontSize = 14.sp,
                 modifier = Modifier
-                    .clickable {
+                    .clickableSingle {
                         navController.navigateUp()
                     }
                     .padding(horizontal = 16.dp, vertical = 4.dp),
@@ -71,7 +71,7 @@ fun ChangePasswordView(navController: NavController) {
                 ) else Color(0xFFB3B3B3),
                 fontWeight = FontWeight.Medium,
                 modifier = Modifier
-                    .clickable {
+                    .clickableSingle {
                         if (oldPassword.isNotEmpty() && newPassword1.isNotEmpty() && newPassword2.isNotEmpty()) {
                             scope.launch {
                                 if (EthUtil.changeWalletPassword(

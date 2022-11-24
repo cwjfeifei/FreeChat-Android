@@ -2,7 +2,7 @@ package com.ti4n.freechat.swap
 
 import android.os.Bundle
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
+import com.ti4n.freechat.util.clickableSingle
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -74,7 +74,7 @@ fun SelectTokenView(
                     verticalAlignment = Alignment.CenterVertically,
                     modifier = Modifier
                         .fillMaxWidth()
-                        .clickable {
+                        .clickableSingle {
                             navController.previousBackStackEntry
                                 ?.savedStateHandle
                                 ?.set(fromType, it.symbol)

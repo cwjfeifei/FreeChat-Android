@@ -4,7 +4,7 @@ import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
+import com.ti4n.freechat.util.clickableSingle
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.Icon
@@ -36,7 +36,7 @@ fun BigImageView(navController: NavController, image: Url) {
         modifier = Modifier
             .fillMaxSize()
             .background(Color.Black)
-            .clickable { showToolbar = !showToolbar }
+            .clickableSingle { showToolbar = !showToolbar }
     ) {
         AnimatedVisibility(
             visible = showToolbar,
@@ -49,7 +49,7 @@ fun BigImageView(navController: NavController, image: Url) {
                     Icon(
                         imageVector = Icons.Default.ArrowBack,
                         contentDescription = null,
-                        Modifier.clickable { navController.navigateUp() })
+                        Modifier.clickableSingle { navController.navigateUp() })
                 },
                 modifier = Modifier.align(Alignment.TopCenter),
                 backgroundColor = Color.Black.copy(0.2f)

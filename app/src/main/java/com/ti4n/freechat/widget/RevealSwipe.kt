@@ -6,6 +6,7 @@ import androidx.compose.animation.core.SnapSpec
 import androidx.compose.foundation.LocalIndication
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import com.ti4n.freechat.util.clickableSingle
 import androidx.compose.foundation.gestures.Orientation
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
@@ -152,13 +153,15 @@ fun RevealSwipe(
         // cubic parameters can be evaluated here https://cubic-bezier.com/
         val alpha = alphaEasing.transform(draggedRatio)
 
-        val animatedBackgroundEndColor = if (alpha in 0f..1f && animateBackgroundCardColor) backgroundCardEndColor.copy(
-            alpha = alpha
-        ) else backgroundCardEndColor
+        val animatedBackgroundEndColor =
+            if (alpha in 0f..1f && animateBackgroundCardColor) backgroundCardEndColor.copy(
+                alpha = alpha
+            ) else backgroundCardEndColor
 
-        val animatedBackgroundStartColor = if (alpha in 0f..1f && animateBackgroundCardColor) backgroundCardStartColor.copy(
-            alpha = alpha
-        ) else backgroundCardStartColor
+        val animatedBackgroundStartColor =
+            if (alpha in 0f..1f && animateBackgroundCardColor) backgroundCardStartColor.copy(
+                alpha = alpha
+            ) else backgroundCardStartColor
 
         // non swipable with hidden content
         Card(
@@ -180,7 +183,7 @@ fun RevealSwipe(
                         .fillMaxWidth(0.5f)
                         .fillMaxHeight()
                         .background(if (directions.contains(RevealDirection.StartToEnd)) animatedBackgroundStartColor else Color.Transparent)
-                        .clickable(onClick = backgroundStartClick),
+                        .clickableSingle(onClick = backgroundStartClick),
                     horizontalArrangement = Arrangement.Start,
                     verticalAlignment = Alignment.CenterVertically,
                     content = hiddenContentStart
@@ -190,7 +193,7 @@ fun RevealSwipe(
                         .fillMaxWidth(1f)
                         .fillMaxHeight()
                         .background(if (directions.contains(RevealDirection.EndToStart)) animatedBackgroundEndColor else Color.Transparent)
-                        .clickable(onClick = backgroundEndClick),
+                        .clickableSingle(onClick = backgroundEndClick),
                     horizontalArrangement = Arrangement.End,
                     verticalAlignment = Alignment.CenterVertically,
                     content = hiddenContentEnd
@@ -220,15 +223,13 @@ fun RevealSwipe(
                     )
                     .then(
                         if (onContentClick != null && !closeOnContentClick) {
-                            Modifier.clickable(
+                            Modifier.clickableSingle(
                                 onClick = onContentClick
                             )
                         } else if (onContentClick == null && closeOnContentClick) {
                             // if no onContentClick handler passed, add click handler with no indication to enable close on content click
-                            Modifier.clickable(
+                            Modifier.clickableSingle(
                                 onClick = closeOnContentClickHandler,
-                                indication = null,
-                                interactionSource = remember { MutableInteractionSource() }
                             )
                         } else if (onContentClick != null && closeOnContentClick) {
                             // decide based on state:
@@ -246,8 +247,7 @@ fun RevealSwipe(
                                     }
                                 },
                                 // no indication if just closing
-                                indication = if (state.targetValue != RevealValue.Default) null else LocalIndication.current,
-                                interactionSource = remember { MutableInteractionSource() }
+//                                indication = if (state.targetValue != RevealValue.Default) null else LocalIndication.current,
                             )
                         } else Modifier
                     )

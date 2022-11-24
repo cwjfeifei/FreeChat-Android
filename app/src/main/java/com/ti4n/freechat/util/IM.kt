@@ -33,8 +33,7 @@ object IM {
     val totalUnreadCount = MutableStateFlow(0)
     val showNewFriendApplication = MutableStateFlow(false)
 
-    val DEFAULT_FACEURL =
-        "https://www.google.com/images/branding/googlelogo/2x/googlelogo_color_272x92dp.png" // TODO
+    val DEFAULT_FACEURL = "http://oss.freechat.world/face/portrait_default.png"
 
     fun init(context: Context) {
         imClient.initSDK(Platform.ANDROID,

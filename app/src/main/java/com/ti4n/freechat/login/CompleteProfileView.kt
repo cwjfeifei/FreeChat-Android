@@ -6,7 +6,7 @@ import android.widget.Toast
 import androidx.annotation.StringRes
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
+import com.ti4n.freechat.util.clickableSingle
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
@@ -246,7 +246,7 @@ fun CompleteProfileItem(
     Row(modifier = Modifier
         .fillMaxWidth()
         .height(50.dp)
-        .clickable { click() }
+        .clickableSingle { click() }
         .padding(start = 16.dp), verticalAlignment = Alignment.CenterVertically) {
         Text(text = stringResource(id = title), color = Color(0xFF1A1A1A), fontSize = 16.sp)
         Spacer(modifier = Modifier.width(24.dp))
@@ -271,7 +271,7 @@ fun RowScope.GenderItem(title: String, isSelected: Boolean, click: (String) -> U
             .fillMaxHeight()
             .weight(1f)
             .background(if (isSelected) Color(0xFFE8F3FF) else Color(0xFFF5F5F5))
-            .clickable { click(title) }) {
+            .clickableSingle { click(title) }) {
         Text(
             text = title,
             textAlign = TextAlign.Center,

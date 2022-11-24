@@ -4,7 +4,7 @@ import android.os.Build
 import android.text.TextUtils
 import android.util.Log
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
+import com.ti4n.freechat.util.clickableSingle
 import androidx.compose.foundation.gestures.Orientation
 import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.gestures.draggable
@@ -17,6 +17,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material3.LargeTopAppBar
 import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.CenterVertically
 import androidx.compose.ui.Modifier
@@ -33,6 +34,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.coerceAtMost
 import androidx.compose.ui.unit.dp
@@ -53,6 +55,7 @@ import com.ti4n.freechat.util.AnimatedPngDecoder
 import com.ti4n.freechat.util.IM
 import com.ti4n.freechat.util.IM.DEFAULT_FACEURL
 import com.ti4n.freechat.widget.CustomPaddingTextField
+import com.ti4n.freechat.widget.DefaultProfileLargeImage
 import com.ti4n.freechat.widget.Image
 import io.openim.android.sdk.models.FriendInfo
 import kotlinx.coroutines.flow.collectLatest
@@ -109,8 +112,8 @@ fun ProfileView(
         }
     }
     val density = LocalDensity.current
-    var userInfoOffsetPx by remember {
-        mutableStateOf(screenHeight - 100.dp - (if (isSelf) 0.dp else 42.dp) - 280.dp)
+    var userInfoOffsetPx by rememberSaveable {
+        mutableStateOf((screenHeight - 100.dp - (if (isSelf) 0.dp else 42.dp) - 280.dp).value)
     }
     Scaffold(bottomBar = {
         if (isFromFriendApplication && !isFriend && !isSelf) {
@@ -188,17 +191,22 @@ fun ProfileView(
                 .fillMaxSize()
                 .padding(it), contentAlignment = Alignment.TopCenter
         ) {
-            androidx.compose.foundation.Image(
-                painter = rememberAsyncImagePainter(
-                    ImageRequest.Builder(context).data(data = userInfo?.faceURL ?: DEFAULT_FACEURL)
-                        .build(), imageLoader = imageLoader, contentScale = ContentScale.Crop
-                ),
-                contentDescription = null,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(screenHeight - 100.dp - 42.dp),
-                contentScale = ContentScale.Crop
-            )
+            if ((userInfo?.faceURL?.ifEmpty { DEFAULT_FACEURL }
+                    ?: DEFAULT_FACEURL) == DEFAULT_FACEURL)
+                DefaultProfileLargeImage(isSelf = isSelf)
+            else
+                androidx.compose.foundation.Image(
+                    painter = rememberAsyncImagePainter(
+                        ImageRequest.Builder(context)
+                            .data(data = userInfo?.faceURL ?: DEFAULT_FACEURL)
+                            .build(), imageLoader = imageLoader, contentScale = ContentScale.Crop
+                    ),
+                    contentDescription = null,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(screenHeight - 100.dp - (if (isSelf) 0.dp else 42.dp)),
+                    contentScale = ContentScale.Crop
+                )
             TopAppBar(
                 modifier = Modifier.statusBarsPadding(),
                 backgroundColor = Color.Transparent,
@@ -215,7 +223,7 @@ fun ProfileView(
                     .fillMaxSize()
                     .background(Color.Transparent)
                     .offset(
-                        y = userInfoOffsetPx
+                        y = Dp(userInfoOffsetPx)
                             .coerceAtLeast(0.dp)
                             .coerceAtMost(screenHeight - 100.dp - (if (isSelf) 0.dp else 42.dp) - 280.dp)
                     )
@@ -232,7 +240,7 @@ fun ProfileView(
                         .draggable(orientation = Orientation.Vertical,
                             state = rememberDraggableState { delta ->
                                 userInfoOffsetPx += with(density) {
-                                    delta.toDp()
+                                    delta.toDp().value
                                 }
                             })
                 ) {
@@ -414,7 +422,7 @@ fun ProfileItem(title: String, click: () -> Unit) {
         Modifier
             .fillMaxWidth()
             .height(50.dp)
-            .clickable { click() }
+            .clickableSingle { click() }
             .padding(16.dp),
         verticalAlignment = CenterVertically) {
         Text(text = title, fontSize = 14.sp, color = Color(0xFF1A1A1A))

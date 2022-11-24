@@ -4,7 +4,7 @@ import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
+import com.ti4n.freechat.util.clickableSingle
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -174,7 +174,7 @@ fun WalletCard(address: String, allMoney: Double) {
                     modifier = Modifier.weight(1f)
                 )
                 Spacer(modifier = Modifier.width(4.dp))
-                Image(mipmap = R.mipmap.copy, Modifier.clickable {
+                Image(mipmap = R.mipmap.copy, Modifier.clickableSingle {
                     clipboardManager.setText(AnnotatedString(address))
                 })
             }
@@ -188,7 +188,7 @@ fun ItemCoin(token: ERC20Token, count: String, usd: String, click: () -> Unit) {
     Row(
         Modifier
             .fillMaxWidth()
-            .clickable { click() }
+            .clickableSingle { click() }
             .padding(vertical = 12.dp),
         verticalAlignment = Alignment.CenterVertically) {
         AsyncImage(model = token.LogoURI,
@@ -240,7 +240,7 @@ fun ItemFunction(
     click: () -> Unit = {}
 ) {
     Column(horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = Modifier.clickable { click() }) {
+        modifier = Modifier.clickableSingle { click() }) {
         Box(
             modifier = Modifier
                 .background(backgroundColor, CircleShape)

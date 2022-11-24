@@ -42,7 +42,7 @@ class RegisterViewModel @Inject constructor(
     val clickedWords = MutableStateFlow(emptyList<String>())
 
     // For set Self UserInfo
-    val faceURL = MutableStateFlow("http://oss.freechat.world/face/portrait_default.png")
+    val faceURL = MutableStateFlow(IM.DEFAULT_FACEURL)
     val name = MutableStateFlow("")
     val birth = MutableStateFlow(0L)
     val gender = MutableStateFlow(1)  // 1 male 2 female
@@ -58,7 +58,14 @@ class RegisterViewModel @Inject constructor(
 
     init {
         safeCall {
-            faceUrls.value = freeChatApiService.getAvatars().data ?: emptyList()
+            faceUrls.value =
+                listOf(
+                    FaceImageInfo(
+                        -1,
+                        IM.DEFAULT_FACEURL,
+                        IM.DEFAULT_FACEURL
+                    )
+                ) + (freeChatApiService.getAvatars().data ?: emptyList())
         }
         viewModelScope.launch {
             while (true) {

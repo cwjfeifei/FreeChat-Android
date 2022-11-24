@@ -5,7 +5,7 @@ import android.icu.text.SimpleDateFormat
 import android.os.Build.VERSION.SDK_INT
 import android.widget.Toast
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
+import com.ti4n.freechat.util.clickableSingle
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -220,7 +220,7 @@ fun MePropertyFace(
             .fillMaxWidth()
             .height(74.dp)
             .background(color = Color.White)
-            .clickable {
+            .clickableSingle {
                 click()
             }) {
 
@@ -288,7 +288,7 @@ fun MePropertyItem(
             .fillMaxWidth()
             .height(74.dp)
             .background(color = Color.White)
-            .clickable {
+            .clickableSingle {
                 click()
             }) {
 

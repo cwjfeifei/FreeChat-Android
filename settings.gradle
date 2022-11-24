@@ -11,10 +11,7 @@ dependencyResolutionManagement {
     repositories {
         google()
         mavenCentral()
-        maven {
-            allowInsecureProtocol = true
-            url 'http://121.37.25.71:8081/repository/maven2/' // 新地址
-        }
+        maven { url 'https://open-im-online.rentsoft.cn:51000/repository/maven2/' }
         maven { url 'https://jitpack.io' }
     }
 }

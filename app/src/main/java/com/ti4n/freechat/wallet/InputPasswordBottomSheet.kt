@@ -1,7 +1,7 @@
 package com.ti4n.freechat.wallet
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
+import com.ti4n.freechat.util.clickableSingle
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -115,7 +115,7 @@ fun InputPasswordBottomSheet(
             text = stringResource(id = R.string.forget_password),
             color = Color(0xFF666666),
             fontSize = 14.sp,
-            modifier = Modifier.clickable { forgotPassword() }
+            modifier = Modifier.clickableSingle { forgotPassword() }
         )
         Spacer(modifier = Modifier.height(30.dp))
         Divider(color = Color(0xFFEBEBEB), thickness = 0.5.dp)

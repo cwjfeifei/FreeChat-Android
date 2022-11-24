@@ -5,7 +5,7 @@ import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.expandHorizontally
 import androidx.compose.animation.shrinkHorizontally
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
+import com.ti4n.freechat.util.clickableSingle
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
@@ -72,7 +72,7 @@ fun SearchView(
                 .height(32.dp)
                 .weight(1f)
                 .background(Color.White, RoundedCornerShape(4.dp))
-                .clickable {
+                .clickableSingle {
                     setShowSearchView(true)
                 }
         ) {
@@ -118,7 +118,7 @@ fun SearchView(
                     },
                     trailingIcon = {
                         if (searchText.isNotEmpty())
-                            Image(mipmap = R.mipmap.close, Modifier.clickable { setSearchText("") })
+                            Image(mipmap = R.mipmap.close, Modifier.clickableSingle { setSearchText("") })
                     },
                     padding = PaddingValues(vertical = 6.dp)
                 )
@@ -133,7 +133,7 @@ fun SearchView(
                 text = stringResource(id = R.string.cancel),
                 color = Color(0xFF323232),
                 modifier = Modifier
-                    .clickable { setShowSearchView(false) }
+                    .clickableSingle { setShowSearchView(false) }
                     .padding(horizontal = 6.dp),
                 fontSize = 16.sp
             )

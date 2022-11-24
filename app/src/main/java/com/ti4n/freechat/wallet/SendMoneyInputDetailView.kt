@@ -2,7 +2,7 @@ package com.ti4n.freechat.wallet
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
+import com.ti4n.freechat.util.clickableSingle
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -124,7 +124,7 @@ fun SendMoneyInputDetailView(
                     verticalAlignment = Alignment.CenterVertically,
                     modifier = Modifier
                         .fillMaxWidth()
-                        .clickable {
+                        .clickableSingle {
                             navController.navigate(
                                 Route.SelectTransferToken.jump(
                                     ERC20Tokens(
@@ -201,7 +201,7 @@ fun SendMoneyInputDetailView(
                             .height(46.dp)
                             .width(68.dp)
                             .background(Color(0xFF141B33), RoundedCornerShape(4.dp))
-                            .clickable {
+                            .clickableSingle {
                                 viewModel.setAmount(remainAmount)
                             }, contentAlignment = Alignment.Center
                     ) {

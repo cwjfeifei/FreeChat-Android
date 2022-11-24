@@ -4,7 +4,7 @@ import android.provider.MediaStore
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.compose.foundation.clickable
+import com.ti4n.freechat.util.clickableSingle
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Divider
 import androidx.compose.material.Text
@@ -52,7 +52,7 @@ fun SelectableItem(title: String, click: () -> Unit) {
         modifier = Modifier
             .height(50.dp)
             .fillMaxWidth()
-            .clickable { click() }) {
+            .clickableSingle { click() }) {
         Text(text = title, color = Color(0xFF1A1A1A), fontSize = 16.sp)
     }
 }

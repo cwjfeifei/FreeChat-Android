@@ -3,7 +3,7 @@ package com.ti4n.freechat.home
 import android.os.Build
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
+import com.ti4n.freechat.util.clickableSingle
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
@@ -44,6 +44,8 @@ import com.ti4n.freechat.Route
 import com.ti4n.freechat.login.GenderItem
 import com.ti4n.freechat.login.ItemFaceImage
 import com.ti4n.freechat.util.AnimatedPngDecoder
+import com.ti4n.freechat.util.IM
+import com.ti4n.freechat.widget.DefaultProfileLargeImage
 import com.ti4n.freechat.widget.Image
 import java.net.URLEncoder
 import java.nio.charset.StandardCharsets
@@ -122,21 +124,21 @@ fun EditPickFaceImageView(
                 }
             }
         )
-
-        androidx.compose.foundation.Image(
-            painter = rememberAsyncImagePainter(
-                ImageRequest.Builder(context).data(data = faceURL)
-                    .build(),
-//              ImageRequest.Builder(context).data(data = "https://pic-go-bed.oss-cn-beijing.aliyuncs.com/img/20220316151929.png")
-//                    .build(),
-                imageLoader = imageLoader,
-            ),
-            contentDescription = null,
-            modifier = Modifier
-                .fillMaxWidth()
-                .weight(1f),
-            contentScale = ContentScale.Crop
-        )
+        if ((faceURL.ifEmpty { IM.DEFAULT_FACEURL }) == IM.DEFAULT_FACEURL)
+            DefaultProfileLargeImage(isSelf = true, Modifier.weight(1f))
+        else
+            androidx.compose.foundation.Image(
+                painter = rememberAsyncImagePainter(
+                    ImageRequest.Builder(context).data(data = faceURL)
+                        .build(),
+                    imageLoader = imageLoader,
+                ),
+                contentDescription = null,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .weight(1f),
+                contentScale = ContentScale.Crop
+            )
 //        Divider(color = Color(0xFFEBEBEB), thickness = 0.5.dp, startIndent = 2.dp)
         LazyRow(
             modifier = Modifier

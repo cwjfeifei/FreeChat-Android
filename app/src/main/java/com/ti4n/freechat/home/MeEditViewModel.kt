@@ -9,6 +9,7 @@ import com.ti4n.freechat.model.response.freechat.FaceImageInfo
 import com.ti4n.freechat.network.FreeChatApiService
 import com.ti4n.freechat.network.FreeChatIMService
 import com.ti4n.freechat.util.IM
+import com.ti4n.freechat.util.safeCall
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -37,7 +38,7 @@ class MeEditViewModel @Inject constructor(
     val faceUrls = MutableStateFlow(emptyList<FaceImageInfo>())
 
     init {
-        viewModelScope.launch {
+        safeCall {
             var selfInfo = IM.currentUserInfo.value
             selfInfo?.let {
                 faceURL.value = if (it.faceURL == null) IM.DEFAULT_FACEURL else it.faceURL
@@ -46,7 +47,13 @@ class MeEditViewModel @Inject constructor(
                 birth.value = it.birth * 1000
                 email.value = if (it.email == null) "" else it.email
             }
-            faceUrls.value = freeChatApiService.getAvatars().data ?: emptyList()
+            faceUrls.value = listOf(
+                FaceImageInfo(
+                    -1,
+                    IM.DEFAULT_FACEURL,
+                    IM.DEFAULT_FACEURL
+                )
+            ) + (freeChatApiService.getAvatars().data ?: emptyList())
         }
     }
 

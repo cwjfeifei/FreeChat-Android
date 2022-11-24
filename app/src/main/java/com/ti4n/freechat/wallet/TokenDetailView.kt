@@ -2,7 +2,7 @@ package com.ti4n.freechat.wallet
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
+import com.ti4n.freechat.util.clickableSingle
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -106,7 +106,7 @@ fun TokenDetailView(
                             .background(
                                 Color(0xFF5C77E6), RoundedCornerShape(4.dp)
                             )
-                            .clickable {
+                            .clickableSingle {
                                 uriHandler.openUri("https://etherscan.io/token/${token?.contractAddress}")
                             }
                             .padding(horizontal = 12.dp, vertical = 4.dp)
@@ -135,22 +135,22 @@ fun TokenDetailView(
             if (!token?.github.isNullOrEmpty()) {
                 Image(
                     mipmap = R.mipmap.github,
-                    modifier = Modifier.clickable { uriHandler.openUri(token!!.github) })
+                    modifier = Modifier.clickableSingle { uriHandler.openUri(token!!.github) })
             }
             if (!token?.twitter.isNullOrEmpty()) {
                 Image(
                     mipmap = R.mipmap.twitter,
-                    modifier = Modifier.clickable { uriHandler.openUri(token!!.twitter) })
+                    modifier = Modifier.clickableSingle { uriHandler.openUri(token!!.twitter) })
             }
             if (!token?.facebook.isNullOrEmpty()) {
                 Image(
                     mipmap = R.mipmap.facebook,
-                    modifier = Modifier.clickable { uriHandler.openUri(token!!.facebook) })
+                    modifier = Modifier.clickableSingle { uriHandler.openUri(token!!.facebook) })
             }
             if (!token?.reddit.isNullOrEmpty()) {
                 Image(
                     mipmap = R.mipmap.reddit,
-                    modifier = Modifier.clickable { uriHandler.openUri(token!!.reddit) })
+                    modifier = Modifier.clickableSingle { uriHandler.openUri(token!!.reddit) })
             }
         }
     }

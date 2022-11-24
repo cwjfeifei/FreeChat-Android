@@ -2,7 +2,7 @@ package com.ti4n.freechat.contact
 
 import android.util.Log
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
+import com.ti4n.freechat.util.clickableSingle
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -91,7 +91,7 @@ fun ItemFriendApplication(
         .fillMaxWidth()
         .height(78.dp)
         .background(Color.White)
-        .clickable {
+        .clickableSingle {
             navController.navigate(
                 if (friendApplicationInfo.handleResult != -1)
                     Route.LookFriendApplication.jump(

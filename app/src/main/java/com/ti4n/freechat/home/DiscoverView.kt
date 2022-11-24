@@ -2,7 +2,7 @@ package com.ti4n.freechat.home
 
 import androidx.annotation.DrawableRes
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
+import com.ti4n.freechat.util.clickableSingle
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -81,7 +81,7 @@ fun DiscoverItem(@DrawableRes icon: Int, title: String, click: () -> Unit = {}) 
             .fillMaxWidth()
             .height(50.dp)
             .background(Color.White)
-            .clickable { click() }
+            .clickableSingle { click() }
             .padding(horizontal = 16.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {

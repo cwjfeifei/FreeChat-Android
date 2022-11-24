@@ -1,7 +1,7 @@
 package com.ti4n.freechat.redpack
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
+import com.ti4n.freechat.util.clickableSingle
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -330,7 +330,7 @@ fun SelectTokenRedPack(
                 .fillMaxWidth()
                 .height(50.dp)
                 .background(Color(0xFFF7F7F7), RoundedCornerShape(8.dp))
-                .clickable {
+                .clickableSingle {
                     expanded = true
                 }
                 .padding(vertical = 5.dp, horizontal = 16.dp)
@@ -364,7 +364,7 @@ fun SelectTokenRedPack(
                         .fillMaxWidth()
                         .height(50.dp)
                         .background(Color(0x2BF5F5F5), RoundedCornerShape(8.dp))
-                        .clickable {
+                        .clickableSingle {
                             expanded = false
                             onSelected(it)
                         }

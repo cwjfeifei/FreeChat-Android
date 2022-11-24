@@ -2,7 +2,7 @@ package com.ti4n.freechat.wallet
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
+import com.ti4n.freechat.util.clickableSingle
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -391,7 +391,7 @@ fun ConfirmTransactionView(
                         fontSize = 18.sp,
                         modifier = Modifier
                             .weight(1f)
-                            .clickable { navController.navigateUp() }
+                            .clickableSingle { navController.navigateUp() }
                             .padding(vertical = 12.dp),
                         style = TextStyle(textAlign = TextAlign.Center),
                     )
@@ -406,7 +406,7 @@ fun ConfirmTransactionView(
                         fontSize = 18.sp,
                         modifier = Modifier
                             .weight(1f)
-                            .clickable {
+                            .clickableSingle {
                                 uriHandler.openUri("https://etherscan.io/tx/$transactionHash")
                             }
                             .padding(vertical = 12.dp),

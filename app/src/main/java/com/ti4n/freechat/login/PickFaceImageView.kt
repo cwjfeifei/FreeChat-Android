@@ -4,7 +4,7 @@ import android.os.Build
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
+import com.ti4n.freechat.util.clickableSingle
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyItemScope
 import androidx.compose.foundation.lazy.LazyRow
@@ -43,6 +43,8 @@ import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.ti4n.freechat.R
 import com.ti4n.freechat.Route
 import com.ti4n.freechat.util.AnimatedPngDecoder
+import com.ti4n.freechat.util.IM
+import com.ti4n.freechat.widget.DefaultProfileLargeImage
 import com.ti4n.freechat.widget.Image
 import java.net.URLEncoder
 import java.nio.charset.StandardCharsets
@@ -124,19 +126,21 @@ fun PickFaceImageView(
                 }
             }
         )
-
-        androidx.compose.foundation.Image(
-            painter = rememberAsyncImagePainter(
-                ImageRequest.Builder(context).data(data = faceURL)
-                    .build(),
-                imageLoader = imageLoader,
-            ),
-            contentDescription = null,
-            modifier = Modifier
-                .fillMaxWidth()
-                .weight(1f),
-            contentScale = ContentScale.Crop
-        )
+        if ((faceURL.ifEmpty { IM.DEFAULT_FACEURL }) == IM.DEFAULT_FACEURL)
+            DefaultProfileLargeImage(isSelf = true)
+        else
+            androidx.compose.foundation.Image(
+                painter = rememberAsyncImagePainter(
+                    ImageRequest.Builder(context).data(data = faceURL)
+                        .build(),
+                    imageLoader = imageLoader,
+                ),
+                contentDescription = null,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .weight(1f),
+                contentScale = ContentScale.Crop
+            )
 
 //        Row(
 //            modifier = Modifier
@@ -185,7 +189,7 @@ fun LazyItemScope.ItemFaceImage(faceUrl: String, isSelected: Boolean, click: () 
                 .clip(
                     RoundedCornerShape(8.dp)
                 )
-                .clickable { click() }
+                .clickableSingle { click() }
                 .border(
                     1.dp,
                     if (isSelected) Color(0xFF3879FD) else Color(0xF5f5f5f5),

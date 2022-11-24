@@ -1,6 +1,6 @@
 package com.ti4n.freechat.home
 
-import androidx.compose.foundation.clickable
+import com.ti4n.freechat.util.clickableSingle
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.padding
@@ -64,7 +64,7 @@ fun EditGenderView(navController: NavController, viewModel: MeEditViewModel) {
                     color = Color(0xFF1B1B1B),
                     fontSize = 14.sp,
                     modifier = Modifier
-                        .clickable {
+                        .clickableSingle {
                             navController.navigateUp()
                         }
                         .padding(horizontal = 16.dp),
@@ -75,7 +75,7 @@ fun EditGenderView(navController: NavController, viewModel: MeEditViewModel) {
                     color = Color(0xFF26C24F),
                     fontWeight = FontWeight.Medium,
                     modifier = Modifier
-                        .clickable {
+                        .clickableSingle {
                             viewModel.setGender(temGender)
                             navController.navigateUp()
                         }

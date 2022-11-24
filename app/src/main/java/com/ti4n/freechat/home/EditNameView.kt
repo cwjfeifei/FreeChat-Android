@@ -1,6 +1,6 @@
 package com.ti4n.freechat.home
 
-import androidx.compose.foundation.clickable
+import com.ti4n.freechat.util.clickableSingle
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
@@ -51,7 +51,7 @@ fun EditNameView(navController: NavController, viewModel: MeEditViewModel) {
                     color = Color(0xFF181818),
                     fontSize = 14.sp,
                     modifier = Modifier
-                        .clickable {
+                        .clickableSingle {
                             navController.navigateUp()
                         }
                         .padding(horizontal = 16.dp, vertical = 4.dp))
@@ -61,7 +61,7 @@ fun EditNameView(navController: NavController, viewModel: MeEditViewModel) {
                     color = if (nickname.isNotEmpty()) Color(0xFF26C24F) else Color(0xFFB3B3B3),
                     fontWeight = FontWeight.Medium,
                     modifier = Modifier
-                        .clickable {
+                        .clickableSingle {
                             if (nickname.isNotEmpty()) {
                                 viewModel.setNickname(nickname)
                                 navController.navigateUp()
@@ -91,7 +91,7 @@ fun EditNameView(navController: NavController, viewModel: MeEditViewModel) {
                 ),
                 trailingIcon = {
                     if (nickname != "") Image(mipmap = R.mipmap.close,
-                        modifier = Modifier.clickable { nickname = "" })
+                        modifier = Modifier.clickableSingle { nickname = "" })
                 },
                 textStyle = TextStyle(fontSize = 16.sp, color = Color.Black),
                 placeholder = {

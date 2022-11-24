@@ -10,7 +10,7 @@ import androidx.compose.animation.expandVertically
 import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
+import com.ti4n.freechat.util.clickableSingle
 import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.hoverable
 import androidx.compose.foundation.layout.Box
@@ -319,7 +319,7 @@ fun ItemFriend(@DrawableRes image: Int, @StringRes text: Int, click: () -> Unit)
         Modifier
             .fillMaxWidth()
             .height(50.dp)
-            .clickable { click() }
+            .clickableSingle { click() }
             .padding(horizontal = 16.dp),
         verticalAlignment = Alignment.CenterVertically) {
         Image(mipmap = image)
@@ -340,7 +340,7 @@ fun ItemFriend(friendInfo: BaseInfo, click: () -> Unit) {
         Modifier
             .fillMaxWidth()
             .height(50.dp)
-            .clickable { click() }
+            .clickableSingle { click() }
             .padding(horizontal = 16.dp),
         verticalAlignment = Alignment.CenterVertically) {
         AsyncImage(

@@ -3,7 +3,7 @@ package com.ti4n.freechat.setting
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
+import com.ti4n.freechat.util.clickableSingle
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -211,7 +211,7 @@ fun SettingItem(
         .fillMaxWidth()
         .height(50.dp)
         .background(Color.White)
-        .clickable { click() }
+        .clickableSingle { click() }
         .padding(horizontal = 16.dp),
         verticalAlignment = Alignment.CenterVertically) {
         Text(

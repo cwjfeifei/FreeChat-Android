@@ -2,7 +2,7 @@ package com.ti4n.freechat.wallet
 
 import android.icu.text.SimpleDateFormat
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
+import com.ti4n.freechat.util.clickableSingle
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -84,7 +84,7 @@ fun TokenDetailSimplyView(
             }, actions = {
                 Text(text = stringResource(id = R.string.detail),
                     Modifier
-                        .clickable {
+                        .clickableSingle {
                             navController.navigate(
                                 Route.TokenDetail.jump(
                                     token?.symbol ?: "",

@@ -6,7 +6,7 @@ import android.util.Log
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
+import com.ti4n.freechat.util.clickableSingle
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -117,7 +117,7 @@ fun MeItem(@DrawableRes icon: Int, title: String, click: () -> Unit = {}) {
         .fillMaxWidth()
         .height(50.dp)
         .background(Color.White)
-        .clickable { click() }
+        .clickableSingle { click() }
         .padding(horizontal = 16.dp),
         verticalAlignment = Alignment.CenterVertically) {
         Image(mipmap = icon)
@@ -141,7 +141,7 @@ fun MeInfoItem(
     ConstraintLayout(modifier = Modifier
         .fillMaxWidth()
         .height(104.dp)
-        .clickable {
+        .clickableSingle {
             click()
         }) {
 
@@ -241,7 +241,7 @@ fun MeInfoItem(
 //    Row(
 //        modifier = Modifier
 //            .fillMaxWidth()
-//            .clickable { click() }
+//            .clickableSingle { click() }
 //            .padding(horizontal = 16.dp, vertical = 20.dp),
 //        verticalAlignment = Alignment.CenterVertically
 //    ) {

@@ -6,7 +6,7 @@ import android.content.Intent
 import android.icu.text.SimpleDateFormat
 import androidx.compose.animation.*
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
+import com.ti4n.freechat.util.clickableSingle
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
@@ -85,7 +85,7 @@ fun ChatListView(
                 HomeTitle(R.string.app_name)
             }, actions = {
                 Box {
-                    Image(mipmap = R.mipmap.add, modifier = Modifier.clickable {
+                    Image(mipmap = R.mipmap.add, modifier = Modifier.clickableSingle {
                         showAddView = true
                     })
                     DropdownMenu(
@@ -260,14 +260,14 @@ fun ChatItem(
                 modifier = Modifier
                     .size(78.dp)
                     .background(Color(0xFF1E84EF))
-                    .clickable { pin() }) {
+                    .clickableSingle { pin() }) {
                 Image(mipmap = if (isPin) R.mipmap.top_cancel else R.mipmap.top)
             }
             Box(contentAlignment = Alignment.Center,
                 modifier = Modifier
                     .size(78.dp)
                     .background(Color(0xFFFB5251))
-                    .clickable { delete() }) {
+                    .clickableSingle { delete() }) {
                 Image(mipmap = R.mipmap.delete)
             }
         },
@@ -280,7 +280,7 @@ fun ChatItem(
             .fillMaxWidth()
             .height(78.dp)
             .background(Color.White)
-            .clickable { onClick() }
+            .clickableSingle { onClick() }
             .padding(horizontal = 24.dp, vertical = 16.dp)) {
             BadgedBox(badge = {
                 if (unread != 0) {

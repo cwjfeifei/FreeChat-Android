@@ -11,7 +11,7 @@ import android.provider.MediaStore.MediaColumns.RELATIVE_PATH
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
+import com.ti4n.freechat.util.clickableSingle
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -136,7 +136,7 @@ fun ReceiveMoneyView(navController: NavController) {
                     .background(
                         Color(0xFFEBEBEB), RoundedCornerShape(4.dp)
                     )
-                    .clickable {
+                    .clickableSingle {
                         clipboardManager.setText(AnnotatedString(address))
                         toast.tryEmit(R.string.info_copied)
                     }

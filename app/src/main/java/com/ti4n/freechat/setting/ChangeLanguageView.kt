@@ -1,7 +1,7 @@
 package com.ti4n.freechat.setting
 
 import androidx.appcompat.app.AppCompatDelegate
-import androidx.compose.foundation.clickable
+import com.ti4n.freechat.util.clickableSingle
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -76,7 +76,7 @@ fun ChangeLanguageView(navController: NavController) {
                     color = Color(0xFF1B1B1B),
                     fontSize = 14.sp,
                     modifier = Modifier
-                        .clickable {
+                        .clickableSingle {
                             navController.navigateUp()
                         }
                         .padding(horizontal = 16.dp, vertical = 4.dp),
@@ -87,7 +87,7 @@ fun ChangeLanguageView(navController: NavController) {
                     color = Color(0xFF26C24F),
                     fontWeight = FontWeight.Medium,
                     modifier = Modifier
-                        .clickable {
+                        .clickableSingle {
                             val appLocale =
                                 LocaleListCompat.forLanguageTags(currentLanguage)
                             AppCompatDelegate.setApplicationLocales(appLocale)
@@ -122,7 +122,7 @@ fun LanguageItem(title: String, isSelected: Boolean, onSelect: () -> Unit) {
         verticalAlignment = Alignment.CenterVertically,
         modifier = Modifier
             .fillMaxWidth()
-            .clickable { onSelect() }
+            .clickableSingle { onSelect() }
             .padding(16.dp)
     ) {
         Text(text = title, color = Color(0xFF1A1A1A), fontSize = 14.sp)

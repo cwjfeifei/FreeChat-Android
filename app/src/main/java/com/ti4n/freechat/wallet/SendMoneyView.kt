@@ -6,7 +6,7 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.ActivityResultLauncher
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
+import com.ti4n.freechat.util.clickableSingle
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -139,7 +139,7 @@ fun SendMoneyView(navController: NavController, viewModel: SendMoneyViewModel = 
                         Spacer(modifier = Modifier.weight(1f))
                         Image(
                             mipmap = R.mipmap.scan_black,
-                            modifier = Modifier.clickable {
+                            modifier = Modifier.clickableSingle {
                                 barcodeLauncher.launch(
                                     ScanOptions().setDesiredBarcodeFormats(
                                         ScanOptions.QR_CODE
@@ -183,7 +183,7 @@ fun SendMoneyView(navController: NavController, viewModel: SendMoneyViewModel = 
                                 .height(46.dp)
                                 .width(68.dp)
                                 .background(Color(0xFF141B33), RoundedCornerShape(4.dp))
-                                .clickable {
+                                .clickableSingle {
                                     clipboardManager
                                         .getText()
                                         ?.let {

@@ -7,7 +7,7 @@ import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.expandVertically
 import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
+import com.ti4n.freechat.util.clickableSingle
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -49,6 +49,7 @@ import com.ti4n.freechat.Route
 import com.ti4n.freechat.model.im.toBaseInfo
 import com.ti4n.freechat.toast
 import com.ti4n.freechat.util.IM
+import com.ti4n.freechat.util.clickableSingle
 import com.ti4n.freechat.widget.HomeTitle
 import com.ti4n.freechat.widget.Image
 import com.ti4n.freechat.widget.MiddleEllipsisText
@@ -102,7 +103,7 @@ fun AddFriendView(navController: NavController) {
                     }
                 }, actions = {
                     Image(mipmap = R.mipmap.scan_black, modifier = Modifier
-                        .clickable {
+                        .clickableSingle {
                             barcodeLauncher.launch(
                                 ScanOptions()
                                     .setDesiredBarcodeFormats(
@@ -148,7 +149,7 @@ fun AddFriendView(navController: NavController) {
                             Color(0xFFEBEBEB),
                             RoundedCornerShape(4.dp)
                         )
-                        .clickable {
+                        .clickableSingle {
                             clipboardManager.setText(AnnotatedString(meInfo?.userID ?: ""))
                             toast.tryEmit(R.string.info_copied)
                         }
@@ -189,7 +190,7 @@ fun AddFriendView(navController: NavController) {
                 Row(
                     Modifier
                         .fillMaxWidth()
-                        .clickable {
+                        .clickableSingle {
                             scope.launch {
                                 onSearchFriend(context = context, searchText.value, navController)
                             }

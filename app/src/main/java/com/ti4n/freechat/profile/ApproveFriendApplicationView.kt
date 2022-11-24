@@ -1,7 +1,7 @@
 package com.ti4n.freechat.profile
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
+import com.ti4n.freechat.util.clickableSingle
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
@@ -87,7 +87,7 @@ fun ApproveFriendApplicationView(navController: NavController, viewModel: Profil
                 trailingIcon = {
                     Image(
                         mipmap = R.mipmap.close,
-                        modifier = Modifier.clickable { remark = "" })
+                        modifier = Modifier.clickableSingle { remark = "" })
                 }
             )
             Spacer(modifier = Modifier.weight(1f))

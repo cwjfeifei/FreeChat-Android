@@ -1,7 +1,7 @@
 package com.ti4n.freechat.login
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
+import com.ti4n.freechat.util.clickableSingle
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
@@ -65,7 +65,7 @@ fun SetBirthView(navController: NavController, viewModel: RegisterViewModel) {
                     color = Color(0xFF1B1B1B),
                     fontSize = 14.sp,
                     modifier = Modifier
-                        .clickable {
+                        .clickableSingle {
                             navController.navigateUp()
                         }
                         .padding(horizontal = 16.dp),
@@ -76,7 +76,7 @@ fun SetBirthView(navController: NavController, viewModel: RegisterViewModel) {
                     color = Color(0xFF26C24F),
                     fontWeight = FontWeight.Medium,
                     modifier = Modifier
-                        .clickable {
+                        .clickableSingle {
                             viewModel.setBirth(selectYear.value, selectMonth.value, selectDay.value)
                             navController.navigateUp()
                         }

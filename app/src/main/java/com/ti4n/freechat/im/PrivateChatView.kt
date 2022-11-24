@@ -12,7 +12,7 @@ import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.expandVertically
 import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
+import com.ti4n.freechat.util.clickableSingle
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -207,11 +207,11 @@ fun PrivateChatView(
             verticalAlignment = Alignment.CenterVertically
         ) {
             when (inputType) {
-                InputType.Voice -> Image(mipmap = R.mipmap.jianpan, modifier = Modifier.clickable {
+                InputType.Voice -> Image(mipmap = R.mipmap.jianpan, modifier = Modifier.clickableSingle {
                     inputType = InputType.Text
                 })
 
-                else -> Image(mipmap = R.mipmap.yuyin_chat, modifier = Modifier.clickable {
+                else -> Image(mipmap = R.mipmap.yuyin_chat, modifier = Modifier.clickableSingle {
                     if (recordPermissionState.status == PermissionStatus.Granted) {
                         inputType = InputType.Voice
                     } else recordPermissionState.launchPermissionRequest()
@@ -275,10 +275,10 @@ fun PrivateChatView(
                     keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Send)
                 )
             }
-//            Image(mipmap = R.mipmap.biaoqing, modifier = Modifier.clickable {
+//            Image(mipmap = R.mipmap.biaoqing, modifier = Modifier.clickableSingle {
 //                inputType = InputType.Emoji
 //            })
-            Image(mipmap = R.mipmap.more_type, modifier = Modifier.clickable {
+            Image(mipmap = R.mipmap.more_type, modifier = Modifier.clickableSingle {
                 keyboardController?.hide()
                 inputType = InputType.More
             })
@@ -346,7 +346,7 @@ fun ItemMoreFunction(@DrawableRes image: Int, @StringRes text: Int, click: () ->
             modifier = Modifier
                 .size(58.dp)
                 .background(Color.White, RoundedCornerShape(12.dp))
-                .clickable { click() })
+                .clickableSingle { click() })
         Spacer(modifier = Modifier.height(5.dp))
         Text(text = stringResource(id = text), color = Color(0xFF666666), fontSize = 12.sp)
     }
@@ -368,7 +368,7 @@ fun ToUserMessage(message: Message, navController: NavController) {
             modifier = Modifier
                 .size(38.dp)
                 .clip(RoundedCornerShape(3.45.dp))
-                .clickable { navController.navigate(Route.Profile.jump(message.sendID)) })
+                .clickableSingle { navController.navigate(Route.Profile.jump(message.sendID)) })
         Spacer(modifier = Modifier.width(6.dp))
         when (message.contentType) {
             MessageType.PICTURE -> AsyncImage(
@@ -385,7 +385,7 @@ fun ToUserMessage(message: Message, navController: NavController) {
                         bgImg?.updateBounds(0, 0, size.width.toInt(), size.height.toInt())
                         bgImg?.draw(drawContext.canvas.nativeCanvas)
                     }
-                    .clickable {
+                    .clickableSingle {
                         val mediaPlayer = MediaPlayer()
                         mediaPlayer.setAudioAttributes(
                             AudioAttributes
@@ -437,7 +437,7 @@ fun ToUserMessage(message: Message, navController: NavController) {
                                 )
                                 transferBg?.draw(drawContext.canvas.nativeCanvas)
                             }
-                            .clickable { uriHandler.openUri("https://etherscan.io/tx/${transfer.txHash}") }
+                            .clickableSingle { uriHandler.openUri("https://etherscan.io/tx/${transfer.txHash}") }
                             .padding(horizontal = 12.dp, vertical = 4.dp)
                             .weight(1f)
                         ) {
@@ -509,7 +509,7 @@ fun MineMessage(message: Message, navController: NavController) {
                         bgImg?.updateBounds(0, 0, size.width.toInt(), size.height.toInt())
                         bgImg?.draw(drawContext.canvas.nativeCanvas)
                     }
-                    .clickable {
+                    .clickableSingle {
                         val mediaPlayer = MediaPlayer()
                         mediaPlayer.setAudioAttributes(
                             AudioAttributes
@@ -571,7 +571,7 @@ fun MineMessage(message: Message, navController: NavController) {
                                 )
                                 transferBg?.draw(drawContext.canvas.nativeCanvas)
                             }
-                            .clickable { uriHandler.openUri("https://etherscan.io/tx/${transfer.txHash}") }
+                            .clickableSingle { uriHandler.openUri("https://etherscan.io/tx/${transfer.txHash}") }
                             .padding(horizontal = 12.dp, vertical = 4.dp)
                             .weight(1f)
                         ) {
@@ -614,6 +614,6 @@ fun MineMessage(message: Message, navController: NavController) {
             modifier = Modifier
                 .size(38.dp)
                 .clip(RoundedCornerShape(3.45.dp))
-                .clickable { navController.navigate(Route.Profile.jump(message.sendID)) })
+                .clickableSingle { navController.navigate(Route.Profile.jump(message.sendID)) })
     }
 }

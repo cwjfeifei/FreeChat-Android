@@ -3,7 +3,7 @@ package com.ti4n.freechat.login
 import android.widget.Toast
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
+import com.ti4n.freechat.util.clickableSingle
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
@@ -104,7 +104,7 @@ fun Register2View(
                     ) {
                         items(selectedWords) {
                             Box(contentAlignment = Alignment.Center,
-                                modifier = Modifier.clickable { viewModel.deleteWord(it) }) {
+                                modifier = Modifier.clickableSingle { viewModel.deleteWord(it) }) {
                                 Text(
                                     text = it,
                                     color = Color(0xFF1A1A1A),

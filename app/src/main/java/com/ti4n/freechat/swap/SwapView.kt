@@ -3,7 +3,7 @@
 package com.ti4n.freechat.swap
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
+import com.ti4n.freechat.util.clickableSingle
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -174,7 +174,7 @@ fun SwapView(navController: NavController, viewModel: SwapViewModel = hiltViewMo
                                     color = Color(0xFF1A1A1A)
                                 )
                                 Spacer(modifier = Modifier.width(4.dp))
-                                Image(mipmap = R.mipmap.push, Modifier.clickable {
+                                Image(mipmap = R.mipmap.push, Modifier.clickableSingle {
                                     navController.navigate(
                                         Route.SelectSwapFromToken.jump(
                                             ERC20Tokens(
@@ -244,7 +244,7 @@ fun SwapView(navController: NavController, viewModel: SwapViewModel = hiltViewMo
                                     color = Color(0xFF1A1A1A)
                                 )
                                 Spacer(modifier = Modifier.width(4.dp))
-                                Image(mipmap = R.mipmap.push, Modifier.clickable {
+                                Image(mipmap = R.mipmap.push, Modifier.clickableSingle {
                                     navController.navigate(
                                         Route.SelectSwapToToken.jump(
                                             ERC20Tokens(
@@ -408,7 +408,7 @@ fun SwapView(navController: NavController, viewModel: SwapViewModel = hiltViewMo
                         fontSize = 18.sp,
                         modifier = Modifier
                             .weight(1f)
-                            .clickable { navController.navigateUp() }
+                            .clickableSingle { navController.navigateUp() }
                             .padding(vertical = 12.dp),
                         style = TextStyle(textAlign = TextAlign.Center),
                     )
@@ -424,7 +424,7 @@ fun SwapView(navController: NavController, viewModel: SwapViewModel = hiltViewMo
                         fontSize = 18.sp,
                         modifier = Modifier
                             .weight(1f)
-                            .clickable {
+                            .clickableSingle {
                                 uriHandler.openUri("https://etherscan.io/tx/$transactionHash")
                             }
                             .padding(vertical = 12.dp),
@@ -452,7 +452,7 @@ fun ItemSupportToken(token: ERC20Token, click: () -> Unit) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
         modifier = Modifier
-            .clickable { click() }
+            .clickableSingle { click() }
             .padding(6.dp)
     ) {
         AsyncImage(

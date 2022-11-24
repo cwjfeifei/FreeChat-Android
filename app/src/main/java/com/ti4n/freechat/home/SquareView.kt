@@ -1,7 +1,7 @@
 package com.ti4n.freechat.home
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
+import com.ti4n.freechat.util.clickableSingle
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -63,7 +63,7 @@ fun SquareView(modifier: Modifier = Modifier, navController: NavController) {
                     fontWeight = if (selectedTab == it) FontWeight.Medium else FontWeight.Normal,
                     color = if (selectedTab == it) Color(0xFF6F5FFC) else Color(0xFF666666),
                     modifier = Modifier
-                        .clickable { selectedTab = it }
+                        .clickableSingle { selectedTab = it }
                         .padding(horizontal = 10.dp)
                 )
             }
@@ -120,7 +120,7 @@ fun BaseSquareItem(
                 .clip(
                     RoundedCornerShape(4.dp)
                 )
-                .clickable { navController.navigate(Route.Profile.route) },
+                .clickableSingle { navController.navigate(Route.Profile.route) },
             contentScale = ContentScale.Crop
         )
         Spacer(modifier = Modifier.width(8.dp))
@@ -178,7 +178,7 @@ fun SquareItemNormal(
                         .clip(
                             RoundedCornerShape(4.dp)
                         )
-                        .clickable {
+                        .clickableSingle {
 //                            navController.navigate(
 //                                Route.BigImage.route,
 //                                "url" to Url(it)

@@ -40,6 +40,7 @@ import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.unit.coerceAtMost
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.ti4n.freechat.profile.ProfileInfoItem
+import com.ti4n.freechat.widget.DefaultProfileLargeImage
 
 // Self Preview
 @Composable
@@ -85,19 +86,23 @@ fun ProfilePreview(
             .fillMaxSize()
             .navigationBarsPadding()
     ) {
-        androidx.compose.foundation.Image(
-            painter = rememberAsyncImagePainter(
-                ImageRequest.Builder(context)
-                    .data(data = faceURL)
-                    .build(),
-                imageLoader = imageLoader,
-            ),
-            contentDescription = null,
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(screenHeight - 100.dp - 42.dp),
-            contentScale = ContentScale.Crop
-        )
+        if ((faceURL?.ifEmpty { IM.DEFAULT_FACEURL }
+                ?: IM.DEFAULT_FACEURL) == IM.DEFAULT_FACEURL)
+            DefaultProfileLargeImage(isSelf = true)
+        else
+            androidx.compose.foundation.Image(
+                painter = rememberAsyncImagePainter(
+                    ImageRequest.Builder(context)
+                        .data(data = faceURL)
+                        .build(),
+                    imageLoader = imageLoader,
+                ),
+                contentDescription = null,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(screenHeight - 100.dp),
+                contentScale = ContentScale.Crop
+            )
         TopAppBar(
             modifier = Modifier.statusBarsPadding(),
             backgroundColor = Color.Transparent,
@@ -149,9 +154,11 @@ fun ProfilePreview(
             },
             Modifier
                 .fillMaxWidth()
-                .align(Alignment.BottomCenter), colors = ButtonDefaults.buttonColors(
+                .align(Alignment.BottomCenter),
+            colors = ButtonDefaults.buttonColors(
                 backgroundColor = Color(0xFF3879FD), contentColor = Color.White
-            ), shape = RoundedCornerShape(0.dp),
+            ),
+            shape = RoundedCornerShape(0.dp),
         ) {
             Text(
                 text = stringResource(id = R.string.send_message),
